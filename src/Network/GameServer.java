@@ -222,18 +222,12 @@ public class GameServer {
 							User user = userList1.get(i);
 							if (userName.equals(user.getUserName())) {
 								userList1.remove(i);
-								synchronized (writermap) {
-									writermap.put(userName, new PrintWriter(new OutputStreamWriter(serv.getOutputStream())));
-								}
 								return;
 							}
 					}
 					for (int i = 0; i < userList2.size(); i++) {
 						User user = userList2.get(i);
 						if (userName.equals(user.getUserName())) {
-							synchronized (writermap) {
-								writermap.put(userName, new PrintWriter(new OutputStreamWriter(serv.getOutputStream())));
-							}
 							userList2.remove(i);
 							return;
 						}
