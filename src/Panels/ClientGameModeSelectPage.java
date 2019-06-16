@@ -80,11 +80,6 @@ public class ClientGameModeSelectPage extends JPanel {
 		KWsel.draw(g);
 		URFsel.draw(g);
 		
-		switch(gamemode) {
-		case SummonersRift:
-			break;
-		}
-		
 		CancelBtn.draw(g);
 		CreateBtn.draw(g);
 		ParticipateBtn.draw(g);
@@ -97,7 +92,8 @@ public class ClientGameModeSelectPage extends JPanel {
 	}
 	
 	public void setThis() {
-		RoomName.setText(Variables.Username+"¥‘¿« ∞‘¿”");
+		//RoomName.setText(Variables.Username+"¥‘¿« ∞‘¿”");
+		RoomName.setText("192.168.0.4");
 		RoomName.setFont();
 		Password.setFont();
 	}

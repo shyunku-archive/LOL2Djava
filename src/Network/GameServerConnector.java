@@ -59,7 +59,6 @@ public class GameServerConnector {
 			sendMessage(userName);
 			sendMessage(isGameHost?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT);
 			
-			Constants.ff.cprint((isGameHost?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT)+"|");
 
 			// 서버에서 오는 메시지 처리
 			Thread input = new Thread(new Runnable() {
@@ -68,6 +67,7 @@ public class GameServerConnector {
 					try {
 						String msg = null;
 						while ((msg = reader.readLine()) != null) {
+							System.out.println("SERVER -> CLIENT : "+msg);
 							if (msg.equals("@")) {
 								JOptionPane.showMessageDialog(null, "서버에 동일한 닉네임이 존재합니다.");
 								break;
@@ -114,6 +114,7 @@ public class GameServerConnector {
 	}
 
 	public void sendMessage(String msg) {
+		System.out.println("Client Transferred : "+msg);
 		writer.println(msg);
 		writer.flush();
 	}

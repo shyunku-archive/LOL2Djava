@@ -17,10 +17,14 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import Core.Starter;
+import Engines.TriggeredTextArea;
+import Engines.TriggeredTextArea.EnterListener;
 import Global.Constants;
 import Global.Constants.GameMode;
 import Global.Functions;
@@ -30,6 +34,7 @@ import Network.GameServerConnector;
 import Network.GameServerConnector.OnMessageListener;
 import Network.Message.NetworkMessage;
 import Network.Message.FromSever.WaitingRoomStatusMessage;
+import Utility.Chat;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.TriggeredButton;
@@ -49,16 +54,20 @@ public class WaitingRoom extends JPanel{
 		private GameMode gameMode = GameMode.SummonersRift;
 		
 		private static TriggeredButton HomeBtn, CloseBtn, CancelBtn, RealGameStartBtn;
+		private static TriggeredTextArea Chatr = new TriggeredTextArea(new Rectangle(45, 670, 300, 30));
 		
 		private String Roomname;
 		private String password;
+		private boolean isGameHost;
 		
 		private GameServer gameServer;
 		private GameServerConnector connector;
 		
 		private ArrayList<User> userList1 = new ArrayList<>(), userList2 = new ArrayList<>();
+		private ArrayList<Chat> chatLog = new ArrayList<>();
 		
-		private boolean isGameHost;
+		private static JTextArea chatArea = new JTextArea();
+		private static JScrollPane scrollPane = new JScrollPane(chatArea);
 		
 		public void paintComponent(Graphics graphics) {
 			Graphics2D g = (Graphics2D) graphics;
@@ -151,12 +160,25 @@ public class WaitingRoom extends JPanel{
 			if(!this.isGameHost)return;
 			userList1 = gameServer.getUserList(1);
 			userList2 = gameServer.getUserList(2);
+			int defa = chatLog.size();
+			chatLog = gameServer.getChats();
+			
+			for(int i=defa;i<chatLog.size();i++) {
+				Chat c = chatLog.get(i);
+				String str = "";
+				if(!c.isSystemic())
+					str = c.getSender() + " : ";
+				str += c.getContent() + "\n";
+				chatArea.append(str);
+				chatArea.setCaretPosition(chatArea.getDocument().getLength());
+			}
 		}
 		
 		public void setThis() {
+			Chatr.setFont();
 			if(!this.isGameHost)return;
 			this.gameServer.startServer();
-			this.connector = new GameServerConnector(Variables.Username, Constants.LOCAL_HOST_ADDRESS, true);
+			connector = new GameServerConnector(Variables.Username, Constants.LOCAL_HOST_ADDRESS, true);
 		}
 		
 		public void setConnector(GameServerConnector co) {
@@ -166,11 +188,25 @@ public class WaitingRoom extends JPanel{
 				@Override
 				public void receivedMessage(String msg) {
 					String[] seg = msg.split(Pattern.quote("|"));
+					System.out.println("Client Recieved : ");
 					if (seg[0].equals(NetworkMessage.WAITING_ROOM + "")) {
 						WaitingRoomStatusMessage rmsg = new WaitingRoomStatusMessage();
 						rmsg.fromMsg(seg);
 						userList1 = rmsg.getUserList(1);
 						userList2 = rmsg.getUserList(2);
+						
+						int defa = chatLog.size();
+						chatLog = rmsg.getChats();
+						System.out.println("Size1 : "+(chatLog.size() - defa));
+						for(int i=defa;i<chatLog.size();i++) {
+							Chat c = chatLog.get(i);
+							String str = "";
+							if(!c.isSystemic())
+								str = c.getSender() + " : ";
+							str += c.getContent() + "\n";
+							chatArea.append(str);
+							chatArea.setCaretPosition(chatArea.getDocument().getLength());
+						}
 					}
 					if (msg.equals(NetworkMessage.GAME_START_SIGNAL + "")) {
 					}
@@ -178,7 +214,7 @@ public class WaitingRoom extends JPanel{
 			});
 		}
 		
-		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost, GameServerConnector connector) {
+		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost, GameServerConnector connectorR) {
 			this.isCreateMode = isC;
 			this.gameMode = mode;
 			this.Roomname = Roomname;
@@ -188,10 +224,38 @@ public class WaitingRoom extends JPanel{
 			if(this.isGameHost)
 				this.gameServer = new GameServer(null);
 			else
-				this.setConnector(connector);
+				this.setConnector(connectorR);
 			
-			
+			Chatr.addEnterListener(new EnterListener() {
+				@Override
+				public void onEnterKey() {
+					// TODO Auto-generated method stub
+					connectorR.sendMessage(Constants.CHAT);
+					connectorR.sendMessage(Variables.Username);
+					connectorR.sendMessage(Chatr.getText());
+					connectorR.sendMessage(Constants.NON_SYSTEMIC);
+					
+					Chatr.setText("");
+				}
 				
+			});
+
+			this.add(Chatr);
+			
+			scrollPane.setPreferredSize(new Dimension(300, 180));
+			chatArea.setBounds(new Rectangle(46,480, 299, 180));
+			chatArea.setBackground(new Color(0,0,0,0));
+			chatArea.setForeground(Color.WHITE);
+			chatArea.setLineWrap(true);
+			chatArea.setWrapStyleWord(true);
+			chatArea.setEditable(false);
+			scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+			chatArea.setVisible(true);
+			scrollPane.setVisible(true);
+			
+			this.add(chatArea);
+			this.add(scrollPane);
+			
 			
 			setPanelSize(Constants.ClientPanelDimension);
 			setVisible(true);

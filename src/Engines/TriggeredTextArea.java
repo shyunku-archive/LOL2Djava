@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.InputMap;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 
 import Core.Starter;
 import Global.Constants;
@@ -23,9 +25,18 @@ import Utility.EnginesControl;
 
 public class TriggeredTextArea extends JTextArea{
 	private Rectangle focusRect;
+	private EnterListener enterListener;
 	
 	public void setFont() {
 		setFont(Constants.ff.getClassicFont(16F, true));
+	}
+	
+	public void addEnterListener(EnterListener el) {
+		this.enterListener = el;
+	}
+	
+	public static interface EnterListener {
+		public abstract void onEnterKey();
 	}
 	
 	public TriggeredTextArea(Rectangle focusRect) {
@@ -37,6 +48,7 @@ public class TriggeredTextArea extends JTextArea{
 				getBorder(), 
 		        BorderFactory.createEmptyBorder(5, 8, 5, 5)));
 		setForeground(new Color(220,220,220,255));
+		disableKeys(getInputMap(), new String[]{"ENTER"});
 		try {
 			setFont(Font.createFont(Font.TRUETYPE_FONT, new File("Resources\\Fonts\\Global\\SMB.ttf")));
 		} catch (FontFormatException e2) {
@@ -99,6 +111,8 @@ public class TriggeredTextArea extends JTextArea{
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					if(enterListener!=null)
+						enterListener.onEnterKey();
 				}
 			}
 
@@ -115,5 +129,9 @@ public class TriggeredTextArea extends JTextArea{
 			
 		});
 	}
+	static void disableKeys(InputMap im,String[] keystrokeNames) {              
+        for (int i = 0; i < keystrokeNames.length; ++i)
+            im.put(KeyStroke.getKeyStroke(keystrokeNames[i]), "none");
+    }
 	private static EnginesControl ect = new EnginesControl();
 }

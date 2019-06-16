@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Global.Constants;
 import Network.Message.NetworkMessage;
+import Utility.Chat;
 import Utility.User;
 
 
@@ -12,6 +13,8 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 	public static final String ROOM_IS_FULL = "%%FULLROOM";
 	
 	private ArrayList<User> userList1, userList2;
+	private ArrayList<Chat> chats;
+	
 	public ArrayList<User> getUserList(int index) {
 		if(index == 1)return userList1;
 		return userList2;
@@ -21,10 +24,19 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 		if(index == 1) this.userList1 = userList;
 		else this.userList2 = userList;
 	}
+	
+	public void setChats(ArrayList<Chat> chats) {
+		this.chats = chats;
+	}
 
+	public ArrayList<Chat> getChats() {
+		return chats;
+	}
+	
 	public WaitingRoomStatusMessage() {
 		userList1 = new ArrayList<>();
 		userList2 = new ArrayList<>();
+		chats = new ArrayList<>();
 	}
 
 	@Override
@@ -40,6 +52,9 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 				break;
 			else
 				userList1.add(new User(seg[16+3*i], seg[17+3*i], seg[18+3*i]));
+		int endp = 31, chatCount = (seg.length-30)/3;
+		for(int i=0;i<chatCount;i++)
+			chats.add(new Chat(seg[endp+3*i], seg[endp+1+3*i], seg[endp+2+3*i].compareTo(Constants.SYSTEMIC)==0));
 	}
 
 	@Override
@@ -65,11 +80,16 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 		for (int i = userList2.size(); i < 5; i++) {
 			msg += Constants.EMPTY_STRING + "|";
 			msg += Constants.EMPTY_STRING + "|";
-			msg += Constants.EMPTY_STRING;
-			if (i != 4) {
-				msg += "|";
-			}
+			msg += Constants.EMPTY_STRING + "|";
 		}
+		for(int i=0;i<chats.size();i++) {
+			msg += chats.get(i).getSender()+"|";
+			msg += chats.get(i).getContent()+"|";
+			msg += chats.get(i).isSystemic()?Constants.SYSTEMIC:Constants.NON_SYSTEMIC;
+			if(i<chats.size()-1)
+				msg += "|";
+		}
+		//System.out.println("WaitingRoomStatusMessage Send : "+msg);
 		return msg;
 	}
 }
