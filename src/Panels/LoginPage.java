@@ -91,7 +91,6 @@ public class LoginPage extends JPanel{
 				this.mainAudioClip.stop();
 				Starter.pme.exitLoginPage();
 				Starter.pme.goClientPage();
-				
 			}
 		}else{
 			g.drawImage(Constants.LoginPageFrameImage, null, 0, 0);
@@ -130,6 +129,10 @@ public class LoginPage extends JPanel{
 		}
 	}
 	
+	public void setThis() {
+		inputNicknameArea.setFont(Starter.classicFont.deriveFont(15F));
+	}
+	
 	public void setPanelSize(Dimension ps) {
 		this.setSize(ps);
 		this.PanelSize = ps;
@@ -148,10 +151,6 @@ public class LoginPage extends JPanel{
 	public void endMedia() {
 		component.release();
 		remove(component);
-	}
-	
-	public void setThis() {
-		inputNicknameArea.setFont(Starter.classicFont.deriveFont(15F));
 	}
 	
 	public LoginPage() {

@@ -44,6 +44,12 @@ public class Starter {
 					Variables.FrameCount = 0;
 					Variables.StopWatchFlag = System.currentTimeMillis();
 				}
+				try {
+					Thread.sleep((long)(1000D/(double)Constants.FPSLimit)+1);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				frame.repaint();
 				update();
 				pme.updateActivated();
@@ -76,6 +82,13 @@ public class Starter {
 		Constants.GameSelectionCancelSoundPath= "Resources\\Audios\\ClientPage\\GameSelectionCancelSound.wav";
 		Constants.GameModeSelectSoundPath= "Resources\\Audios\\ClientPage\\GameModeSelectSound.wav";
 		Constants.GameModeFocusSoundPath= "Resources\\Audios\\ClientPage\\GameModeFocusSound.wav";
+		
+		Constants.ActivatedCPSoundPath = "Resources\\Audios\\ClientPage\\ActivatedCPSound.wav";
+		Constants.SelectedCPSoundPath = "Resources\\Audios\\ClientPage\\CPselectSound.wav";
+		Constants.ParticipateSoundPath = "Resources\\Audios\\ClientPage\\ParticipateRoomSound.wav";
+		
+		Constants.ActivatedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\ActivatedRealGameStartButtonSound.wav";
+		Constants.PressedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\PressedRealGameStartButtonSound.wav";
 		
 		//Images
 		try {
@@ -118,18 +131,27 @@ public class Starter {
 			Constants.FocusedGameParticipateButtonImage = ect.ice.CallImage(
 					ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedGameParticipateButton.png")),
 					0, 0);
+			Constants.GameModeSelectAdditionImage = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\GameSelectAdditional.png")),
+					0, 0);
+			Constants.WaitingRoomImage = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\WaitingRoomTemplate.png")),
+					0, 0);
+			Constants.RealGameStartButtonImage = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\RealGameStartButton.png")),
+					0, 0);
 			
 			BufferedImage sru, kwu, urfu, srs, kws, urfs;
 			Color backG = new Color(4,16,26);
 			
 			srs =  ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\SummonersRiftSelected.png"));
-			Constants.SummonersRiftSelected = ect.ice.RenderImageAsOpacity(srs,backG, 15);
+			Constants.SummonersRiftSelected = srs;
 			
 			kws = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\KnifeWindSelected.png"));
-			Constants.KnifeWindSelected = ect.ice.RenderImageAsOpacity(kws,backG, 5);
+			Constants.KnifeWindSelected = kws;
 			
 			urfs = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\URFSelected.png"));
-			Constants.URFSelected = ect.ice.RenderImageAsOpacity(urfs ,backG, 15);
+			Constants.URFSelected = urfs;
 			
 			sru = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeUnSelected\\SummonersRiftunSelected.png"));
 			Constants.SummonersRiftunSelected= ect.ice.RenderImageAsOpacity(sru,backG, 15);

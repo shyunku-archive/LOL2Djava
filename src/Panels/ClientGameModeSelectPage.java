@@ -17,7 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import Core.Starter;
+import Engines.TriggeredTextArea;
 import Global.Constants;
+import Global.Constants.GameMode;
 import Global.Functions;
 import Global.Variables;
 import Utility.Coordinate;
@@ -36,11 +38,14 @@ public class ClientGameModeSelectPage extends JPanel {
 	private static EnginesControl ect = new EnginesControl();
 	
 	
-	private static enum GameMode {SummonersRift, KnifeWind, URF};
+	
 	private static GameMode gamemode = GameMode.SummonersRift;
 	
 	private static TriggeredButton HomeBtn, CloseBtn, CancelBtn, CreateBtn, ParticipateBtn;
 	private static TriggeredButton SRsel, KWsel, URFsel;
+	private static TriggeredTextArea RoomName = new TriggeredTextArea(new Rectangle(205,476,321,30));
+	private static TriggeredTextArea Password = new TriggeredTextArea(new Rectangle(573,476,321,30));
+	
 	
 	public void paintComponent(Graphics graphics) {
 		Graphics2D g = (Graphics2D) graphics;
@@ -54,6 +59,7 @@ public class ClientGameModeSelectPage extends JPanel {
 		g.drawString(Variables.Username, 1127, 40);
 		
 		g.drawImage(Constants.GameModeSelectImage,null,0,0);
+		g.drawImage(Constants.GameModeSelectAdditionImage, null, 205, 450);
 		
 		
 		g.setColor(new Color(65,60,70,255));
@@ -80,11 +86,19 @@ public class ClientGameModeSelectPage extends JPanel {
 	public void update() {
 	}
 	
+	public void setThis() {
+		RoomName.setText(Variables.Username+"¥‘¿« ∞‘¿”");
+		RoomName.setFont();
+		Password.setFont();
+	}
+	
 	public ClientGameModeSelectPage() {
 		setPanelSize(Constants.ClientPanelDimension);
 		setVisible(true);
 		this.setLayout(null);
 		
+		this.add(RoomName);
+		this.add(Password);
 		SRsel = new TriggeredButton(
 				Constants.SummonersRiftunSelected,
 				null,
@@ -92,7 +106,7 @@ public class ClientGameModeSelectPage extends JPanel {
 				new Coordinate(131,144),
 				null,
 				new Coordinate(113,135),
-				new Rectangle(120,144,255,302),
+				new Rectangle(120,144,255,244),
 				20,
 				20
 				);
@@ -126,11 +140,12 @@ public class ClientGameModeSelectPage extends JPanel {
 			@Override
 			public void onRelease() {
 				// TODO Auto-generated method stub
+				if(!SRsel.isSelected())
+					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
 				SRsel.selectThis();
 				KWsel.unselectThis();
 				URFsel.unselectThis();
-				if(!SRsel.isSelected())
-					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
+				gamemode = GameMode.SummonersRift;
 			}
 			
 		});
@@ -143,7 +158,7 @@ public class ClientGameModeSelectPage extends JPanel {
 				new Coordinate(438,144),
 				null,
 				new Coordinate(400,156),
-				new Rectangle(400,144,274,341),
+				new Rectangle(400,144,274,236),
 				20,
 				20
 				);
@@ -176,11 +191,12 @@ public class ClientGameModeSelectPage extends JPanel {
 			@Override
 			public void onRelease() {
 				// TODO Auto-generated method stub
+				if(!KWsel.isSelected())
+					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
 				SRsel.unselectThis();
 				KWsel.selectThis();
 				URFsel.unselectThis();
-				if(!KWsel.isSelected())
-					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
+				gamemode = GameMode.KnifeWind;
 			}
 			
 		});
@@ -193,7 +209,7 @@ public class ClientGameModeSelectPage extends JPanel {
 				new Coordinate(758,161),
 				null,
 				new Coordinate(747,153),
-				new Rectangle(750,144,227,302),
+				new Rectangle(750,144,227,236),
 				20,
 				20
 				);
@@ -227,11 +243,12 @@ public class ClientGameModeSelectPage extends JPanel {
 			@Override
 			public void onRelease() {
 				// TODO Auto-generated method stub
+				if(!URFsel.isSelected())
+					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
 				SRsel.unselectThis();
 				KWsel.unselectThis();
 				URFsel.selectThis();
-				if(!URFsel.isSelected())
-					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
+				gamemode = GameMode.URF;
 			}
 			
 		});
@@ -247,6 +264,39 @@ public class ClientGameModeSelectPage extends JPanel {
 				20,
 				20
 				);
+		ParticipateBtn.addOnButtonListener(new onButtonListener() {
+
+			@Override
+			public void onClick() {
+				// TODO Auto-generated method stub
+				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
+			}
+
+			@Override
+			public void onEnter() {
+				// TODO Auto-generated method stub
+				ff.playSoundClip(Constants.ActivatedCPSoundPath, Constants.DEFAULT_VOLUME);
+			}
+
+			@Override
+			public void onExit() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPress() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onRelease() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		this.add(ParticipateBtn);
 		CreateBtn = new TriggeredButton(
 				null,
@@ -259,6 +309,42 @@ public class ClientGameModeSelectPage extends JPanel {
 				20,
 				20
 				);
+		CreateBtn.addOnButtonListener(new onButtonListener() {
+
+			@Override
+			public void onClick() {
+				// TODO Auto-generated method stub
+				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
+				if(RoomName.getText().length()==0)return;
+				Starter.pme.exitClientGameModeSelectPage();
+				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText());
+			}
+
+			@Override
+			public void onEnter() {
+				// TODO Auto-generated method stub
+				ff.playSoundClip(Constants.ActivatedCPSoundPath, Constants.DEFAULT_VOLUME);
+			}
+
+			@Override
+			public void onExit() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPress() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onRelease() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		this.add(CreateBtn);
 		CancelBtn = new TriggeredButton(
 				null,

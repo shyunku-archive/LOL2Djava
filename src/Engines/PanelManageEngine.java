@@ -9,9 +9,11 @@ import javax.swing.JPanel;
 
 import Core.Starter;
 import Global.Constants;
+import Global.Constants.GameMode;
 import Global.Functions;
 import Panels.ClientGameModeSelectPage;
 import Panels.ClientPage;
+import Panels.WaitingRoom;
 import Panels.LogPanel;
 import Panels.LoginPage;
 
@@ -21,6 +23,7 @@ public class PanelManageEngine {
 	public static LoginPage loginPage;
 	public static ClientPage clientPage;
 	public static ClientGameModeSelectPage clientGameModeSelectPage;
+	public static WaitingRoom waitingPage;
 	
 	/*===============================CREATE PANELS===============================*/
 	
@@ -58,8 +61,20 @@ public class PanelManageEngine {
 		ff.setCursor(Cursor.DEFAULT_CURSOR);
 		
 		clientGameModeSelectPage.isActivated = true;
+		clientGameModeSelectPage.setThis();
 		Starter.frame.add(clientGameModeSelectPage);
 		Starter.frame.setSize(clientGameModeSelectPage.PanelSize);
+		
+		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
+	}
+	
+	public void GoWaitingPage(boolean isCreate, GameMode mode, String Roomname, String password) {
+		waitingPage = new WaitingRoom(isCreate, mode, Roomname, password);
+		ff.setCursor(Cursor.DEFAULT_CURSOR);
+		
+		waitingPage.isActivated = true;
+		Starter.frame.add(waitingPage);
+		Starter.frame.setSize(waitingPage.PanelSize);
 		
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
 	}
@@ -82,6 +97,11 @@ public class PanelManageEngine {
 		Starter.frame.remove(clientGameModeSelectPage);
 	}
 	
+	public void exitWaitingPage() {
+		deactivateAll();
+		Starter.frame.remove(waitingPage);
+	}
+	
 	/*===============================INTERNAL METHODS===============================*/
 	
 	public void setAll() {
@@ -96,12 +116,14 @@ public class PanelManageEngine {
 		if(loginPage.isActivated)loginPage.update();
 		if(clientPage.isActivated)clientPage.update();
 		if(clientGameModeSelectPage.isActivated)clientGameModeSelectPage.update();
+		if(waitingPage.isActivated)waitingPage.update();
 	}
 	
 	public static void deactivateAll() {
 		loginPage.isActivated = false;
 		clientPage.isActivated = false;
 		clientGameModeSelectPage.isActivated = false;
+		waitingPage.isActivated = false;
 	}
 	
 	private static Functions ff = new Functions();
