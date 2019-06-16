@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import Core.Starter;
 import Global.Constants;
 import Global.Constants.GameMode;
+import Network.GameServerConnector;
 import Global.Functions;
 import Panels.ClientGameModeSelectPage;
 import Panels.ClientPage;
@@ -67,8 +68,8 @@ public class PanelManageEngine {
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
 	}
 	
-	public void GoWaitingPage(boolean isCreate, GameMode mode, String Roomname, String password, boolean isGameHost) {
-		waitingPage = new WaitingRoom(isCreate, mode, Roomname, password, isGameHost);
+	public void GoWaitingPage(boolean isCreate, GameMode mode, String Roomname, String password, boolean isGameHost, GameServerConnector connector) {
+		waitingPage = new WaitingRoom(isCreate, mode, Roomname, password, isGameHost,connector);
 		ff.setCursor(Cursor.DEFAULT_CURSOR);
 		
 		waitingPage.setThis();

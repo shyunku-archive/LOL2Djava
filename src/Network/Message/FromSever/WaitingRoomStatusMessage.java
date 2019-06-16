@@ -31,9 +31,15 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 	public void fromMsg(String[] seg) {
 		int userCount = (seg.length - 1) / 3;
 		for(int i=0;i<5;i++)
-			userList1.add(new User(seg[1+3*i], seg[2+3*i], seg[3+3*i]));
+			if(seg[1+3*i].compareTo(Constants.EMPTY_STRING)==0)
+				break;
+			else
+				userList1.add(new User(seg[1+3*i], seg[2+3*i], seg[3+3*i]));
 		for(int i=0;i<5;i++)
-			userList1.add(new User(seg[16+3*i], seg[17+3*i], seg[18+3*i]));
+			if(seg[16+3*i].compareTo(Constants.EMPTY_STRING)==0)
+				break;
+			else
+				userList1.add(new User(seg[16+3*i], seg[17+3*i], seg[18+3*i]));
 	}
 
 	@Override

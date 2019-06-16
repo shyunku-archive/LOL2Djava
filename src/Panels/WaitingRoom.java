@@ -160,10 +160,25 @@ public class WaitingRoom extends JPanel{
 		}
 		
 		public void setConnector(GameServerConnector co) {
+			if(this.isGameHost) return;
 			this.connector = co;
+			connector.setOnMessageListener(new OnMessageListener() {
+				@Override
+				public void receivedMessage(String msg) {
+					String[] seg = msg.split(Pattern.quote("|"));
+					if (seg[0].equals(NetworkMessage.WAITING_ROOM + "")) {
+						WaitingRoomStatusMessage rmsg = new WaitingRoomStatusMessage();
+						rmsg.fromMsg(seg);
+						userList1 = rmsg.getUserList(1);
+						userList2 = rmsg.getUserList(2);
+					}
+					if (msg.equals(NetworkMessage.GAME_START_SIGNAL + "")) {
+					}
+				}
+			});
 		}
 		
-		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost) {
+		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost, GameServerConnector connector) {
 			this.isCreateMode = isC;
 			this.gameMode = mode;
 			this.Roomname = Roomname;
@@ -172,23 +187,11 @@ public class WaitingRoom extends JPanel{
 			this.isGameHost = isGameHost;
 			if(this.isGameHost)
 				this.gameServer = new GameServer(null);
+			else
+				this.setConnector(connector);
 			
-			if(!this.isGameHost)
-				connector.setOnMessageListener(new OnMessageListener() {
-	
-					@Override
-					public void receivedMessage(String msg) {
-						String[] seg = msg.split(Pattern.quote("|"));
-						if (seg[0].equals(NetworkMessage.WAITING_ROOM + "")) {
-							WaitingRoomStatusMessage rmsg = new WaitingRoomStatusMessage();
-							rmsg.fromMsg(seg);
-							userList1 = rmsg.getUserList(1);
-							userList2 = rmsg.getUserList(2);
-						}
-						if (msg.equals(NetworkMessage.GAME_START_SIGNAL + "")) {
-						}
-					}
-				});
+			
+				
 			
 			setPanelSize(Constants.ClientPanelDimension);
 			setVisible(true);

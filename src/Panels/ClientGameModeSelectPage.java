@@ -287,8 +287,7 @@ public class ClientGameModeSelectPage extends JPanel {
 					return;
 				}
 				Starter.pme.exitClientGameModeSelectPage();
-				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), false);
-				Starter.pme.waitingPage.setConnector(connector);
+				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), false, connector);
 			}
 
 			@Override
@@ -336,7 +335,7 @@ public class ClientGameModeSelectPage extends JPanel {
 				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
 				if(RoomName.getText().length()==0)return;
 				Starter.pme.exitClientGameModeSelectPage();
-				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), true);
+				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), true, null);
 			}
 
 			@Override
