@@ -38,7 +38,6 @@ public class PanelManageEngine {
 		Starter.frame.add(loginPage);
 		Starter.frame.setSize(loginPage.PanelSize);
 		
-		loginPage.playMedia();
 		loginPage.setThis();
 		
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
@@ -85,7 +84,6 @@ public class PanelManageEngine {
 	
 	public void exitLoginPage() {
 		deactivateAll();
-		loginPage.endMedia();
 		Starter.frame.remove(loginPage);
 	}
 	

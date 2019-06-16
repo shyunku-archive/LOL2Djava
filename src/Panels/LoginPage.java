@@ -28,16 +28,12 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.text.DefaultEditorKit;
 
 import Core.Starter;
 import Engines.TriggeredAnimationEngine;
@@ -45,11 +41,6 @@ import Global.Constants;
 import Global.Functions;
 import Global.Variables;
 import Utility.EnginesControl;
-import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
-import uk.co.caprica.vlcj.discovery.NativeDiscovery;
-import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
-import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 
 @SuppressWarnings("serial")
@@ -62,8 +53,7 @@ public class LoginPage extends JPanel{
 	private static Functions ff = new Functions();
 	private static EnginesControl ect = new EnginesControl();
 	
-	private static EmbeddedMediaPlayerComponent component;
-    private static EmbeddedMediaPlayer player;
+	
     private static String videoFilePath = "Resources\\Videos\\LoginPage\\MainVideo.mp4";
     
     private static Rectangle CloseButtonRect = new Rectangle(1252, 7, 14, 14);
@@ -137,23 +127,6 @@ public class LoginPage extends JPanel{
 		this.setSize(ps);
 		this.PanelSize = ps;
 	}
-	
-	public void playMedia() {
-		if(!Constants.activateVideo) return;
-		new Thread(new Runnable() {
-            @Override
-            public void run() {
-            	player.playMedia(videoFilePath);
-            	player.play();
-            }
-        }).start();
-	}
-	
-	public void endMedia() {
-		component.release();
-		remove(component);
-	}
-	
 	public LoginPage() {
 		setPanelSize(new Dimension(1280, 720));
 		setVisible(true);
@@ -253,43 +226,9 @@ public class LoginPage extends JPanel{
 		this.add(inputNicknameArea);
 		
 		
-		boolean found = new NativeDiscovery().discover();
-        component = new EmbeddedMediaPlayerComponent() {
-        	@Override
-            protected String[] onGetMediaPlayerFactoryArgs() {
-                return new String[] {
-                    "--video-title=vlcj video output",
-                    "--no-snapshot-preview",
-                    "--quiet-synchro",
-                    "--sub-filter=logo:marq",
-                    "--intf=dummy",
-                    "--mouse-hide-timeout=100000000"
-                };
-            }
-        };
-        player = component.getMediaPlayer();
-        if(Constants.activateVideo)
-	        player.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-	            @Override
-	            public void finished(MediaPlayer mediaPlayer) {
-	            	mainAudioClip.stop();
-	                playMedia();
-	                try {
-	        			mainAudioClip = AudioSystem.getClip();
-	        			mainAudioClip.open(AudioSystem.getAudioInputStream(new File("Resources\\Audios\\LoginPage\\MainAudio.wav").getAbsoluteFile()));
-	        		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-	        			// TODO Auto-generated catch block
-	        			e.printStackTrace();
-	        		}
-	                ff.setDeciBel(mainAudioClip, 0.13D);
-	        		mainAudioClip.start();
-	            }
-	        });
-        component.setBounds(0, 0, 1060, 720);
+
         
         this.setLayout(null);
-        if(Constants.activateVideo)
-        	this.add(component);
         try {
 			this.mainAudioClip = AudioSystem.getClip();
 			this.mainAudioClip.open(AudioSystem.getAudioInputStream(new File("Resources\\Audios\\LoginPage\\MainAudio.wav").getAbsoluteFile()));
