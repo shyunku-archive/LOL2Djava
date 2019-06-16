@@ -10,15 +10,21 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import Core.Starter;
+import Game.User;
 import Global.Constants;
 import Global.Constants.GameMode;
 import Global.Functions;
 import Global.Variables;
+import Network.GameServer;
+import Network.GameServerConnector;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.TriggeredButton;
@@ -41,6 +47,9 @@ public class WaitingRoom extends JPanel{
 		private String Roomname;
 		private String password;
 		
+		private GameServer gameServer;
+		private GameServerConnector connector;
+		
 		public void paintComponent(Graphics graphics) {
 			Graphics2D g = (Graphics2D) graphics;
 			
@@ -58,8 +67,57 @@ public class WaitingRoom extends JPanel{
 			g.setFont(ff.getFancyFont(13F, true));
 			ect.fde.drawCenteredString(g, Constants.ProgramVersion, new Rectangle(1060, 688, 220, 32));
 			
-			g.setFont(ff.getClassicFont(20F, true));
-			g.drawString(Roomname, 40, 95);
+			g.setColor(new Color(240, 230, 210));
+			g.setFont(ff.getClassicFont(27F, true));
+			g.drawString(Roomname, 90, 120);
+			
+			g.setColor(new Color(170, 165, 119));
+			g.setFont(ff.getClassicFont(13F, true));
+			switch(gameMode) {
+			case SummonersRift:
+				g.drawImage(Constants.SRicon, null, 40,100);
+				g.drawString("¼ÒÈ¯»çÀÇ Çù°î", 90, 143);
+				break;
+			case KnifeWind:
+				g.drawImage(Constants.KWicon, null, 40,100);
+				g.drawString("Ä®¹Ù¶÷ ³ª¶ô", 90, 143);
+				break;
+			case URF:
+				g.drawImage(Constants.URFicon, null, 40,100);
+				g.drawString("U.R.F", 90, 143);
+				break;
+			}
+			
+			g.setFont(ff.getClassicFont(16F, true));
+			
+			g.drawString("1ÆÀ", 70, 200);
+			g.drawString("2ÆÀ", 970, 200);
+			
+			g.setColor(new Color(240, 230, 210));
+			
+			try {
+				g.drawString("Host IP address : "+InetAddress.getLocalHost(), 630, 510);
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			
+			g.setColor(new Color(70,70,70));
+			
+			
+			for(int i=0;i<5;i++)
+				for(int j=0;j<2;j++)
+					g.drawLine(50+495*j, 260+50*i, 530+495*j, 260+50*i);
+			
+			g.setColor(new Color(240, 230, 210));
+			
+			ArrayList<User> ulist1 = gameServer.getUserList(1), ulist2 = gameServer.getUserList2();
+			for(int i=0;i<ulist1.size();i++)
+				g.drawString(ulist1.get(i).getUserName(), 60, 245+50*i);
+			for(int i=0;i<ulist2.size();i++)
+				g.drawString(ulist2.get(i).getUserName(), 60+495, 245+50*i);
 			
 			RealGameStartBtn.draw(g);
 			CancelBtn.draw(g);
@@ -68,6 +126,11 @@ public class WaitingRoom extends JPanel{
 		}
 		
 		public void update() {
+		}
+		
+		public void setThis() {
+			this.gameServer = new GameServer(null);
+			this.connector = new GameServerConnector(Variables.Username, Constants.LOCAL_HOST_ADDRESS);
 		}
 		
 		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password) {

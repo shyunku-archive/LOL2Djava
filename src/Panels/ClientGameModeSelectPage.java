@@ -22,6 +22,7 @@ import Global.Constants;
 import Global.Constants.GameMode;
 import Global.Functions;
 import Global.Variables;
+import Network.GameServer;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.TriggeredButton;

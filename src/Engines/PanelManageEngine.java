@@ -72,6 +72,8 @@ public class PanelManageEngine {
 		waitingPage = new WaitingRoom(isCreate, mode, Roomname, password);
 		ff.setCursor(Cursor.DEFAULT_CURSOR);
 		
+		waitingPage.setThis();
+		
 		waitingPage.isActivated = true;
 		Starter.frame.add(waitingPage);
 		Starter.frame.setSize(waitingPage.PanelSize);

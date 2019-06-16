@@ -30,6 +30,10 @@ public class Constants {
 	//Layout
 	public static Dimension ClientPanelDimension = new Dimension(1280, 720);
 	
+	//Server
+	public static final int DEFAULT_SERVER_PORT = 10333;
+	public static final String EMPTY_STRING = "%%EMPTY%%";
+	public static final String LOCAL_HOST_ADDRESS = "127.0.0.1";
 	
 	/*=================IMAGES=================*/
 	//login
@@ -61,6 +65,10 @@ public class Constants {
 	public static BufferedImage SummonersRiftunSelected = null;
 	public static BufferedImage KnifeWindunSelected = null;
 	public static BufferedImage URFunSelected = null;
+	
+	public static BufferedImage SRicon = null;
+	public static BufferedImage KWicon = null;
+	public static BufferedImage URFicon = null;
 	
 	
 	/*=================SOUNDS=================*/

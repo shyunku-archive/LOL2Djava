@@ -141,6 +141,16 @@ public class Starter {
 					ImageIO.read(new File("Resources\\Images\\ClientPage\\RealGameStartButton.png")),
 					0, 0);
 			
+			Constants.SRicon = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\SRicon.png")),
+					0, 0);
+			Constants.KWicon = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\KWicon.png")),
+					0, 0);
+			Constants.URFicon = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\URFicon.png")),
+					0, 0);
+			
 			BufferedImage sru, kwu, urfu, srs, kws, urfs;
 			Color backG = new Color(4,16,26);
 			

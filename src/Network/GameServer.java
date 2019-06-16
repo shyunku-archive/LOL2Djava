@@ -1,0 +1,250 @@
+package Network;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.BindException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+import Game.User;
+import Network.Message.FromSever.WaitingRoomStatusMessage;
+
+public class GameServer {
+	public static final int WAITING_ROOM = 0;
+	public static final int CHAMPION_SELECTING = 1;
+	public static final int GAME_LOADING = 2;
+	public static final int GAMING = 3;
+	public static final int GAME_RESULT = 4;
+	
+	
+	
+	private ServerSocket serverSocket;
+	private OnServerMessageListener listener;
+	private ArrayList<User> userList1, userList2;
+	
+	private int currentStatus = WAITING_ROOM;
+	
+	public HashMap<String, PrintWriter> writermap;
+	
+	
+	public GameServer() {
+		userList1 = new ArrayList<>();
+		userList2 = new ArrayList<>();
+		startServer();
+	}
+	
+	public GameServer(OnServerMessageListener listener) {
+		userList1 = new ArrayList<>();
+		userList2 = new ArrayList<>();
+		this.listener = listener;
+		startServer();
+	}
+
+	public ArrayList<User> getUserList(int index){
+		if(index == 1) return this.userList1;
+		return this.userList2;
+	}
+	
+	public ArrayList<User> getUserList2(){
+		return this.userList2;
+	}
+	
+	public void endServer() {
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public OnServerMessageListener getListener() {
+		return listener;
+	}
+
+	public void setListener(OnServerMessageListener listener) {
+		this.listener = listener;
+	}
+
+	public static interface OnServerMessageListener {
+		public abstract void onServerMessage(String userName, String msg);
+	}
+	
+	public void startServer() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					serverSocket = new ServerSocket(Global.Constants.DEFAULT_SERVER_PORT);
+					writermap = new HashMap<String, PrintWriter>();
+					while (true) {
+						// wait for accept
+						Socket socket = serverSocket.accept();
+						GameThread thread = new GameThread(socket, writermap);
+						thread.start();
+					}
+				} catch(BindException e) {
+					JOptionPane.showMessageDialog(null, "서버가 이미 실행되고 있습니다.");
+					System.exit(0);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+		}).start();
+		
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				for (;;) {
+					try {
+						Thread.sleep(500);
+						if (currentStatus == WAITING_ROOM) {
+							WaitingRoomStatusMessage msg = new WaitingRoomStatusMessage();
+							msg.setUserList(userList1, 1);
+							msg.setUserList(userList2, 2);
+							broadcast(msg.toMsg());
+						} else {
+							break;
+						}
+					} catch (Exception e) {
+
+					}
+				}
+			}
+
+		}).start();
+	}
+	
+	public void sendMessage(String userName, String message) {
+		try {
+			synchronized (writermap) {
+				writermap.get(userName).println(message);
+				writermap.get(userName).flush();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void broadcast(String message) {
+		try {
+			synchronized (writermap) {
+				Collection<PrintWriter> allUsers = writermap.values();
+				Iterator<PrintWriter> i = allUsers.iterator();
+				while (i.hasNext()) {
+					PrintWriter p = i.next();
+					p.println(message);
+					p.flush();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	class GameThread extends Thread {
+		private Socket serv;
+		private String userName;
+		private HashMap<String, PrintWriter> writermap;
+		private BufferedReader reader;
+
+		public GameThread(Socket serv, HashMap<String, PrintWriter> writermap) {
+			boolean valid = true;
+			this.serv = serv;
+			this.writermap = writermap;
+			System.out.println("New Connect");
+			try {
+				reader = new BufferedReader(new InputStreamReader(serv.getInputStream()));
+				userName = reader.readLine();
+				String data1[][] = new String[userList1.size() + 1][2];
+				String data2[][] = new String[userList2.size() + 1][2];
+				
+				if ((userList1.size()==5)&&(userList2.size()==5)) {
+					PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
+					temp.println(WaitingRoomStatusMessage.ROOM_IS_FULL);
+					temp.flush();
+					temp.close();
+					serv.close();
+					valid = false;
+					this.interrupt();
+				}
+				
+				for (int i = 0; i < userList1.size(); i++) {
+					User user = userList1.get(i);
+					if (userName.equals(user.getUserName())) {
+						PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
+						temp.println(WaitingRoomStatusMessage.SAME_USERNAME_EXIST);
+						temp.flush();
+						temp.close();
+						serv.close();
+						valid = false;
+						this.interrupt();
+					}
+					data1[i][0] = user.getUserName();
+					data1[i][1] = user.getIp();
+				}
+				for (int i = 0; i < userList2.size(); i++) {
+					User user = userList2.get(i);
+					if (userName.equals(user.getUserName())) {
+						PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
+						temp.println(WaitingRoomStatusMessage.SAME_USERNAME_EXIST);
+						temp.flush();
+						temp.close();
+						serv.close();
+						valid = false;
+						this.interrupt();
+					}
+					data2[i][0] = user.getUserName();
+					data2[i][1] = user.getIp();
+				}
+				if (valid) {
+					try {
+						//add me
+						if(userList1.size()==5) {
+							userList2.add(new User(userName, serv.getInetAddress().getHostAddress()));
+							data2[userList2.size() - 1][0] = userName;
+							data2[userList2.size() - 1][1] = serv.getInetAddress().getHostAddress();
+						}
+						else {
+							userList1.add(new User(userName, serv.getInetAddress().getHostAddress()));
+							data1[userList1.size() - 1][0] = userName;
+							data1[userList1.size() - 1][1] = serv.getInetAddress().getHostAddress();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					synchronized (writermap) {
+						writermap.put(userName, new PrintWriter(new OutputStreamWriter(serv.getOutputStream())));
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void run() {
+			try {
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					if (listener != null)
+						listener.onServerMessage(userName, line);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
