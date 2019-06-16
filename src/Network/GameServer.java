@@ -16,8 +16,9 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-import Game.User;
+import Global.Constants;
 import Network.Message.FromSever.WaitingRoomStatusMessage;
+import Utility.User;
 
 public class GameServer {
 	public static final int WAITING_ROOM = 0;
@@ -47,7 +48,6 @@ public class GameServer {
 		userList1 = new ArrayList<>();
 		userList2 = new ArrayList<>();
 		this.listener = listener;
-		startServer();
 	}
 
 	public ArrayList<User> getUserList(int index){
@@ -98,7 +98,7 @@ public class GameServer {
 					JOptionPane.showMessageDialog(null, "서버가 이미 실행되고 있습니다.");
 					System.exit(0);
 				} catch (Exception e) {
-					e.printStackTrace();
+					System.out.println("서버 닫음");
 				}
 
 			}
@@ -158,6 +158,7 @@ public class GameServer {
 	class GameThread extends Thread {
 		private Socket serv;
 		private String userName;
+		private String isGameHost;
 		private HashMap<String, PrintWriter> writermap;
 		private BufferedReader reader;
 
@@ -169,9 +170,7 @@ public class GameServer {
 			try {
 				reader = new BufferedReader(new InputStreamReader(serv.getInputStream()));
 				userName = reader.readLine();
-				String data1[][] = new String[userList1.size() + 1][2];
-				String data2[][] = new String[userList2.size() + 1][2];
-				
+				isGameHost = reader.readLine();
 				if ((userList1.size()==5)&&(userList2.size()==5)) {
 					PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
 					temp.println(WaitingRoomStatusMessage.ROOM_IS_FULL);
@@ -181,7 +180,6 @@ public class GameServer {
 					valid = false;
 					this.interrupt();
 				}
-				
 				for (int i = 0; i < userList1.size(); i++) {
 					User user = userList1.get(i);
 					if (userName.equals(user.getUserName())) {
@@ -193,8 +191,6 @@ public class GameServer {
 						valid = false;
 						this.interrupt();
 					}
-					data1[i][0] = user.getUserName();
-					data1[i][1] = user.getIp();
 				}
 				for (int i = 0; i < userList2.size(); i++) {
 					User user = userList2.get(i);
@@ -207,24 +203,12 @@ public class GameServer {
 						valid = false;
 						this.interrupt();
 					}
-					data2[i][0] = user.getUserName();
-					data2[i][1] = user.getIp();
 				}
 				if (valid) {
-					try {
-						//add me
-						if(userList1.size()==5) {
-							userList2.add(new User(userName, serv.getInetAddress().getHostAddress()));
-							data2[userList2.size() - 1][0] = userName;
-							data2[userList2.size() - 1][1] = serv.getInetAddress().getHostAddress();
-						}
-						else {
-							userList1.add(new User(userName, serv.getInetAddress().getHostAddress()));
-							data1[userList1.size() - 1][0] = userName;
-							data1[userList1.size() - 1][1] = serv.getInetAddress().getHostAddress();
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
+					if(userList1.size()==5)
+						userList2.add(new User(userName, serv.getInetAddress().getHostAddress(), isGameHost));
+					else {
+						userList1.add(new User(userName, serv.getInetAddress().getHostAddress(), "%%GAMEHOST%%"));
 					}
 					synchronized (writermap) {
 						writermap.put(userName, new PrintWriter(new OutputStreamWriter(serv.getOutputStream())));

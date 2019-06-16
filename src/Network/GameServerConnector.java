@@ -32,15 +32,15 @@ public class GameServerConnector {
 		public abstract void receivedMessage(String msg);
 	}
 
-	public GameServerConnector(String userName, String ip) {
-		this(userName, ip, Constants.DEFAULT_SERVER_PORT);
+	public GameServerConnector(String userName, String ip, boolean isGameHost) {
+		this(userName, ip, Constants.DEFAULT_SERVER_PORT, isGameHost);
 	}
 
 	public void setOnMessageListener(OnMessageListener listener) {
 		this.listener = listener;
 	}
 
-	public GameServerConnector(String userName, String ip, int port) {
+	public GameServerConnector(String userName, String ip, int port, boolean isGameHost) {
 		this.userName = userName;
 		try {
 			// 변수 init
@@ -48,6 +48,7 @@ public class GameServerConnector {
 				sock = new Socket(ip, port);
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "해당 ip에 접속할 수 없습니다.");
+				e.printStackTrace();
 				success = false;
 				return;
 			}
@@ -55,6 +56,7 @@ public class GameServerConnector {
 			reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
 			sendMessage(userName);
+			sendMessage(isGameHost?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT);
 
 			// 서버에서 오는 메시지 처리
 			Thread input = new Thread(new Runnable() {

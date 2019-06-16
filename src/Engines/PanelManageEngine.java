@@ -68,8 +68,8 @@ public class PanelManageEngine {
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
 	}
 	
-	public void GoWaitingPage(boolean isCreate, GameMode mode, String Roomname, String password) {
-		waitingPage = new WaitingRoom(isCreate, mode, Roomname, password);
+	public void GoWaitingPage(boolean isCreate, GameMode mode, String Roomname, String password, boolean isGameHost) {
+		waitingPage = new WaitingRoom(isCreate, mode, Roomname, password, isGameHost);
 		ff.setCursor(Cursor.DEFAULT_CURSOR);
 		
 		waitingPage.setThis();

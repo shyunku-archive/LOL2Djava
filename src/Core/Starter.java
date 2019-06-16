@@ -151,6 +151,10 @@ public class Starter {
 					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\URFicon.png")),
 					0, 0);
 			
+			Constants.GameHostSymbol = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\GameHostSymbol.png")),
+					0, 0);
+			
 			BufferedImage sru, kwu, urfu, srs, kws, urfs;
 			Color backG = new Color(4,16,26);
 			

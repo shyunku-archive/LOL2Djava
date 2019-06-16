@@ -18,11 +18,13 @@ import Utility.Layout;
 import Utility.TriggeredButton;
 
 public class Constants {	
-	public static final String ProgramVersion = "V0.3.002 - Beta";
+	public static final String ProgramVersion = "V0.4.1 - Beta";
 	public static final long FrameCountPeriod = 850;
 	public static final int FPSLimit = 144;
 	
 	public static enum GameMode {SummonersRift, KnifeWind, URF};
+	
+	public static boolean activateVideo = false;
 
 	//Function
 	public static final Functions ff = new Functions();
@@ -31,9 +33,11 @@ public class Constants {
 	public static Dimension ClientPanelDimension = new Dimension(1280, 720);
 	
 	//Server
-	public static final int DEFAULT_SERVER_PORT = 10333;
+	public static final int DEFAULT_SERVER_PORT = 10424;
 	public static final String EMPTY_STRING = "%%EMPTY%%";
 	public static final String LOCAL_HOST_ADDRESS = "127.0.0.1";
+	public static final String IS_GAME_HOST = "%%GAMEHOST%%";
+	public static final String IS_GAME_CLIENT = "%%GAMECLIENT%%";
 	
 	/*=================IMAGES=================*/
 	//login
@@ -69,6 +73,8 @@ public class Constants {
 	public static BufferedImage SRicon = null;
 	public static BufferedImage KWicon = null;
 	public static BufferedImage URFicon = null;
+	
+	public static BufferedImage GameHostSymbol = null;
 	
 	
 	/*=================SOUNDS=================*/

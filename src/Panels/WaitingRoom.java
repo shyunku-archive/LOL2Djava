@@ -2,6 +2,7 @@ package Panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -13,21 +14,26 @@ import java.awt.event.MouseMotionListener;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 
 import Core.Starter;
-import Game.User;
 import Global.Constants;
 import Global.Constants.GameMode;
 import Global.Functions;
 import Global.Variables;
 import Network.GameServer;
 import Network.GameServerConnector;
+import Network.GameServerConnector.OnMessageListener;
+import Network.Message.NetworkMessage;
+import Network.Message.FromSever.WaitingRoomStatusMessage;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.TriggeredButton;
+import Utility.User;
 import Utility.onButtonListener;
 
 public class WaitingRoom extends JPanel{
@@ -49,6 +55,10 @@ public class WaitingRoom extends JPanel{
 		
 		private GameServer gameServer;
 		private GameServerConnector connector;
+		
+		private ArrayList<User> userList1, userList2;
+		
+		private boolean isGameHost;
 		
 		public void paintComponent(Graphics graphics) {
 			Graphics2D g = (Graphics2D) graphics;
@@ -113,32 +123,72 @@ public class WaitingRoom extends JPanel{
 			
 			g.setColor(new Color(240, 230, 210));
 			
-			ArrayList<User> ulist1 = gameServer.getUserList(1), ulist2 = gameServer.getUserList2();
-			for(int i=0;i<ulist1.size();i++)
-				g.drawString(ulist1.get(i).getUserName(), 60, 245+50*i);
-			for(int i=0;i<ulist2.size();i++)
-				g.drawString(ulist2.get(i).getUserName(), 60+495, 245+50*i);
 			
-			RealGameStartBtn.draw(g);
+			FontMetrics metrics = g.getFontMetrics(g.getFont());
+			for(int i=0;i<userList1.size();i++) {
+				String name = userList1.get(i).getUserName();
+				g.drawString(name, 60, 245+50*i);
+				if(userList1.get(i).isGameHost()) {
+					g.drawImage(Constants.GameHostSymbol, null, 60+metrics.stringWidth(name)+15, 245+50*i-15);
+				}
+			}
+			for(int i=0;i<userList2.size();i++) {
+				String name =userList2.get(i).getUserName();
+				g.drawString(name, 60+495, 245+50*i);
+				if(userList2.get(i).isGameHost())
+					g.drawImage(Constants.GameHostSymbol, null, 60+495+metrics.stringWidth(name)+15, 245+50*i-15);
+			}
+			
+			
+			if(this.isGameHost)
+				RealGameStartBtn.draw(g);
 			CancelBtn.draw(g);
 			HomeBtn.draw(g);
 			CloseBtn.draw(g);
 		}
 		
 		public void update() {
+			if(!this.isGameHost)return;
+			userList1 = gameServer.getUserList(1);
+			userList2 = gameServer.getUserList(2);
 		}
 		
 		public void setThis() {
-			this.gameServer = new GameServer(null);
-			this.connector = new GameServerConnector(Variables.Username, Constants.LOCAL_HOST_ADDRESS);
+			if(!this.isGameHost)return;
+			this.gameServer.startServer();
+			this.connector = new GameServerConnector(Variables.Username, Constants.LOCAL_HOST_ADDRESS, true);
 		}
 		
-		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password) {
+		public void setConnector(GameServerConnector co) {
+			this.connector = co;
+		}
+		
+		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost) {
 			this.isCreateMode = isC;
 			this.gameMode = mode;
 			this.Roomname = Roomname;
 			this.password = password;
 			
+			this.isGameHost = isGameHost;
+			if(this.isGameHost)
+				this.gameServer = new GameServer(null);
+			
+			if(!this.isGameHost)
+				connector.setOnMessageListener(new OnMessageListener() {
+	
+					@Override
+					public void receivedMessage(String msg) {
+						String[] seg = msg.split(Pattern.quote("|"));
+						if (seg[0].equals(NetworkMessage.WAITING_ROOM + "")) {
+							WaitingRoomStatusMessage rmsg = new WaitingRoomStatusMessage();
+							rmsg.fromMsg(seg);
+							userList1 = rmsg.getUserList(1);
+							userList2 = rmsg.getUserList(2);
+						}
+						if (msg.equals(NetworkMessage.GAME_START_SIGNAL + "")) {
+						}
+					}
+				});
 			
 			setPanelSize(Constants.ClientPanelDimension);
 			setVisible(true);
@@ -188,7 +238,8 @@ public class WaitingRoom extends JPanel{
 				}
 				
 			});
-			this.add(RealGameStartBtn);
+			if(isGameHost)
+				this.add(RealGameStartBtn);
 			CancelBtn = new TriggeredButton(
 					null,
 					Constants.FocusedGameSelectionCancelButtonImage,
@@ -204,6 +255,10 @@ public class WaitingRoom extends JPanel{
 				@Override
 				public void onClick() {
 					// TODO Auto-generated method stub
+					if(isGameHost)
+						gameServer.endServer();
+					else
+						connector.endConnection();
 					Starter.pme.exitWaitingPage();
 					Starter.pme.goClientPage();
 					ff.playSoundClip(Constants.GameSelectionCancelSoundPath, Constants.GAME_SELECT_CANCEL_SOUND_VOLUME);
@@ -248,6 +303,10 @@ public class WaitingRoom extends JPanel{
 			CloseBtn.addOnButtonListener(new onButtonListener() {
 				@Override
 				public void onClick() {
+					if(isGameHost)
+						gameServer.endServer();
+					else
+						connector.endConnection();
 					ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
 					try {
 						Thread.sleep(50);
@@ -297,6 +356,10 @@ public class WaitingRoom extends JPanel{
 			HomeBtn.addOnButtonListener(new onButtonListener() {
 						@Override
 						public void onClick() {
+							if(isGameHost)
+								gameServer.endServer();
+							else
+								connector.endConnection();
 							ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
 							Starter.pme.exitWaitingPage();
 							Starter.pme.goClientPage();

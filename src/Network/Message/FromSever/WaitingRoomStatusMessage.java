@@ -2,9 +2,9 @@ package Network.Message.FromSever;
 
 import java.util.ArrayList;
 
-import Game.User;
 import Global.Constants;
 import Network.Message.NetworkMessage;
+import Utility.User;
 
 
 public class WaitingRoomStatusMessage extends NetworkMessage {
@@ -29,11 +29,11 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 
 	@Override
 	public void fromMsg(String[] seg) {
-		int userCount = (seg.length - 1) / 2;
+		int userCount = (seg.length - 1) / 3;
 		for(int i=0;i<5;i++)
-			userList1.add(new User(seg[1+2*i], seg[2+2*i]));
+			userList1.add(new User(seg[1+3*i], seg[2+3*i], seg[3+3*i]));
 		for(int i=0;i<5;i++)
-			userList1.add(new User(seg[11+2*i], seg[12+2*i]));
+			userList1.add(new User(seg[16+3*i], seg[17+3*i], seg[18+3*i]));
 	}
 
 	@Override
@@ -42,18 +42,22 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 		for (int i = 0; i < userList1.size(); i++) {
 			msg += userList1.get(i).getUserName() + "|";
 			msg += userList1.get(i).getIp() + "|";
+			msg += userList1.get(i).isGameHost()?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT + "|";
 		}
 		for (int i = userList1.size(); i < 5; i++) {
+			msg += Constants.EMPTY_STRING + "|";
 			msg += Constants.EMPTY_STRING + "|";
 			msg += Constants.EMPTY_STRING + "|";
 		}
 		for (int i = 0; i < userList2.size(); i++) {
 			msg += userList2.get(i).getUserName() + "|";
 			msg += userList2.get(i).getIp() + "|";
+			msg += userList2.get(i).isGameHost()?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT + "|";
 		}
 		for (int i = userList2.size(); i < 5; i++) {
 			msg += Constants.EMPTY_STRING + "|";
 			msg += Constants.EMPTY_STRING + "|";
+			msg += Constants.EMPTY_STRING;
 			if (i != 4) {
 				msg += "|";
 			}

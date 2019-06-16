@@ -139,6 +139,7 @@ public class LoginPage extends JPanel{
 	}
 	
 	public void playMedia() {
+		if(!Constants.activateVideo) return;
 		new Thread(new Runnable() {
             @Override
             public void run() {
@@ -267,26 +268,28 @@ public class LoginPage extends JPanel{
             }
         };
         player = component.getMediaPlayer();
-        player.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-            @Override
-            public void finished(MediaPlayer mediaPlayer) {
-            	mainAudioClip.stop();
-                playMedia();
-                try {
-        			mainAudioClip = AudioSystem.getClip();
-        			mainAudioClip.open(AudioSystem.getAudioInputStream(new File("Resources\\Audios\\LoginPage\\MainAudio.wav").getAbsoluteFile()));
-        		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
-        			// TODO Auto-generated catch block
-        			e.printStackTrace();
-        		}
-                ff.setDeciBel(mainAudioClip, 0.13D);
-        		mainAudioClip.start();
-            }
-        });
+        if(Constants.activateVideo)
+	        player.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+	            @Override
+	            public void finished(MediaPlayer mediaPlayer) {
+	            	mainAudioClip.stop();
+	                playMedia();
+	                try {
+	        			mainAudioClip = AudioSystem.getClip();
+	        			mainAudioClip.open(AudioSystem.getAudioInputStream(new File("Resources\\Audios\\LoginPage\\MainAudio.wav").getAbsoluteFile()));
+	        		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+	        			// TODO Auto-generated catch block
+	        			e.printStackTrace();
+	        		}
+	                ff.setDeciBel(mainAudioClip, 0.13D);
+	        		mainAudioClip.start();
+	            }
+	        });
         component.setBounds(0, 0, 1060, 720);
         
         this.setLayout(null);
-        this.add(component);
+        if(Constants.activateVideo)
+        	this.add(component);
         try {
 			this.mainAudioClip = AudioSystem.getClip();
 			this.mainAudioClip.open(AudioSystem.getAudioInputStream(new File("Resources\\Audios\\LoginPage\\MainAudio.wav").getAbsoluteFile()));

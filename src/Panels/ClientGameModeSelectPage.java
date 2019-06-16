@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -23,6 +24,7 @@ import Global.Constants.GameMode;
 import Global.Functions;
 import Global.Variables;
 import Network.GameServer;
+import Network.GameServerConnector;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.TriggeredButton;
@@ -44,8 +46,10 @@ public class ClientGameModeSelectPage extends JPanel {
 	
 	private static TriggeredButton HomeBtn, CloseBtn, CancelBtn, CreateBtn, ParticipateBtn;
 	private static TriggeredButton SRsel, KWsel, URFsel;
-	private static TriggeredTextArea RoomName = new TriggeredTextArea(new Rectangle(205,476,321,30));
-	private static TriggeredTextArea Password = new TriggeredTextArea(new Rectangle(573,476,321,30));
+	private static TriggeredTextArea RoomName = new TriggeredTextArea(new Rectangle(205,469,321,30));
+	private static TriggeredTextArea Password = new TriggeredTextArea(new Rectangle(573,469,321,30));
+	
+	private GameServerConnector connector;
 	
 	
 	public void paintComponent(Graphics graphics) {
@@ -60,12 +64,17 @@ public class ClientGameModeSelectPage extends JPanel {
 		g.drawString(Variables.Username, 1127, 40);
 		
 		g.drawImage(Constants.GameModeSelectImage,null,0,0);
-		g.drawImage(Constants.GameModeSelectAdditionImage, null, 205, 450);
+		g.drawImage(Constants.GameModeSelectAdditionImage, null, 205, 470);
 		
 		
 		g.setColor(new Color(65,60,70,255));
 		g.setFont(ff.getFancyFont(13F, true));
 		ect.fde.drawCenteredString(g, Constants.ProgramVersion, new Rectangle(1060, 688, 220, 32));
+		
+		g.setColor(new Color(240, 230, 210));
+		g.setFont(ff.getClassicFont(15F, true));
+		g.drawString("생성 시 방 제목, 참가 시 IP 주소 입력", 205, 460);
+		g.drawString("비밀번호 [생성 시 선택 사항 - 아직 구현되지 않음]", 573, 460);
 		
 		SRsel.draw(g);
 		KWsel.draw(g);
@@ -271,6 +280,15 @@ public class ClientGameModeSelectPage extends JPanel {
 			public void onClick() {
 				// TODO Auto-generated method stub
 				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
+				if(RoomName.getText().length()==0)return;
+				connector = new GameServerConnector(Variables.Username, RoomName.getText().trim(), false);
+				if(!connector.isSuccess()) {
+					JOptionPane.showMessageDialog(null, "해당 ip에 접속할 수 없습니다.");
+					return;
+				}
+				Starter.pme.exitClientGameModeSelectPage();
+				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), false);
+				Starter.pme.waitingPage.setConnector(connector);
 			}
 
 			@Override
@@ -318,7 +336,7 @@ public class ClientGameModeSelectPage extends JPanel {
 				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
 				if(RoomName.getText().length()==0)return;
 				Starter.pme.exitClientGameModeSelectPage();
-				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText());
+				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), true);
 			}
 
 			@Override
