@@ -48,7 +48,8 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 		for (int i = 0; i < userList1.size(); i++) {
 			msg += userList1.get(i).getUserName() + "|";
 			msg += userList1.get(i).getIp() + "|";
-			msg += userList1.get(i).isGameHost()?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT + "|";
+			msg += userList1.get(i).isGameHost()?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT ;
+			msg += "|";
 		}
 		for (int i = userList1.size(); i < 5; i++) {
 			msg += Constants.EMPTY_STRING + "|";
@@ -58,7 +59,8 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 		for (int i = 0; i < userList2.size(); i++) {
 			msg += userList2.get(i).getUserName() + "|";
 			msg += userList2.get(i).getIp() + "|";
-			msg += userList2.get(i).isGameHost()?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT + "|";
+			msg += userList2.get(i).isGameHost()?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT;
+			msg += "|";
 		}
 		for (int i = userList2.size(); i < 5; i++) {
 			msg += Constants.EMPTY_STRING + "|";
@@ -68,6 +70,7 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 				msg += "|";
 			}
 		}
+		Constants.ff.cprint(msg);
 		return msg;
 	}
 }
