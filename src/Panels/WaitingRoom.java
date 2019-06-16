@@ -56,7 +56,7 @@ public class WaitingRoom extends JPanel{
 		private GameServer gameServer;
 		private GameServerConnector connector;
 		
-		private ArrayList<User> userList1, userList2;
+		private ArrayList<User> userList1 = new ArrayList<>(), userList2 = new ArrayList<>();
 		
 		private boolean isGameHost;
 		
@@ -261,7 +261,7 @@ public class WaitingRoom extends JPanel{
 					if(isGameHost)
 						gameServer.endServer();
 					else
-						connector.endConnection();
+						connector.endConnection(isGameHost, Variables.Username);
 					Starter.pme.exitWaitingPage();
 					Starter.pme.goClientPage();
 					ff.playSoundClip(Constants.GameSelectionCancelSoundPath, Constants.GAME_SELECT_CANCEL_SOUND_VOLUME);
@@ -309,7 +309,7 @@ public class WaitingRoom extends JPanel{
 					if(isGameHost)
 						gameServer.endServer();
 					else
-						connector.endConnection();
+						connector.endConnection(isGameHost, Variables.Username);
 					ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
 					try {
 						Thread.sleep(50);
@@ -362,7 +362,7 @@ public class WaitingRoom extends JPanel{
 							if(isGameHost)
 								gameServer.endServer();
 							else
-								connector.endConnection();
+								connector.endConnection(isGameHost, Variables.Username);
 							ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
 							Starter.pme.exitWaitingPage();
 							Starter.pme.goClientPage();

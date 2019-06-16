@@ -55,8 +55,11 @@ public class GameServerConnector {
 			writer = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 			reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
+			sendMessage(Constants.PARTICIPATE);
 			sendMessage(userName);
 			sendMessage(isGameHost?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT);
+			
+			Constants.ff.cprint((isGameHost?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT)+"|");
 
 			// 서버에서 오는 메시지 처리
 			Thread input = new Thread(new Runnable() {
@@ -78,8 +81,11 @@ public class GameServerConnector {
 							}
 						}
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						// TODO Auto-generated catch block\
+						sendMessage(Constants.GO_OUT);
+						sendMessage(userName);
+						sendMessage(isGameHost?Constants.IS_GAME_HOST:Constants.IS_GAME_CLIENT);
+						Constants.ff.cprint(userName + " Disconnected");
 					}
 
 					try {
@@ -98,7 +104,7 @@ public class GameServerConnector {
 		}
 	}
 
-	public void endConnection() {
+	public void endConnection(boolean isGameHost, String username) {
 		try {
 			sock.close();
 			writer.close();

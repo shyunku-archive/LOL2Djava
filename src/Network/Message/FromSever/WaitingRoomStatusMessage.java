@@ -70,7 +70,6 @@ public class WaitingRoomStatusMessage extends NetworkMessage {
 				msg += "|";
 			}
 		}
-		Constants.ff.cprint(msg);
 		return msg;
 	}
 }

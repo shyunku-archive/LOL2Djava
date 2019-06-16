@@ -166,52 +166,77 @@ public class GameServer {
 			boolean valid = true;
 			this.serv = serv;
 			this.writermap = writermap;
-			System.out.println("New Connect");
 			try {
 				reader = new BufferedReader(new InputStreamReader(serv.getInputStream()));
-				userName = reader.readLine();
-				isGameHost = reader.readLine();
-				if ((userList1.size()==5)&&(userList2.size()==5)) {
-					PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
-					temp.println(WaitingRoomStatusMessage.ROOM_IS_FULL);
-					temp.flush();
-					temp.close();
-					serv.close();
-					valid = false;
-					this.interrupt();
-				}
-				for (int i = 0; i < userList1.size(); i++) {
-					User user = userList1.get(i);
-					if (userName.equals(user.getUserName())) {
+				String statusTeller = reader.readLine();
+				if(statusTeller.compareTo(Constants.PARTICIPATE)==0) {
+					userName = reader.readLine();
+					isGameHost = reader.readLine();
+					if ((userList1.size()==5)&&(userList2.size()==5)) {
 						PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
-						temp.println(WaitingRoomStatusMessage.SAME_USERNAME_EXIST);
+						temp.println(WaitingRoomStatusMessage.ROOM_IS_FULL);
 						temp.flush();
 						temp.close();
 						serv.close();
 						valid = false;
 						this.interrupt();
 					}
-				}
-				for (int i = 0; i < userList2.size(); i++) {
-					User user = userList2.get(i);
-					if (userName.equals(user.getUserName())) {
-						PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
-						temp.println(WaitingRoomStatusMessage.SAME_USERNAME_EXIST);
-						temp.flush();
-						temp.close();
-						serv.close();
-						valid = false;
-						this.interrupt();
+					for (int i = 0; i < userList1.size(); i++) {
+						User user = userList1.get(i);
+						if (userName.equals(user.getUserName())) {
+							PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
+							temp.println(WaitingRoomStatusMessage.SAME_USERNAME_EXIST);
+							temp.flush();
+							temp.close();
+							serv.close();
+							valid = false;
+							this.interrupt();
+						}
 					}
-				}
-				if (valid) {
-					if(userList1.size()==5)
-						userList2.add(new User(userName, serv.getInetAddress().getHostAddress(), isGameHost));
-					else {
-						userList1.add(new User(userName, serv.getInetAddress().getHostAddress(), "%%GAMEHOST%%"));
+					for (int i = 0; i < userList2.size(); i++) {
+						User user = userList2.get(i);
+						if (userName.equals(user.getUserName())) {
+							PrintWriter temp = new PrintWriter(new OutputStreamWriter(serv.getOutputStream()));
+							temp.println(WaitingRoomStatusMessage.SAME_USERNAME_EXIST);
+							temp.flush();
+							temp.close();
+							serv.close();
+							valid = false;
+							this.interrupt();
+						}
 					}
-					synchronized (writermap) {
-						writermap.put(userName, new PrintWriter(new OutputStreamWriter(serv.getOutputStream())));
+					if (valid) {
+						if(userList1.size()==5)
+							userList2.add(new User(userName, serv.getInetAddress().getHostAddress(), isGameHost));
+						else {
+							userList1.add(new User(userName, serv.getInetAddress().getHostAddress(), isGameHost));
+						}
+						synchronized (writermap) {
+							writermap.put(userName, new PrintWriter(new OutputStreamWriter(serv.getOutputStream())));
+						}
+					}
+				}else {
+					userName = reader.readLine();
+					isGameHost = reader.readLine();
+					for (int i = 0; i < userList1.size(); i++) {
+							User user = userList1.get(i);
+							if (userName.equals(user.getUserName())) {
+								userList1.remove(i);
+								synchronized (writermap) {
+									writermap.put(userName, new PrintWriter(new OutputStreamWriter(serv.getOutputStream())));
+								}
+								return;
+							}
+					}
+					for (int i = 0; i < userList2.size(); i++) {
+						User user = userList2.get(i);
+						if (userName.equals(user.getUserName())) {
+							synchronized (writermap) {
+								writermap.put(userName, new PrintWriter(new OutputStreamWriter(serv.getOutputStream())));
+							}
+							userList2.remove(i);
+							return;
+						}
 					}
 				}
 			} catch (Exception e) {

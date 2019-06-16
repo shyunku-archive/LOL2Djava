@@ -33,11 +33,13 @@ public class Constants {
 	public static Dimension ClientPanelDimension = new Dimension(1280, 720);
 	
 	//Server
-	public static final int DEFAULT_SERVER_PORT = 10424;
+	public static final int DEFAULT_SERVER_PORT = 10425;
 	public static final String EMPTY_STRING = "%%EMPTY%%";
 	public static final String LOCAL_HOST_ADDRESS = "127.0.0.1";
 	public static final String IS_GAME_HOST = "%%GAMEHOST%%";
 	public static final String IS_GAME_CLIENT = "%%GAMECLIENT%%";
+	public static final String PARTICIPATE = "%%PARTICIPATED%%";
+	public static final String GO_OUT = "%%GOOUTFROMHERE%%";
 	
 	/*=================IMAGES=================*/
 	//login
