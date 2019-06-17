@@ -230,10 +230,10 @@ public class WaitingRoom extends JPanel{
 				@Override
 				public void onEnterKey() {
 					// TODO Auto-generated method stub
-					connectorR.sendMessage(Constants.CHAT);
-					connectorR.sendMessage(Variables.Username);
-					connectorR.sendMessage(Chatr.getText());
-					connectorR.sendMessage(Constants.NON_SYSTEMIC);
+					connector.sendMessage(Constants.CHAT);
+					connector.sendMessage(Variables.Username);
+					connector.sendMessage(Chatr.getText());
+					connector.sendMessage(Constants.NON_SYSTEMIC);
 					
 					Chatr.setText("");
 				}

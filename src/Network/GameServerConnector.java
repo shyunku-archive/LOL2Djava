@@ -114,7 +114,7 @@ public class GameServerConnector {
 	}
 
 	public void sendMessage(String msg) {
-		System.out.println("Client Transferred : "+msg);
+		System.out.println("Client -> SERVER : "+msg);
 		writer.println(msg);
 		writer.flush();
 	}

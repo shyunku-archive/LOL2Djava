@@ -231,6 +231,7 @@ public class GameServer {
 						}
 					}
 				}else if(statusTeller.compareTo(Constants.CHAT)==0) {
+					
 					String sender = reader.readLine();
 					String content = reader.readLine();
 					boolean isSystemic = reader.readLine().compareTo(Constants.SYSTEMIC) == 0;
