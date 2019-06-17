@@ -2,7 +2,7 @@ package Network.NetworkCore;
 
 public class NetworkTag {
 	
-	public static final int 	DEFAULT_SERVER_PORT = 10426;
+	public static final int 	DEFAULT_SERVER_PORT = 10200;
 	public static final String 	LOCAL_HOST_ADDRESS 	= "127.0.0.1";
 	
 	public static final String	WAITING_ROOM		= "%%STATUS_WAITING_ROOM%%";
