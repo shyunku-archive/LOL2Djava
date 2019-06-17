@@ -116,7 +116,7 @@ public class WaitingRoom extends JPanel{
 			g.setColor(new Color(240, 230, 210));
 			
 			try {
-				g.drawString("Host IP address : "+InetAddress.getLocalHost(), 630, 510);
+				g.drawString("Host IP address : "+InetAddress.getLocalHost().getHostAddress(), 630, 510);
 				g.drawString("Public IP address : "+Constants.publicIP, 630, 530);
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block

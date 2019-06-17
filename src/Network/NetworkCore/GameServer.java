@@ -75,7 +75,6 @@ public class GameServer {
 										// TODO Auto-generated catch block
 										RoomInfo.removeUser(curUsername);
 										removeWriter(curUsername);
-										
 										break;
 									} catch (IOException e) {
 										// TODO Auto-generated catch block
