@@ -32,6 +32,7 @@ import Global.Constants;
 import Global.Constants.GameMode;
 import Global.Functions;
 import Global.Variables;
+import Network.InnerData.WaitingRoom.WaitingRoomInfo;
 import Network.NetworkCore.GameClient;
 import Network.NetworkCore.GameServer;
 import Network.NetworkCore.NetworkTag;
@@ -66,6 +67,8 @@ public class WaitingRoom extends JPanel{
 		
 		private ArrayList<User> userList1 = new ArrayList<>(), userList2 = new ArrayList<>();
 		private ArrayList<Chat> chatLog = new ArrayList<>();
+		
+		private WaitingRoomInfo wri = new WaitingRoomInfo();
 		
 		private static JTextArea chatArea = new JTextArea();
 		private static JScrollPane scrollPane = new JScrollPane(chatArea);
@@ -160,17 +163,18 @@ public class WaitingRoom extends JPanel{
 		
 		public void update() {
 			//게임 호스트일 경우 게임서버에서 데이터 가져와서 업데이트
-			userList1 = gameClient.getRoomInfo().getUserList(1);
-			userList2 = gameClient.getRoomInfo().getUserList(2);
+			WaitingRoomInfo renew = gameClient.getRoomInfo();
+			userList1 = renew.getUserList(1);
+			userList2 = renew.getUserList(2);
 			int originalSize = chatLog.size();
-			chatLog = gameClient.getRoomInfo().getChats();
-			
-			for(int i= originalSize;i<chatLog.size();i++) {
-				Chat c = chatLog.get(i);
+			int mutex = renew.getChats().size();
+			for(int i= originalSize;i<mutex;i++) {
+				Chat c = renew.getChats().get(i);
 				String str = "";
 				if(!c.isSystemic())
 					str = c.getSender() + " : ";
 				str += c.getContent() + "\n";
+				chatLog.add(c);
 				chatArea.append(str);
 				chatArea.setCaretPosition(chatArea.getDocument().getLength());
 			}
@@ -201,7 +205,7 @@ public class WaitingRoom extends JPanel{
 				@Override
 				public void onEnterKey() {
 					// TODO Auto-generated method stub
-					
+					gameClient.sendMessageToServer(NetworkTag.CHAT+"|"+Variables.Username+"|"+Chatr.getText()+"|"+NetworkTag.NON_SYSTEMIC);
 					Chatr.setText("");
 				}
 				
@@ -291,8 +295,6 @@ public class WaitingRoom extends JPanel{
 					// TODO Auto-generated method stub
 					if(isGameHost)
 						gameServer.endServer();
-					else
-						gameClient.endConnect();
 					Starter.pme.exitWaitingPage();
 					Starter.pme.goClientPage();
 					ff.playSoundClip(Constants.GameSelectionCancelSoundPath, Constants.GAME_SELECT_CANCEL_SOUND_VOLUME);
@@ -339,8 +341,6 @@ public class WaitingRoom extends JPanel{
 				public void onClick() {
 					if(isGameHost)
 						gameServer.endServer();
-					else
-						gameClient.endConnect();
 					ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
 					try {
 						Thread.sleep(50);
@@ -392,8 +392,6 @@ public class WaitingRoom extends JPanel{
 						public void onClick() {
 							if(isGameHost)
 								gameServer.endServer();
-							else
-								gameClient.endConnect();
 							ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
 							Starter.pme.exitWaitingPage();
 							Starter.pme.goClientPage();

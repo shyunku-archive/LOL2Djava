@@ -7,10 +7,6 @@ public class NetworkTag {
 	
 	public static final String	WAITING_ROOM		= "%%STATUS_WAITING_ROOM%%";
 	
-	public static final String 	ADD_DATA_TAG		= "%%ADD_DATA%%";
-	public static final String 	DELETE_DATA_TAG 	= "%%DELETE_DATA%%";
-	public static final String 	MODIFY_DATA_TAG 	= "%%MODIFY_DATA%%";
-	
 	//WaitingRoom
 	public static final String 	USER_LIST_TAG1		= "%%USER_LIST1%%";
 	public static final String 	USER_LIST_TAG2		= "%%USER_LIST2%%";

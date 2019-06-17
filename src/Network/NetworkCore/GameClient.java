@@ -13,7 +13,7 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 import Global.Constants;
-import Network.InnerData.WaitingRoom.Receiver.WaitingRoomInfo;
+import Network.InnerData.WaitingRoom.WaitingRoomInfo;
 import Network.Objects.User;
 
 public class GameClient {
@@ -63,6 +63,7 @@ public class GameClient {
 							 
 							 if(tag.equals(NetworkTag.WAITING_ROOM)) {
 								 RoomInfo.fromMsg(msg);
+								 
 							 }
 						}
 					} catch (IOException e) {
@@ -90,10 +91,7 @@ public class GameClient {
 		}
 	}
 	
-	public void endConnect() {
-	}
-	
-	public void sendMessageToServer(String msg) throws IOException {
+	public void sendMessageToServer(String msg){
 		//클라이언트 -> 서버
 		msg = user.getUserName()+"|" +msg;
 		Constants.ff.cprint("CLIENT -> SERVER : "+msg);

@@ -1,4 +1,4 @@
-package Network.InnerData.WaitingRoom.Receiver;
+package Network.InnerData.WaitingRoom;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +34,10 @@ public class WaitingRoomInfo extends MessageControl{
 			if(userList2.size()==5)return;
 			else userList2.add(user);
 		else userList1.add(user);
+	}
+	
+	public void addChat(Chat chat) {
+		this.chats.add(chat);
 	}
 	
 	public void removeUser(String name) {
@@ -92,7 +96,8 @@ public class WaitingRoomInfo extends MessageControl{
 			seg = Constants.ff.cutFrontStringArray(seg, 3);
 		}
 		seg = Constants.ff.cutFrontStringArray(seg, 1);
-		for(int i=0;i<seg.length/3;i++) {
+		int savedlength = seg.length/3;
+		for(int i=0;i<savedlength;i++) {
 			chats.add(new Chat(seg[0],seg[1],seg[2]));
 			seg = Constants.ff.cutFrontStringArray(seg, 3);
 		}

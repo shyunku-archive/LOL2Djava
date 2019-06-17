@@ -21,7 +21,8 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 import Global.Constants;
-import Network.InnerData.WaitingRoom.Receiver.WaitingRoomInfo;
+import Network.InnerData.WaitingRoom.WaitingRoomInfo;
+import Network.Objects.Chat;
 import Network.Objects.User;
 
 public class GameServer {
@@ -70,6 +71,10 @@ public class GameServer {
 											 User newUser = new User(msg);
 											 addWriter(socket, newUser.getUserName());
 											 RoomInfo.addUser(newUser);
+											 RoomInfo.addChat(new Chat(NetworkTag.EMPTY_STRING, newUser.getUserName()+"님이 로비에 참가하셨습니다.", true));
+										 }else if(tag.equals(NetworkTag.CHAT)) {
+											 Chat newChat = new Chat(msg[0], msg[1], msg[2]);
+											 RoomInfo.addChat(newChat);
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block
@@ -111,7 +116,7 @@ public class GameServer {
 				// TODO Auto-generated method stub
 				while(true) {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(50);
 						switch(GameStatus) {
 						case NetworkTag.WAITING_ROOM:
 							if(RoomInfo != null) {
