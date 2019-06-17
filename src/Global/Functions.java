@@ -6,6 +6,7 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -21,7 +22,7 @@ public class Functions<Temp> {
 		System.out.println(Location+" : "+Message);
 	}
 	public void cprint(String Message) {
-		System.out.println(" Message : "+ Message);
+		System.out.println(Message);
 	}
 	public void printPair(String Location, Temp...par){
 		String buffer = Location+" : (";
@@ -62,6 +63,25 @@ public class Functions<Temp> {
 				+new Throwable().getStackTrace()[2].getMethodName()+"."
 				+new Throwable().getStackTrace()[1].getMethodName()+"()");
 	}
+	
+	public void printFatalError() {
+		System.out.println("Fatal Error!");
+		new Throwable().printStackTrace();
+		System.exit(0);
+	}
+	
+	public void printDebugWithMessage(String str) {
+		System.out.println("Flag Activated in "
+				+new Throwable().getStackTrace()[3].getMethodName()+"."
+				+new Throwable().getStackTrace()[2].getMethodName()+"."
+				+new Throwable().getStackTrace()[1].getMethodName()+"() : "+str);
+	}
+	
+	public String[] cutFrontStringArray(String[] seg, int start) {
+		return Arrays.copyOfRange(seg, start, seg.length);
+	}
+	
+	
 	
 	public Font getFancyFont(float size, boolean bold) {
 		if(bold) return Starter.fancyFontBold.deriveFont(size);

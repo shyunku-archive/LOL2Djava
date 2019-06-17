@@ -29,20 +29,11 @@ public class Constants {
 	//Function
 	public static final Functions ff = new Functions();
 	
+	//Server
+	public static String publicIP = ""; 
+	
 	//Layout
 	public static Dimension ClientPanelDimension = new Dimension(1280, 720);
-	
-	//Server
-	public static final int DEFAULT_SERVER_PORT = 10426;
-	public static final String EMPTY_STRING = "%%EMPTY%%";
-	public static final String LOCAL_HOST_ADDRESS = "127.0.0.1";
-	public static final String IS_GAME_HOST = "%%GAMEHOST%%";
-	public static final String IS_GAME_CLIENT = "%%GAMECLIENT%%";
-	public static final String PARTICIPATE = "%%PARTICIPATED%%";
-	public static final String GO_OUT = "%%GOOUTFROMHERE%%";
-	public static final String CHAT = "%%CHAT%%";
-	public static final String SYSTEMIC = "%%SYSTEMIC%%";
-	public static final String NON_SYSTEMIC = "%%NONSYSTEMIC%%";
 	
 	/*=================IMAGES=================*/
 	//login

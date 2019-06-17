@@ -21,10 +21,9 @@ import Core.Starter;
 import Engines.TriggeredTextArea;
 import Global.Constants;
 import Global.Constants.GameMode;
+import Network.NetworkCore.GameServer;
 import Global.Functions;
 import Global.Variables;
-import Network.GameServer;
-import Network.GameServerConnector;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.TriggeredButton;
@@ -48,8 +47,6 @@ public class ClientGameModeSelectPage extends JPanel {
 	private static TriggeredButton SRsel, KWsel, URFsel;
 	private static TriggeredTextArea RoomName = new TriggeredTextArea(new Rectangle(205,469,321,30));
 	private static TriggeredTextArea Password = new TriggeredTextArea(new Rectangle(573,469,321,30));
-	
-	private GameServerConnector connector;
 	
 	
 	public void paintComponent(Graphics graphics) {
@@ -277,13 +274,8 @@ public class ClientGameModeSelectPage extends JPanel {
 				// TODO Auto-generated method stub
 				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
 				if(RoomName.getText().length()==0)return;
-				connector = new GameServerConnector(Variables.Username, RoomName.getText().trim(), false);
-				if(!connector.isSuccess()) {
-					JOptionPane.showMessageDialog(null, "해당 ip에 접속할 수 없습니다.");
-					return;
-				}
 				Starter.pme.exitClientGameModeSelectPage();
-				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), false, connector);
+				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), false);
 			}
 
 			@Override
@@ -331,7 +323,7 @@ public class ClientGameModeSelectPage extends JPanel {
 				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
 				if(RoomName.getText().length()==0)return;
 				Starter.pme.exitClientGameModeSelectPage();
-				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), true, null);
+				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), true);
 			}
 
 			@Override

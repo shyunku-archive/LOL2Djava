@@ -11,7 +11,10 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -29,16 +32,14 @@ import Global.Constants;
 import Global.Constants.GameMode;
 import Global.Functions;
 import Global.Variables;
-import Network.GameServer;
-import Network.GameServerConnector;
-import Network.GameServerConnector.OnMessageListener;
-import Network.Message.NetworkMessage;
-import Network.Message.FromSever.WaitingRoomStatusMessage;
-import Utility.Chat;
+import Network.NetworkCore.GameClient;
+import Network.NetworkCore.GameServer;
+import Network.NetworkCore.NetworkTag;
+import Network.Objects.Chat;
+import Network.Objects.User;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.TriggeredButton;
-import Utility.User;
 import Utility.onButtonListener;
 
 public class WaitingRoom extends JPanel{
@@ -60,8 +61,8 @@ public class WaitingRoom extends JPanel{
 		private String password;
 		private boolean isGameHost;
 		
-		private GameServer gameServer;
-		private GameServerConnector connector;
+		private GameServer gameServer;							//게임 서버, 호스트일 경우에만 활성화
+		private GameClient gameClient = new GameClient();;		//게임 클라이언트 무조건 활성화
 		
 		private ArrayList<User> userList1 = new ArrayList<>(), userList2 = new ArrayList<>();
 		private ArrayList<Chat> chatLog = new ArrayList<>();
@@ -116,6 +117,7 @@ public class WaitingRoom extends JPanel{
 			
 			try {
 				g.drawString("Host IP address : "+InetAddress.getLocalHost(), 630, 510);
+				g.drawString("Public IP address : "+Constants.publicIP, 630, 530);
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -157,13 +159,13 @@ public class WaitingRoom extends JPanel{
 		}
 		
 		public void update() {
-			if(!this.isGameHost)return;
-			userList1 = gameServer.getUserList(1);
-			userList2 = gameServer.getUserList(2);
-			int defa = chatLog.size();
-			chatLog = gameServer.getChats();
+			//게임 호스트일 경우 게임서버에서 데이터 가져와서 업데이트
+			userList1 = gameClient.getRoomInfo().getUserList(1);
+			userList2 = gameClient.getRoomInfo().getUserList(2);
+			int originalSize = chatLog.size();
+			chatLog = gameClient.getRoomInfo().getChats();
 			
-			for(int i=defa;i<chatLog.size();i++) {
+			for(int i= originalSize;i<chatLog.size();i++) {
 				Chat c = chatLog.get(i);
 				String str = "";
 				if(!c.isSystemic())
@@ -176,64 +178,29 @@ public class WaitingRoom extends JPanel{
 		
 		public void setThis() {
 			Chatr.setFont();
-			if(!this.isGameHost)return;
-			this.gameServer.startServer();
-			connector = new GameServerConnector(Variables.Username, Constants.LOCAL_HOST_ADDRESS, true);
+			if(this.isGameHost) {
+				this.gameServer = new GameServer();
+				this.gameServer.startServer();
+				this.gameClient.connect(new User(Variables.Username, NetworkTag.LOCAL_HOST_ADDRESS, true), NetworkTag.LOCAL_HOST_ADDRESS);
+			}else {
+		        
+				this.gameClient.connect(new User(Variables.Username, Constants.publicIP, false), Roomname);
+			}
 		}
 		
-		public void setConnector(GameServerConnector co) {
-			if(this.isGameHost) return;
-			this.connector = co;
-			connector.setOnMessageListener(new OnMessageListener() {
-				@Override
-				public void receivedMessage(String msg) {
-					String[] seg = msg.split(Pattern.quote("|"));
-					System.out.println("Client Recieved : ");
-					if (seg[0].equals(NetworkMessage.WAITING_ROOM + "")) {
-						WaitingRoomStatusMessage rmsg = new WaitingRoomStatusMessage();
-						rmsg.fromMsg(seg);
-						userList1 = rmsg.getUserList(1);
-						userList2 = rmsg.getUserList(2);
-						
-						int defa = chatLog.size();
-						chatLog = rmsg.getChats();
-						System.out.println("Size1 : "+(chatLog.size() - defa));
-						for(int i=defa;i<chatLog.size();i++) {
-							Chat c = chatLog.get(i);
-							String str = "";
-							if(!c.isSystemic())
-								str = c.getSender() + " : ";
-							str += c.getContent() + "\n";
-							chatArea.append(str);
-							chatArea.setCaretPosition(chatArea.getDocument().getLength());
-						}
-					}
-					if (msg.equals(NetworkMessage.GAME_START_SIGNAL + "")) {
-					}
-				}
-			});
-		}
-		
-		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost, GameServerConnector connectorR) {
+		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost) {
 			this.isCreateMode = isC;
 			this.gameMode = mode;
 			this.Roomname = Roomname;
 			this.password = password;
 			
 			this.isGameHost = isGameHost;
-			if(this.isGameHost)
-				this.gameServer = new GameServer(null);
-			else
-				this.setConnector(connectorR);
+			
 			
 			Chatr.addEnterListener(new EnterListener() {
 				@Override
 				public void onEnterKey() {
 					// TODO Auto-generated method stub
-					connector.sendMessage(Constants.CHAT);
-					connector.sendMessage(Variables.Username);
-					connector.sendMessage(Chatr.getText());
-					connector.sendMessage(Constants.NON_SYSTEMIC);
 					
 					Chatr.setText("");
 				}
@@ -325,7 +292,7 @@ public class WaitingRoom extends JPanel{
 					if(isGameHost)
 						gameServer.endServer();
 					else
-						connector.endConnection(isGameHost, Variables.Username);
+						gameClient.endConnect();
 					Starter.pme.exitWaitingPage();
 					Starter.pme.goClientPage();
 					ff.playSoundClip(Constants.GameSelectionCancelSoundPath, Constants.GAME_SELECT_CANCEL_SOUND_VOLUME);
@@ -373,7 +340,7 @@ public class WaitingRoom extends JPanel{
 					if(isGameHost)
 						gameServer.endServer();
 					else
-						connector.endConnection(isGameHost, Variables.Username);
+						gameClient.endConnect();
 					ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
 					try {
 						Thread.sleep(50);
@@ -426,7 +393,7 @@ public class WaitingRoom extends JPanel{
 							if(isGameHost)
 								gameServer.endServer();
 							else
-								connector.endConnection(isGameHost, Variables.Username);
+								gameClient.endConnect();
 							ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
 							Starter.pme.exitWaitingPage();
 							Starter.pme.goClientPage();
