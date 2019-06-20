@@ -2,30 +2,45 @@ package Panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.font.TextAttribute;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableModel;
 
 import Core.Starter;
+import Engines.EpicEngine;
 import Engines.TriggeredTextArea;
 import Engines.TriggeredTextArea.EnterListener;
 import Global.Constants;
@@ -66,12 +81,12 @@ public class WaitingRoom extends JPanel{
 		private GameClient gameClient = new GameClient();;		//게임 클라이언트 무조건 활성화
 		
 		private ArrayList<User> userList1 = new ArrayList<>(), userList2 = new ArrayList<>();
-		private ArrayList<Chat> chatLog = new ArrayList<>();
+		private int chatSize = 0;
 		
 		private WaitingRoomInfo wri = new WaitingRoomInfo();
 		
-		private static JTextArea chatArea = new JTextArea();
-		private static JScrollPane scrollPane = new JScrollPane(chatArea);
+		private static JTextPane chatArea = new JTextPane();
+		private static JScrollPane scrollPane;
 		
 		public void paintComponent(Graphics graphics) {
 			Graphics2D g = (Graphics2D) graphics;
@@ -162,26 +177,47 @@ public class WaitingRoom extends JPanel{
 		}
 		
 		public void update() {
+			EpicEngine ee = new EpicEngine();
 			//게임 호스트일 경우 게임서버에서 데이터 가져와서 업데이트
 			WaitingRoomInfo renew = gameClient.getRoomInfo();
 			userList1 = renew.getUserList(1);
 			userList2 = renew.getUserList(2);
-			int originalSize = chatLog.size();
+			int originalSize = chatSize;
 			int mutex = renew.getChats().size();
 			for(int i= originalSize;i<mutex;i++) {
 				Chat c = renew.getChats().get(i);
 				String str = "";
-				if(!c.isSystemic())
-					str = c.getSender() + " : ";
-				str += c.getContent() + "\n";
-				chatLog.add(c);
-				chatArea.append(str);
-				chatArea.setCaretPosition(chatArea.getDocument().getLength());
+				if(chatSize != 0)
+					ee.appendToPane(chatArea, "\n", new Color(79,79,79));
+				if(c.isSystemic()) {
+					ee.appendToPane(chatArea, c.getContent(), new Color(79,79,79));
+				}else {
+					if(c.getSender().equals(Variables.Username))
+						ee.appendToPane(chatArea, c.getSender()+": ", new Color(186, 144, 56));
+					else
+						ee.appendToPane(chatArea, c.getSender()+": ", new Color(92, 89, 80));
+					ee.appendToPane(chatArea, c.getContent(), new Color(214, 208, 192));
+				}
+				if(shouldScroll()) {
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
+						}
+					});
+				}
+				chatSize++;
+				//chatArea.setCaretPosition(chatArea.getDocument().getLength());
 			}
 		}
 		
 		public void setThis() {
 			Chatr.setFont();
+			Map<TextAttribute, Object> attributes = new HashMap<>();
+
+			attributes.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_DEMIBOLD);
+			attributes.put(TextAttribute.SIZE, 12);
+			chatArea.setFont(Font.getFont(attributes));
 			if(this.isGameHost) {
 				this.gameServer = new GameServer();
 				this.gameServer.startServer();
@@ -192,6 +228,8 @@ public class WaitingRoom extends JPanel{
 			}
 		}
 		
+		
+		
 		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost) {
 			this.isCreateMode = isC;
 			this.gameMode = mode;
@@ -199,7 +237,6 @@ public class WaitingRoom extends JPanel{
 			this.password = password;
 			
 			this.isGameHost = isGameHost;
-			
 			
 			Chatr.addEnterListener(new EnterListener() {
 				@Override
@@ -213,19 +250,53 @@ public class WaitingRoom extends JPanel{
 
 			this.add(Chatr);
 			
-			scrollPane.setPreferredSize(new Dimension(300, 180));
-			chatArea.setBounds(new Rectangle(46,480, 299, 180));
-			chatArea.setBackground(new Color(0,0,0,0));
-			chatArea.setForeground(Color.WHITE);
-			chatArea.setLineWrap(true);
-			chatArea.setWrapStyleWord(true);
-			chatArea.setEditable(false);
-			scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-			chatArea.setVisible(true);
-			scrollPane.setVisible(true);
+			Border border = BorderFactory.createMatteBorder(0, 1, 1, 1, new Color(27,37,41,255));
 			
-			this.add(chatArea);
+			UIManager.getLookAndFeel().uninitialize();
+			chatArea.setBounds(new Rectangle(46, 487, 299, 180));
+			chatArea.setBackground(new Color(2,11,17,255));
+			
+			chatArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5,10,7,10)));
+			chatArea.setMargin(new Insets(15,15,15,15));
+			chatArea.setForeground(Color.WHITE);
+			chatArea.setEditable(false);
+			chatArea.setVisible(true);
+			
+			scrollPane = new JScrollPane(chatArea);
+			scrollPane.setBounds(46, 487, 299, 180);
+			scrollPane.setBorder(BorderFactory.createEmptyBorder());
+			scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(6,0));
+			scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+				@Override
+				protected void configureScrollBarColors()
+	            {
+	                this.thumbColor = new Color(102, 84, 36);
+	                this.trackColor = new Color(2,11,17);
+	                this.thumbDarkShadowColor = new Color(102, 84, 36);
+	            }
+				@Override
+		        protected JButton createDecreaseButton(int orientation) {
+		            return createZeroButton();
+		        }
+
+		        @Override    
+		        protected JButton createIncreaseButton(int orientation) {
+		            return createZeroButton();
+		        }
+
+		        private JButton createZeroButton() {
+		            JButton jbutton = new JButton();
+		            jbutton.setPreferredSize(new Dimension(0, 0));
+		            jbutton.setMinimumSize(new Dimension(0, 0));
+		            jbutton.setMaximumSize(new Dimension(0, 0));
+		            return jbutton;
+		        }
+			});
+			scrollPane.setVisible(true);
+			//this.add(chatArea);
+			
 			this.add(scrollPane);
+			//Chatr.setBackground(new Color(100,100,100,100));
 			
 			
 			setPanelSize(Constants.ClientPanelDimension);
@@ -445,6 +516,12 @@ public class WaitingRoom extends JPanel{
 				}
 				
 			});
+		}
+		
+		public boolean shouldScroll() {
+            int minimumValue = scrollPane.getVerticalScrollBar().getValue() + scrollPane.getVerticalScrollBar().getVisibleAmount();
+            int maximumValue = scrollPane.getVerticalScrollBar().getMaximum();
+            return maximumValue == minimumValue;
 		}
 		
 		public void setPanelSize(Dimension ps) {
