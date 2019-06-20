@@ -195,7 +195,7 @@ public class WaitingRoom extends JPanel{
 					if(c.getSender().equals(Variables.Username))
 						ee.appendToPane(chatArea, c.getSender()+": ", new Color(186, 144, 56));
 					else
-						ee.appendToPane(chatArea, c.getSender()+": ", new Color(92, 89, 80));
+						ee.appendToPane(chatArea, c.getSender()+": ", new Color(112, 99, 90));
 					ee.appendToPane(chatArea, c.getContent(), new Color(214, 208, 192));
 				}
 				if(shouldScroll()) {

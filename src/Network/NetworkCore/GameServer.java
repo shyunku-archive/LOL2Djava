@@ -78,6 +78,7 @@ public class GameServer {
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block
+										RoomInfo.addChat(new Chat(NetworkTag.EMPTY_STRING, curUsername+"¥‘¿Ã ∑Œ∫Ò∏¶ ∂∞≥µΩ¿¥œ¥Ÿ.", true));
 										RoomInfo.removeUser(curUsername);
 										removeWriter(curUsername);
 										break;
