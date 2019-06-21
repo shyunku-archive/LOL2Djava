@@ -18,7 +18,7 @@ import Utility.EnginesControl;
 import Utility.Layout;
 
 public class Constants {	
-	public static final String ProgramVersion = "V0.7.1 - Beta";
+	public static final String ProgramVersion = "V0.7.2.1 - Beta";
 	public static final long FrameCountPeriod = 850;
 	public static final int FPSLimit = 144;
 	

@@ -121,7 +121,7 @@ public class GameClient {
 					while(true) {
 						try {
 							Thread.sleep(1000);
-							sendMessageToServer(NetworkTag.PING_TEST+"|"+System.nanoTime());
+							sendMessageToServer(NetworkTag.PING_TEST);
 							sendPingFlags.add(System.nanoTime());
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
