@@ -48,6 +48,9 @@ public class LogPanel extends JPanel{
 		else if(Starter.pme.clientGameModeSelectPage.isActivated) {
 			for(int i=0;i<logs.size();i++)
 				ect.fde.advancedDrawRightAlignedString(g, logs.get(i)+"", new Coordinate(15, 100+20*i), this.PanelSize, new Color(190,190,190,255), Color.BLACK, 1);
+		}else if(Starter.pme.waitingPage.isActivated) {
+			for(int i=0;i<logs.size();i++)
+				ect.fde.advancedDrawRightAlignedString(g, logs.get(i)+"", new Coordinate(15, 100+20*i), this.PanelSize, new Color(190,190,190,255), Color.BLACK, 1);
 		}else {
 			for(int i=0;i<logs.size();i++)
 				ect.fde.advancedDrawRightAlignedString(g, logs.get(i)+"", new Coordinate(15, 100+20*i), this.PanelSize, new Color(190,190,190,255), Color.BLACK, 1);
@@ -57,6 +60,7 @@ public class LogPanel extends JPanel{
 	public void update() {
 		logs.clear();
 		addLog("FPS", (int)Variables.FPS+"");
+		addLog("Delay (Ping)", String.format("%.2fms", (float)(Variables.ping)/1000000));
 		addLog("FrameCount", ""+Variables.TotalFrameCount);
 		addLog("Mouse Position", Variables.mousePos.getPosByString());
 		addLog("Elapsed Time", String.format("%.3f sec", ((double)Variables.ElapsedTime)/1000));

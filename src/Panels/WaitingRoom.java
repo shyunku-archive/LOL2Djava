@@ -232,12 +232,13 @@ public class WaitingRoom extends JPanel{
 					for(int k=0;k<5;k++)
 						MoveTeamBtn[j][k].setVisible(false);
 				int myTeam = wri.getTeamOfUser(Variables.Username);
-				ff.cprint(myTeam+"");
 				if(myTeam == 1&&userList2.size()<5)
 					MoveTeamBtn[1][userList2.size()].setVisible(true);
 				else if(myTeam == 2&&userList1.size()<5)
 					MoveTeamBtn[0][userList1.size()].setVisible(true);
 			}
+			
+			Variables.ping = gameClient.ping;
 		}
 		
 		public void setThis() {

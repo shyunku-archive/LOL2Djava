@@ -17,6 +17,8 @@ public class NetworkTag {
 	public static final String	UPDATE_ALL			= "%%UPDATE_ALL%%";
 	public static final String	UPDATE_SIGNAL		= "%%UPDATE_SIGNAL%%";
 	
+	public static final String	PING_TEST			= "%%PING_TEST%%";
+	
 	//WaitingRoom
 	public static final String 	USER_LIST_TAG		= "%%USER_LIST%%";
 	public static final String 	USER_LIST_TAG1		= "%%USER_LIST1%%";

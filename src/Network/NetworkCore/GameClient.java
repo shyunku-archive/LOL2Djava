@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;
@@ -23,6 +24,9 @@ public class GameClient {
 	
 	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("","");
 	private long updates = 0;
+	public long ping = 0;
+	
+	private ArrayList<Long> sendPingFlags = new ArrayList<>();
 	
 	public boolean isUpdated() {
 		long saved = updates;
@@ -61,13 +65,17 @@ public class GameClient {
 					try {
 						while(true){
 							 response = reader.readLine();
-							 Constants.ff.cprint("CLIENT <- SERVER : "+response);
 							 updates++;
 							
 							 String[] tokens = response.split("\\|");
 							 
 							 String tag = tokens[0];
 							 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
+							 
+							 if(tag.equals(NetworkTag.PING_TEST)) {
+								 ping = System.nanoTime() - sendPingFlags.get(0);
+								 sendPingFlags.remove(0);
+							 }else Constants.ff.cprint("CLIENT <- SERVER : "+response);
 							 
 							 if(tag.equals(NetworkTag.WAITING_ROOM)) {
 								 if(msg[0].equals(NetworkTag.UPDATE_SIGNAL)) {
@@ -103,6 +111,26 @@ public class GameClient {
 				}
 				
 			}).start();
+			
+			//주기적으로 CLIENT에 데이터 전송 : 핑 테스트
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					while(true) {
+						try {
+							Thread.sleep(1000);
+							sendMessageToServer(NetworkTag.PING_TEST+"|"+System.nanoTime());
+							sendPingFlags.add(System.nanoTime());
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				
+			}).start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, "해당 ip에 접속할 수 없습니다.");
@@ -115,7 +143,8 @@ public class GameClient {
 	public void sendMessageToServer(String msg){
 		//클라이언트 -> 서버
 		msg = user.getUserName()+"|" +msg;
-		Constants.ff.cprint("CLIENT -> SERVER : "+msg);
+		if(!msg.equals(NetworkTag.PING_TEST))
+			Constants.ff.cprint("CLIENT -> SERVER : "+msg);
 		writer.println(msg);
 		writer.flush();
 	}

@@ -58,12 +58,17 @@ public class GameServer {
 										request = bufferedReader.readLine();
 										 
 										 //서버 <- 클라이언트
-										 Constants.ff.cprint("SERVER <- CLIENT : "+request);
 										 String[] tokens = request.split("\\|");
 										 curUsername = tokens[0];
 										 tokens = Constants.ff.cutFrontStringArray(tokens, 1);
 										 String tag = tokens[0];
 										 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
+										 
+										 if(!tag.equals(NetworkTag.PING_TEST))
+											 Constants.ff.cprint("SERVER <- CLIENT : "+request);
+										 
+										 
+										 
 										 if(tag.equals(NetworkTag.PARTICIPATE)) {
 											 if(!RoomInfo.getPassword().equals(""))
 												 if(!msg[3].equals(RoomInfo.getPassword())) {
@@ -94,6 +99,8 @@ public class GameServer {
 										 }else if(tag.equals(NetworkTag.MOVE_TEAM_SIGNAL)) {
 											 RoomInfo.moveTeam(msg[0]);
 											 broadcast(GameStatus, NetworkTag.MOVE_TEAM_SIGNAL, msg[0]);
+										 }else if(tag.equals(NetworkTag.PING_TEST)) {
+											 broadcastToSpecific(curUsername, NetworkTag.PING_TEST);
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block
@@ -131,31 +138,6 @@ public class GameServer {
 			}
 			
 		}).start();
-		
-		//주기적으로 CLIENT에 데이터 전송 : SERVER -> CLIENT
-//		new Thread(new Runnable() {
-//
-//			@Override
-//			public void run() {
-//				// TODO Auto-generated method stub
-//				while(true) {
-//					try {
-//						Thread.sleep(50);
-//						switch(GameStatus) {
-//						case NetworkTag.WAITING_ROOM:
-//							if(RoomInfo != null) {
-//								broadcast(GameStatus + "|" + RoomInfo.toMsg());
-//							}
-//							break;
-//						}
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//			
-//		}).start();
 	}
 	
 	private String rebind(String... strs) {
@@ -235,6 +217,8 @@ public class GameServer {
 			e.printStackTrace();
 		}
 	}
+	
+	
 	
 	public void broadcast(String message) {
 		try {

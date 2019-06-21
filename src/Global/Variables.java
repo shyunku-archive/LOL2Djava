@@ -15,6 +15,7 @@ public class Variables {
 	public static long ElapsedTimeFlag = System.currentTimeMillis();
 	public static long StopWatchFlag = System.currentTimeMillis();
 	public static double FPS = 144;
+	public static long ping = 0;
 	
 	public static boolean ShowDetails = true;
 	
