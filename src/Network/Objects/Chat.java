@@ -19,6 +19,11 @@ public class Chat extends ObjectManage{
 		this.setSystemic(isSystemic.equals(NetworkTag.SYSTEMIC));
 	}
 	
+	public Chat(String[] seg) {
+		// TODO Auto-generated constructor stub
+		this(seg[0], seg[1], seg[2]);
+	}
+
 	public String getContent() {
 		return content;
 	}

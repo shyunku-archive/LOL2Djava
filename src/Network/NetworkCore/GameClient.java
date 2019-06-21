@@ -63,8 +63,16 @@ public class GameClient {
 							 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
 							 
 							 if(tag.equals(NetworkTag.WAITING_ROOM)) {
-								 RoomInfo.fromMsg(msg);
-								 
+								 if(msg[0].equals(NetworkTag.UPDATE_SIGNAL)) {
+									 if(msg[1].equals(NetworkTag.ITEM_ADDITION))
+										 RoomInfo.addItem(Constants.ff.cutFrontStringArray(msg, 2));
+									 else if(msg[1].equals(NetworkTag.ITEM_DELETION))
+										 RoomInfo.deleteItem(Constants.ff.cutFrontStringArray(msg, 2));
+									 else if(msg[1].equals(NetworkTag.ITEM_MODIFICATION))
+										 RoomInfo.modifyItem(Constants.ff.cutFrontStringArray(msg, 2));
+								 }else if(msg[0].equals(NetworkTag.UPDATE_ALL)) {
+									 RoomInfo.fromMsg(Constants.ff.cutFrontStringArray(msg, 1));
+								 }
 							 }else if(tag.equals(NetworkTag.PASSWORD_NOT_CORRECT)) {
 								 JOptionPane.showMessageDialog(null, "패스워드가 틀렸습니다.");
 							     System.exit(0);

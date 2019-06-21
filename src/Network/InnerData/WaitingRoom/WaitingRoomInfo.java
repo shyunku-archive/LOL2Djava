@@ -11,6 +11,9 @@ import Network.Objects.User;
 
 public class WaitingRoomInfo extends MessageControl{
 	private String RoomName, Password;
+	private ArrayList<User> userList1, userList2;
+	private ArrayList<Chat> chats;
+	
 	public String getRoomName() {
 		return RoomName;
 	}
@@ -26,9 +29,6 @@ public class WaitingRoomInfo extends MessageControl{
 	public void setPassword(String password) {
 		Password = password;
 	}
-
-	private ArrayList<User> userList1, userList2;
-	private ArrayList<Chat> chats;
 	
 	public WaitingRoomInfo(String Roomname, String Password) {
 		this.RoomName = Roomname;
@@ -87,11 +87,8 @@ public class WaitingRoomInfo extends MessageControl{
 		for(int i=0;i<userList1.size();i++)
 			msg += userList1.get(i).toString() + TOKEN;
 		msg += NetworkTag.USER_LIST_TAG2+TOKEN;
-		for(int i=0;i<userList2.size();i++)
+		for(int i=0;i<userList2.size();i++) {
 			msg += userList2.get(i).toString() + TOKEN;
-		msg += NetworkTag.CHAT_LOG_TAG+TOKEN;
-		for(int i=0;i<chats.size();i++) {
-			msg += chats.get(i).toString();
 			if(i<chats.size()-1)
 				msg += TOKEN;
 		}
@@ -115,15 +112,8 @@ public class WaitingRoomInfo extends MessageControl{
 			seg = Constants.ff.cutFrontStringArray(seg, 3);
 		}
 		seg = Constants.ff.cutFrontStringArray(seg, 1);
-		for(int i=0;i<5;i++) {
-			if(seg[0].equals(NetworkTag.CHAT_LOG_TAG))break;
+		for(int i=0;i<seg.length;i++) {
 			userList2.add(new User(seg[0], seg[1], seg[2]));
-			seg = Constants.ff.cutFrontStringArray(seg, 3);
-		}
-		seg = Constants.ff.cutFrontStringArray(seg, 1);
-		int savedlength = seg.length/3;
-		for(int i=0;i<savedlength;i++) {
-			chats.add(new Chat(seg[0],seg[1],seg[2]));
 			seg = Constants.ff.cutFrontStringArray(seg, 3);
 		}
 	}
@@ -134,5 +124,32 @@ public class WaitingRoomInfo extends MessageControl{
 		userList1.clear();
 		userList2.clear();
 		chats.clear();
+	}
+
+	@Override
+	public void addItem(String[] seg) {
+		// TODO Auto-generated method stub
+		if(seg[0].equals(NetworkTag.USER_LIST_TAG)) {
+			seg = Constants.ff.cutFrontStringArray(seg, 1);
+			this.addUser(new User(seg));
+		}else if(seg[0].equals(NetworkTag.CHAT_LOG_TAG)) {
+			seg = Constants.ff.cutFrontStringArray(seg, 1);
+			this.addChat(new Chat(seg));
+		}
+	}
+
+	@Override
+	public void deleteItem(String[] seg) {
+		// TODO Auto-generated method stub
+		if(seg[0].equals(NetworkTag.USER_LIST_TAG)) {
+			seg = Constants.ff.cutFrontStringArray(seg, 1);
+			this.removeUser(seg[0]);
+		}
+	}
+
+	@Override
+	public void modifyItem(String[] seg) {
+		// TODO Auto-generated method stub
+		
 	}
 }

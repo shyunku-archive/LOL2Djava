@@ -8,12 +8,17 @@ public class NetworkTag {
 	public static final String	WAITING_ROOM		= "%%STATUS_WAITING_ROOM%%";
 	
 	
-	//WaitingRoom
-	public static final String 	NO_PASSWORD			= "%%NO_PASSWORD%%";
-	
 	public static final String	PASSWORD_NOT_CORRECT= "%%WRONG_PASSWORD%%";
 	
+	public static final String	ITEM_ADDITION		= "%%ADD_ITEM%%";
+	public static final String 	ITEM_DELETION		= "%%DELETE_ITEM%%";
+	public static final String	ITEM_MODIFICATION	= "%%MODIFY_ITEM%%";
 	
+	public static final String	UPDATE_ALL			= "%%UPDATE_ALL%%";
+	public static final String	UPDATE_SIGNAL		= "%%UPDATE_SIGNAL%%";
+	
+	//WaitingRoom
+	public static final String 	USER_LIST_TAG		= "%%USER_LIST%%";
 	public static final String 	USER_LIST_TAG1		= "%%USER_LIST1%%";
 	public static final String 	USER_LIST_TAG2		= "%%USER_LIST2%%";
 	public static final String 	CHAT_LOG_TAG		= "%%CHAT_LOG%%";

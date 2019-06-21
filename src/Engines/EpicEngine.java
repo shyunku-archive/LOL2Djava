@@ -11,7 +11,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 public class EpicEngine {
-	public void appendToPane(JTextPane tp, String msg, Color c)
+	public static void appendToPane(JTextPane tp, String msg, Color c)
     {        
         StyledDocument doc = tp.getStyledDocument();
         SimpleAttributeSet keyword = new SimpleAttributeSet();

@@ -51,7 +51,6 @@ public class GameServer {
 							public void run() {
 								String curUsername = null;
 								while(true) {
-									
 									try {
 										String request;
 										BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -66,7 +65,6 @@ public class GameServer {
 										 String tag = tokens[0];
 										 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
 										 if(tag.equals(NetworkTag.PARTICIPATE)) {
-											 Constants.ff.cprint(msg[3]+" vs "+RoomInfo.getPassword());
 											 if(!RoomInfo.getPassword().equals(""))
 												 if(!msg[3].equals(RoomInfo.getPassword())) {
 													 PrintWriter temp = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -77,19 +75,32 @@ public class GameServer {
 													 break;
 												 }
 											 User newUser = new User(msg);
+											 Chat newChat = new Chat(NetworkTag.EMPTY_STRING, newUser.getUserName()+"님이 로비에 참가하셨습니다.", true);
 											 addWriter(socket, newUser.getUserName());
+											 
+											 broadcastToSpecific(newUser.getUserName(), GameStatus, NetworkTag.UPDATE_ALL, RoomInfo.toMsg());
+											 
 											 RoomInfo.addUser(newUser);
-											 RoomInfo.addChat(new Chat(NetworkTag.EMPTY_STRING, newUser.getUserName()+"님이 로비에 참가하셨습니다.", true));
+											 RoomInfo.addChat(newChat);
+											 
+											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.USER_LIST_TAG, newUser.toString());
+											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.CHAT_LOG_TAG, newChat.toString());
+											 
 											 Constants.ff.playSoundClip(Constants.ParticipateSoundPath, Constants.DEFAULT_VOLUME);
 										 }else if(tag.equals(NetworkTag.CHAT)) {
 											 Chat newChat = new Chat(msg[0], msg[1], msg[2]);
 											 RoomInfo.addChat(newChat);
+											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.CHAT_LOG_TAG, newChat.toString());
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block
-										RoomInfo.addChat(new Chat(NetworkTag.EMPTY_STRING, curUsername+"님이 로비를 떠났습니다.", true));
+										Chat newChat = new Chat(NetworkTag.EMPTY_STRING, curUsername+"님이 로비를 떠났습니다.", true);
+										RoomInfo.addChat(newChat);
 										RoomInfo.removeUser(curUsername);
 										removeWriter(curUsername);
+										
+										broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_DELETION, NetworkTag.USER_LIST_TAG, curUsername);
+										broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.CHAT_LOG_TAG, newChat.toString());
 										break;
 									} catch (IOException e) {
 										// TODO Auto-generated catch block
@@ -119,29 +130,29 @@ public class GameServer {
 		}).start();
 		
 		//주기적으로 CLIENT에 데이터 전송 : SERVER -> CLIENT
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				while(true) {
-					try {
-						Thread.sleep(50);
-						switch(GameStatus) {
-						case NetworkTag.WAITING_ROOM:
-							if(RoomInfo != null) {
-								broadcast(GameStatus + "|" + RoomInfo.toMsg());
-							}
-							break;
-						}
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			
-		}).start();
+//		new Thread(new Runnable() {
+//
+//			@Override
+//			public void run() {
+//				// TODO Auto-generated method stub
+//				while(true) {
+//					try {
+//						Thread.sleep(50);
+//						switch(GameStatus) {
+//						case NetworkTag.WAITING_ROOM:
+//							if(RoomInfo != null) {
+//								broadcast(GameStatus + "|" + RoomInfo.toMsg());
+//							}
+//							break;
+//						}
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//			
+//		}).start();
 	}
 	
 	private String rebind(String... strs) {
@@ -170,6 +181,55 @@ public class GameServer {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	public void broadcast(String...par){
+		String buffer = "";
+		int paramCount = par.length;
+		int curCount = 0;
+		for(String t : par) {
+			buffer += t.toString();
+			if(curCount!= paramCount-1)
+				buffer += "|";
+			curCount++;
+		}
+		
+		try {
+			synchronized (writermap) {
+				Collection<PrintWriter> allUsers = writermap.values();
+				Constants.ff.cprint("SERVER -> CLIENT["+allUsers.size()+"] : "+buffer);
+				Iterator<PrintWriter> i = allUsers.iterator();
+				while (i.hasNext()) {
+					PrintWriter p = i.next();
+					p.println(buffer);
+					p.flush();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void broadcastToSpecific(String destination, String...par){
+		String buffer = "";
+		int paramCount = par.length;
+		int curCount = 0;
+		for(String t : par) {
+			buffer += t.toString();
+			if(curCount!= paramCount-1)
+				buffer += "|";
+			curCount++;
+		}
+		
+		try {
+			synchronized (writermap) {
+				PrintWriter pw = writermap.get(destination);
+				pw.println(buffer);
+				pw.flush();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

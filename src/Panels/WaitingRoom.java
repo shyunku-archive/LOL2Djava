@@ -265,11 +265,12 @@ public class WaitingRoom extends JPanel{
 			
 			chatArea.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(5,10,7,10)));
 			chatArea.setMargin(new Insets(15,15,15,15));
-			chatArea.setForeground(Color.WHITE);
 			chatArea.setEditable(false);
 			chatArea.setVisible(true);
 			
+			
 			scrollPane = new JScrollPane(chatArea);
+			scrollPane.setBackground(new Color(2,11,17,255));
 			scrollPane.setBounds(46, 487, 299, 180);
 			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 			scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(6,0));
