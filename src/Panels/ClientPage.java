@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -44,6 +45,8 @@ public class ClientPage extends JPanel{
 	
 	private static TriggeredButton GameStartBtn, CloseBtn;
 	
+	private static ArrayList<String> Content = new ArrayList<>();
+	
 	public void paintComponent(Graphics graphics) {
 		Graphics2D g = (Graphics2D) graphics;
 		
@@ -59,6 +62,11 @@ public class ClientPage extends JPanel{
 		g.setFont(ff.getFancyFont(13F, true));
 		ect.fde.drawCenteredString(g, Constants.ProgramVersion, new Rectangle(1060, 688, 220, 32));
 		
+		g.setColor(Color.WHITE);
+		g.setFont(ff.getFancyFont(15F, false));
+		for(int i=0;i<Content.size();i++)
+			g.drawString(Content.get(i), 80, 180+25*i);
+		
 		GameStartBtn.draw(g);
 		CloseBtn.draw(g);
 	}
@@ -66,9 +74,26 @@ public class ClientPage extends JPanel{
 	public void update() {
 	}
 	
+	public void addString(String str) {
+		Content.add(str);
+	}
+	
+	public void addLine() {
+		Content.add("");
+	}
+	
 	public ClientPage() {
 		this.setPanelSize(Constants.ClientPanelDimension);
 		this.setLayout(null);
+		
+		addString("안녕하십니까? 소환사 여러분들!");
+		addString("본 게임의 정식 명칭은 League Of Legends 2D JAVA Version [이하 자바롤]으로, 한글로는 리그오브레전드 2D 자바 버전입니다.");
+		addString("이 게임은 텐센트 사의 리그오브레전드 게임을 모티브로 만든 팬 게임으로, 본 게임의 제작 의도에 영리적인 목적이 없음을 밝힙니다.");
+		addString("자바롤의 진행 방식은 리그오브레전드와 완전히 동일하며, 챔피언, 스킬, 스펠, 판정 등의 차이가 있을 수 있습니다.");
+		addString("자바롤은 자바 설치를 반드시 필요로 하며, 방을 만든 서버장의 public IP를 입력하고 [참가]버튼을 누르면 참여할 수 있습니다.");
+		addString("단 서버장은 방화벽을 해제해야하고, 포트포워딩을 해야합니다. 자바롤의 이용포트는 [10200]입니다.");
+		addString("즐겁게 이용해주시기 바랍니다! 게임 정식 오픈은 8월 30일 오전 7시입니다.");
+		addString("션쿠의 블로그 (링크: http://15.164.138.137:8080/)에서 다운받으실 수 있습니다. - 현재 불가능");
 		
 		CloseBtn = new TriggeredButton(
 				null,

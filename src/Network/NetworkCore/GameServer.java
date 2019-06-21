@@ -91,7 +91,6 @@ public class GameServer {
 											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.USER_LIST_TAG, newUser.toString());
 											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.CHAT_LOG_TAG, newChat.toString());
 											 
-											 Constants.ff.playSoundClip(Constants.ParticipateSoundPath, Constants.DEFAULT_VOLUME);
 										 }else if(tag.equals(NetworkTag.CHAT)) {
 											 Chat newChat = new Chat(msg[0], msg[1], msg[2]);
 											 RoomInfo.addChat(newChat);

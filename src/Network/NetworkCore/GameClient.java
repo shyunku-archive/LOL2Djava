@@ -73,14 +73,19 @@ public class GameClient {
 							 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
 							 
 							 if(tag.equals(NetworkTag.PING_TEST)) {
-								 ping = System.nanoTime() - sendPingFlags.get(0);
-								 sendPingFlags.remove(0);
+								 if(sendPingFlags.size()>0) {
+									 ping = System.nanoTime() - sendPingFlags.get(0);
+									 sendPingFlags.remove(0);
+								 }
 							 }else Constants.ff.cprint("CLIENT <- SERVER : "+response);
 							 
 							 if(tag.equals(NetworkTag.WAITING_ROOM)) {
 								 if(msg[0].equals(NetworkTag.UPDATE_SIGNAL)) {
-									 if(msg[1].equals(NetworkTag.ITEM_ADDITION))
+									 if(msg[1].equals(NetworkTag.ITEM_ADDITION)) {
+										 if(msg[2].equals(NetworkTag.USER_LIST_TAG))
+											 Constants.ff.playSoundClip(Constants.ParticipateSoundPath, Constants.DEFAULT_VOLUME);
 										 RoomInfo.addItem(Constants.ff.cutFrontStringArray(msg, 2));
+									 }
 									 else if(msg[1].equals(NetworkTag.ITEM_DELETION))
 										 RoomInfo.deleteItem(Constants.ff.cutFrontStringArray(msg, 2));
 									 else if(msg[1].equals(NetworkTag.ITEM_MODIFICATION))
@@ -142,8 +147,9 @@ public class GameClient {
 	
 	public void sendMessageToServer(String msg){
 		//클라이언트 -> 서버
+		String content = msg;
 		msg = user.getUserName()+"|" +msg;
-		if(!msg.equals(NetworkTag.PING_TEST))
+		if(!content.equals(NetworkTag.PING_TEST))
 			Constants.ff.cprint("CLIENT -> SERVER : "+msg);
 		writer.println(msg);
 		writer.flush();

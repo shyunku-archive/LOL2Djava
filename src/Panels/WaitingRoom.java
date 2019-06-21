@@ -1,5 +1,6 @@
 package Panels;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -31,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -40,6 +42,7 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableModel;
 
 import Core.Starter;
+import Engines.CustomTextPane;
 import Engines.EpicEngine;
 import Engines.TriggeredButton;
 import Engines.TriggeredTextArea;
@@ -85,7 +88,7 @@ public class WaitingRoom extends JPanel{
 		
 		private WaitingRoomInfo wri = new WaitingRoomInfo("", "");
 		
-		private static JTextPane chatArea = new JTextPane();
+		private static CustomTextPane chatArea = new CustomTextPane(true);
 		private static JScrollPane scrollPane;
 		
 		private static TriggeredButton[][] MoveTeamBtn;
@@ -277,6 +280,7 @@ public class WaitingRoom extends JPanel{
 				@Override
 				public void onEnterKey() {
 					// TODO Auto-generated method stub
+					if(Chatr.getText().length()==0)return;
 					gameClient.sendMessageToServer(NetworkTag.CHAT+"|"+Variables.Username+"|"+Chatr.getText()+"|"+NetworkTag.NON_SYSTEMIC);
 					Chatr.setText("");
 				}
@@ -296,8 +300,8 @@ public class WaitingRoom extends JPanel{
 			chatArea.setEditable(false);
 			chatArea.setVisible(true);
 			
-			
 			scrollPane = new JScrollPane(chatArea);
+			scrollPane.setViewportView(chatArea);
 			scrollPane.setBackground(new Color(2,11,17,255));
 			scrollPane.setBounds(46, 487, 299, 180);
 			scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -328,6 +332,7 @@ public class WaitingRoom extends JPanel{
 		            return jbutton;
 		        }
 			});
+			scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPane.setVisible(true);
 			//this.add(chatArea);
 			
