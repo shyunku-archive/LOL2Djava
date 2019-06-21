@@ -10,10 +10,29 @@ import Network.Objects.Chat;
 import Network.Objects.User;
 
 public class WaitingRoomInfo extends MessageControl{
+	private String RoomName, Password;
+	public String getRoomName() {
+		return RoomName;
+	}
+
+	public void setRoomName(String roomName) {
+		RoomName = roomName;
+	}
+
+	public String getPassword() {
+		return Password;
+	}
+
+	public void setPassword(String password) {
+		Password = password;
+	}
+
 	private ArrayList<User> userList1, userList2;
 	private ArrayList<Chat> chats;
 	
-	public WaitingRoomInfo() {
+	public WaitingRoomInfo(String Roomname, String Password) {
+		this.RoomName = Roomname;
+		this.Password = Password;
 		userList1 = new ArrayList<>();
 		userList2 = new ArrayList<>();
 		chats = new ArrayList<>();
@@ -41,7 +60,6 @@ public class WaitingRoomInfo extends MessageControl{
 	}
 	
 	public void removeUser(String name) {
-		Constants.ff.cprint(userList1.size()+"¿Œµ•ø‰? -"+name);
 		for(int i=0;i<userList1.size();i++)
 			if(userList1.get(i).getUserName().equals(name)) {
 				userList1.remove(i);
@@ -52,7 +70,7 @@ public class WaitingRoomInfo extends MessageControl{
 				userList2.remove(i);
 				return;
 			}
-		Constants.ff.printFatalError();
+		//Constants.ff.printFatalError();
 	}
 	
 	public ArrayList<Chat> getChats(){
@@ -63,6 +81,8 @@ public class WaitingRoomInfo extends MessageControl{
 	public String toMsg() {
 		// TODO Auto-generated method stub
 		String msg = "";
+		msg += this.RoomName + TOKEN;
+		msg += this.Password + TOKEN;
 		msg += NetworkTag.USER_LIST_TAG1 +TOKEN;
 		for(int i=0;i<userList1.size();i++)
 			msg += userList1.get(i).toString() + TOKEN;
@@ -82,6 +102,11 @@ public class WaitingRoomInfo extends MessageControl{
 	public void fromMsg(String[] seg) {
 		// TODO Auto-generated method stub
 		init();
+		this.RoomName = seg[0];
+		this.Password = seg[1];
+		
+		seg = Constants.ff.cutFrontStringArray(seg, 2);
+		
 		if(!seg[0].equals(NetworkTag.USER_LIST_TAG1)) Constants.ff.printFatalError();
 		seg = Constants.ff.cutFrontStringArray(seg, 1);
 		for(int i=0;i<5;i++) {

@@ -7,7 +7,13 @@ public class NetworkTag {
 	
 	public static final String	WAITING_ROOM		= "%%STATUS_WAITING_ROOM%%";
 	
+	
 	//WaitingRoom
+	public static final String 	NO_PASSWORD			= "%%NO_PASSWORD%%";
+	
+	public static final String	PASSWORD_NOT_CORRECT= "%%WRONG_PASSWORD%%";
+	
+	
 	public static final String 	USER_LIST_TAG1		= "%%USER_LIST1%%";
 	public static final String 	USER_LIST_TAG2		= "%%USER_LIST2%%";
 	public static final String 	CHAT_LOG_TAG		= "%%CHAT_LOG%%";

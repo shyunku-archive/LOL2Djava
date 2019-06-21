@@ -83,7 +83,7 @@ public class WaitingRoom extends JPanel{
 		private ArrayList<User> userList1 = new ArrayList<>(), userList2 = new ArrayList<>();
 		private int chatSize = 0;
 		
-		private WaitingRoomInfo wri = new WaitingRoomInfo();
+		private WaitingRoomInfo wri = new WaitingRoomInfo("", "");
 		
 		private static JTextPane chatArea = new JTextPane();
 		private static JScrollPane scrollPane;
@@ -107,7 +107,7 @@ public class WaitingRoom extends JPanel{
 			
 			g.setColor(new Color(240, 230, 210));
 			g.setFont(ff.getClassicFont(27F, true));
-			g.drawString(Roomname, 90, 120);
+			g.drawString(wri.getRoomName(), 90, 120);
 			
 			g.setColor(new Color(170, 165, 119));
 			g.setFont(ff.getClassicFont(13F, true));
@@ -180,6 +180,8 @@ public class WaitingRoom extends JPanel{
 			EpicEngine ee = new EpicEngine();
 			//게임 호스트일 경우 게임서버에서 데이터 가져와서 업데이트
 			WaitingRoomInfo renew = gameClient.getRoomInfo();
+			this.wri.setRoomName(renew.getRoomName());
+			this.wri.setPassword(renew.getPassword());
 			userList1 = renew.getUserList(1);
 			userList2 = renew.getUserList(2);
 			int originalSize = chatSize;
@@ -195,7 +197,7 @@ public class WaitingRoom extends JPanel{
 					if(c.getSender().equals(Variables.Username))
 						ee.appendToPane(chatArea, c.getSender()+": ", new Color(186, 144, 56));
 					else
-						ee.appendToPane(chatArea, c.getSender()+": ", new Color(112, 99, 90));
+						ee.appendToPane(chatArea, c.getSender()+": ", new Color(145, 136, 129));
 					ee.appendToPane(chatArea, c.getContent(), new Color(214, 208, 192));
 				}
 				if(shouldScroll()) {
@@ -220,11 +222,16 @@ public class WaitingRoom extends JPanel{
 			chatArea.setFont(Font.getFont(attributes));
 			if(this.isGameHost) {
 				this.gameServer = new GameServer();
+				this.gameServer.setWaitingRoom(new WaitingRoomInfo(this.Roomname, this.password));
 				this.gameServer.startServer();
-				this.gameClient.connect(new User(Variables.Username, NetworkTag.LOCAL_HOST_ADDRESS, true), NetworkTag.LOCAL_HOST_ADDRESS);
+				this.gameClient.connect(new User(Variables.Username, NetworkTag.LOCAL_HOST_ADDRESS, true), NetworkTag.LOCAL_HOST_ADDRESS, this.password);
 			}else {
-		        
-				this.gameClient.connect(new User(Variables.Username, Constants.publicIP, false), Roomname);
+				try {
+					this.gameClient.connect(new User(Variables.Username, InetAddress.getLocalHost().getHostAddress(), false), Roomname, this.password);
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		

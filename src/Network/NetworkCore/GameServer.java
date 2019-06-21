@@ -31,7 +31,7 @@ public class GameServer {
 	private HashMap<String, PrintWriter> writermap;
 	
 	//나중에 게임 데이터 클래스로 한데 모아야함
-	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo();
+	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("", "");
 	private String GameStatus = NetworkTag.WAITING_ROOM;
 	
 	
@@ -46,7 +46,6 @@ public class GameServer {
 					Constants.ff.cprint("Waiting for Response...");
 					while(true) {
 						Socket socket = serverSocket.accept();
-						
 						new Thread(new Runnable() {
 							@Override
 							public void run() {
@@ -66,12 +65,22 @@ public class GameServer {
 										 tokens = Constants.ff.cutFrontStringArray(tokens, 1);
 										 String tag = tokens[0];
 										 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
-										 
 										 if(tag.equals(NetworkTag.PARTICIPATE)) {
+											 Constants.ff.cprint(msg[3]+" vs "+RoomInfo.getPassword());
+											 if(!RoomInfo.getPassword().equals(""))
+												 if(!msg[3].equals(RoomInfo.getPassword())) {
+													 PrintWriter temp = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+													 temp.println(NetworkTag.PASSWORD_NOT_CORRECT);
+													 temp.flush();
+													 temp.close();
+													 socket.close();
+													 break;
+												 }
 											 User newUser = new User(msg);
 											 addWriter(socket, newUser.getUserName());
 											 RoomInfo.addUser(newUser);
 											 RoomInfo.addChat(new Chat(NetworkTag.EMPTY_STRING, newUser.getUserName()+"님이 로비에 참가하셨습니다.", true));
+											 Constants.ff.playSoundClip(Constants.ParticipateSoundPath, Constants.DEFAULT_VOLUME);
 										 }else if(tag.equals(NetworkTag.CHAT)) {
 											 Chat newChat = new Chat(msg[0], msg[1], msg[2]);
 											 RoomInfo.addChat(newChat);
@@ -188,5 +197,9 @@ public class GameServer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void setWaitingRoom(WaitingRoomInfo wri) {
+		this.RoomInfo = wri;
 	}
 }

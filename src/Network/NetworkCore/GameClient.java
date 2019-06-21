@@ -21,7 +21,7 @@ public class GameClient {
 	private PrintWriter writer;
 	private User user;
 	
-	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo();
+	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("","");
 	
 	
 	public Socket getSocket() {
@@ -32,7 +32,7 @@ public class GameClient {
 		return this.RoomInfo;
 	}
 	
-	public void connect(User user, String IP) {
+	public void connect(User user, String IP, String password) {
 		socket = new Socket();
 		
 		this.user = user;
@@ -41,7 +41,8 @@ public class GameClient {
 			writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 			System.out.println("CLIENT: CONNECT SUCCESS");
 			
-			sendMessageToServer(NetworkTag.PARTICIPATE+"|"+user.toString());
+			if(password.equals(""))password = NetworkTag.EMPTY_STRING;
+			sendMessageToServer(NetworkTag.PARTICIPATE+"|"+user.toString()+"|"+password);
 			
 			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -64,6 +65,9 @@ public class GameClient {
 							 if(tag.equals(NetworkTag.WAITING_ROOM)) {
 								 RoomInfo.fromMsg(msg);
 								 
+							 }else if(tag.equals(NetworkTag.PASSWORD_NOT_CORRECT)) {
+								 JOptionPane.showMessageDialog(null, "패스워드가 틀렸습니다.");
+							     System.exit(0);
 							 }
 						}
 					} catch (IOException e) {
