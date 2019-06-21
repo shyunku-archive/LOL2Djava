@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import Core.Starter;
+import Engines.TriggeredButton;
 import Engines.TriggeredTextArea;
 import Global.Constants;
 import Global.Constants.GameMode;
@@ -26,7 +27,6 @@ import Global.Functions;
 import Global.Variables;
 import Utility.Coordinate;
 import Utility.EnginesControl;
-import Utility.TriggeredButton;
 import Utility.onButtonListener;
 
 public class ClientGameModeSelectPage extends JPanel {

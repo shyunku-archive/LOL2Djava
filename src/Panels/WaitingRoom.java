@@ -41,6 +41,7 @@ import javax.swing.table.DefaultTableModel;
 
 import Core.Starter;
 import Engines.EpicEngine;
+import Engines.TriggeredButton;
 import Engines.TriggeredTextArea;
 import Engines.TriggeredTextArea.EnterListener;
 import Global.Constants;
@@ -55,7 +56,6 @@ import Network.Objects.Chat;
 import Network.Objects.User;
 import Utility.Coordinate;
 import Utility.EnginesControl;
-import Utility.TriggeredButton;
 import Utility.onButtonListener;
 
 public class WaitingRoom extends JPanel{
@@ -87,6 +87,8 @@ public class WaitingRoom extends JPanel{
 		
 		private static JTextPane chatArea = new JTextPane();
 		private static JScrollPane scrollPane;
+		
+		private static TriggeredButton[][] MoveTeamBtn;
 		
 		public void paintComponent(Graphics graphics) {
 			Graphics2D g = (Graphics2D) graphics;
@@ -154,18 +156,29 @@ public class WaitingRoom extends JPanel{
 			
 			
 			FontMetrics metrics = g.getFontMetrics(g.getFont());
-			for(int i=0;i<userList1.size();i++) {
-				String name = userList1.get(i).getUserName();
-				g.drawString(name, 60, 245+50*i);
-				if(userList1.get(i).isGameHost()) {
-					g.drawImage(Constants.GameHostSymbol, null, 60+metrics.stringWidth(name)+15, 245+50*i-15);
+			for(int i=0;i<5;i++) {
+				g.setColor(new Color(240, 230, 210));
+				if(i<userList1.size()) {
+					String name = userList1.get(i).getUserName();
+					g.drawString(name, 60, 245+50*i);
+					if(userList1.get(i).isGameHost())
+						g.drawImage(Constants.GameHostSymbol, null, 60+metrics.stringWidth(name)+15, 245+50*i-15);
+				}else {
+					g.setColor(new Color(80, 80, 80));
+					g.drawString("비어있음", 60, 245+50*i);
 				}
 			}
-			for(int i=0;i<userList2.size();i++) {
-				String name =userList2.get(i).getUserName();
-				g.drawString(name, 60+495, 245+50*i);
-				if(userList2.get(i).isGameHost())
-					g.drawImage(Constants.GameHostSymbol, null, 60+495+metrics.stringWidth(name)+15, 245+50*i-15);
+			for(int i=0;i<5;i++) {
+				g.setColor(new Color(240, 230, 210));
+				if(i<userList2.size()) {
+					String name =userList2.get(i).getUserName();
+					g.drawString(name, 60+495, 245+50*i);
+					if(userList2.get(i).isGameHost())
+						g.drawImage(Constants.GameHostSymbol, null, 60+495+metrics.stringWidth(name)+15, 245+50*i-15);
+				}else {
+					g.setColor(new Color(80, 80, 80));
+					g.drawString("비어있음", 60+495, 245+50*i);
+				}
 			}
 			
 			
@@ -174,14 +187,16 @@ public class WaitingRoom extends JPanel{
 			CancelBtn.draw(g);
 			HomeBtn.draw(g);
 			CloseBtn.draw(g);
+			for(int i=0;i<2;i++)
+				for(int j=0;j<5;j++)
+					MoveTeamBtn[i][j].draw(g);
 		}
 		
 		public void update() {
 			EpicEngine ee = new EpicEngine();
 			//게임 호스트일 경우 게임서버에서 데이터 가져와서 업데이트
 			WaitingRoomInfo renew = gameClient.getRoomInfo();
-			this.wri.setRoomName(renew.getRoomName());
-			this.wri.setPassword(renew.getPassword());
+			this.wri = renew;
 			userList1 = renew.getUserList(1);
 			userList2 = renew.getUserList(2);
 			int originalSize = chatSize;
@@ -209,7 +224,19 @@ public class WaitingRoom extends JPanel{
 					});
 				}
 				chatSize++;
-				//chatArea.setCaretPosition(chatArea.getDocument().getLength());
+				
+			}
+			
+			if(gameClient.isUpdated()) {
+				for(int j=0;j<2;j++)
+					for(int k=0;k<5;k++)
+						MoveTeamBtn[j][k].setVisible(false);
+				int myTeam = wri.getTeamOfUser(Variables.Username);
+				ff.cprint(myTeam+"");
+				if(myTeam == 1&&userList2.size()<5)
+					MoveTeamBtn[1][userList2.size()].setVisible(true);
+				else if(myTeam == 2&&userList1.size()<5)
+					MoveTeamBtn[0][userList1.size()].setVisible(true);
 			}
 		}
 		
@@ -311,6 +338,58 @@ public class WaitingRoom extends JPanel{
 			setVisible(true);
 			this.setLayout(null);
 			
+			
+			MoveTeamBtn = new TriggeredButton[2][5];
+			for(int i=0;i<2;i++)
+				for(int j=0;j<5;j++) {
+					MoveTeamBtn[i][j] = new TriggeredButton(
+							Constants.UnFocusedMoveTeamButtonImage,
+							Constants.FocusedMoveTeamButtonImage,
+							null,
+							new Coordinate(365+495*i, 220+50*j),
+							new Coordinate(365+495*i, 220+50*j),
+							null,
+							new Rectangle(365+495*i, 220+50*j, 157, 34),
+							400,
+							400
+							);
+					TriggeredButton tb = MoveTeamBtn[i][j];
+					MoveTeamBtn[i][j].addOnButtonListener(new onButtonListener() {
+
+						@Override
+						public void onClick() {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onEnter() {
+							// TODO Auto-generated method stub
+						}
+
+						@Override
+						public void onExit() {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onPress() {
+							// TODO Auto-generated method stub
+						}
+
+						@Override
+						public void onRelease() {
+							// TODO Auto-generated method stub
+							tb.setEnabled(false);
+							ff.playSoundClip(Constants.TeamMoveSoundPath, Constants.DEFAULT_VOLUME);
+							gameClient.sendMessageToServer(NetworkTag.MOVE_TEAM_SIGNAL+"|"+Variables.Username);
+						}
+					});
+					
+					MoveTeamBtn[i][j].setVisible(false);
+					this.add(MoveTeamBtn[i][j]);
+				}
 			RealGameStartBtn = new TriggeredButton(
 					null,
 					Constants.RealGameStartButtonImage,

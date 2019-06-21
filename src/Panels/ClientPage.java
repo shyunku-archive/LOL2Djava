@@ -24,12 +24,12 @@ import javax.swing.SwingUtilities;
 
 import Core.Starter;
 import Engines.TriggeredAnimationEngine;
+import Engines.TriggeredButton;
 import Global.Constants;
 import Global.Functions;
 import Global.Variables;
 import Utility.Coordinate;
 import Utility.EnginesControl;
-import Utility.TriggeredButton;
 import Utility.onButtonListener;
 
 @SuppressWarnings("serial")
@@ -133,9 +133,6 @@ public class ClientPage extends JPanel{
 		GameStartBtn.addOnButtonListener(new onButtonListener() {
 			@Override
 			public void onClick() {
-				ff.playSoundClip(Constants.GameStartButtonSoundFilePath, Constants.GAME_START_BUTTON_SOUND_VOLUME);
-				Starter.pme.exitClientPage();
-				Starter.pme.GoClientGameModeSelectPage();
 			}
 
 			@Override
@@ -159,7 +156,9 @@ public class ClientPage extends JPanel{
 			@Override
 			public void onRelease() {
 				// TODO Auto-generated method stub
-				
+				ff.playSoundClip(Constants.GameStartButtonSoundFilePath, Constants.GAME_START_BUTTON_SOUND_VOLUME);
+				Starter.pme.exitClientPage();
+				Starter.pme.GoClientGameModeSelectPage();
 			}
 		});
 		

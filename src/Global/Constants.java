@@ -13,12 +13,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 
 import Core.Starter;
+import Engines.TriggeredButton;
 import Utility.EnginesControl;
 import Utility.Layout;
-import Utility.TriggeredButton;
 
 public class Constants {	
-	public static final String ProgramVersion = "V0.7.0.1 - Beta";
+	public static final String ProgramVersion = "V0.7.1 - Beta";
 	public static final long FrameCountPeriod = 850;
 	public static final int FPSLimit = 144;
 	
@@ -57,6 +57,9 @@ public class Constants {
 	public static BufferedImage WaitingRoomImage = null;
 	public static BufferedImage RealGameStartButtonImage = null;
 	
+	public static BufferedImage UnFocusedMoveTeamButtonImage = null;
+	public static BufferedImage FocusedMoveTeamButtonImage = null;
+	
 	//select-unselect
 	public static BufferedImage SummonersRiftSelected = null;
 	public static BufferedImage KnifeWindSelected = null;
@@ -88,11 +91,13 @@ public class Constants {
 	public static String SelectedCPSoundPath;
 	public static String ActivatedRealGameStartButtonSoundPath;
 	public static String PressedRealGameStartButtonSoundPath;
+	public static String TeamMoveSoundPath;
 	
 	public static String ParticipateSoundPath;
 	
 	//Volume
 	public static final double LIGHT_CLICK_SOUND_VOLUME = 2D;
+	public static final double HIGHER_VOLUME = 1.5D;
 	public static final double GAME_START_BUTTON_SOUND_VOLUME = 0.7D;
 	public static final double GAME_SELECT_CANCEL_SOUND_VOLUME = 1.5D;
 	public static final double DEFAULT_VOLUME = 1D;

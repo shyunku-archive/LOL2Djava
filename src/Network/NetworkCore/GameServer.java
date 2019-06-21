@@ -68,7 +68,7 @@ public class GameServer {
 											 if(!RoomInfo.getPassword().equals(""))
 												 if(!msg[3].equals(RoomInfo.getPassword())) {
 													 PrintWriter temp = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-													 temp.println(NetworkTag.PASSWORD_NOT_CORRECT);
+													 temp.println(NetworkTag.WAITING_ROOM + "|" + NetworkTag.PASSWORD_NOT_CORRECT);
 													 temp.flush();
 													 temp.close();
 													 socket.close();
@@ -91,6 +91,9 @@ public class GameServer {
 											 Chat newChat = new Chat(msg[0], msg[1], msg[2]);
 											 RoomInfo.addChat(newChat);
 											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.CHAT_LOG_TAG, newChat.toString());
+										 }else if(tag.equals(NetworkTag.MOVE_TEAM_SIGNAL)) {
+											 RoomInfo.moveTeam(msg[0]);
+											 broadcast(GameStatus, NetworkTag.MOVE_TEAM_SIGNAL, msg[0]);
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block

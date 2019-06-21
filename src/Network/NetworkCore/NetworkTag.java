@@ -23,6 +23,8 @@ public class NetworkTag {
 	public static final String 	USER_LIST_TAG2		= "%%USER_LIST2%%";
 	public static final String 	CHAT_LOG_TAG		= "%%CHAT_LOG%%";
 	
+	public static final String 	MOVE_TEAM_SIGNAL	= "%%MOVE_TEAM_SIGNAL%%";
+	
 	public static final String 	EMPTY_STRING 		= "%%NULL%%";
 	
 	public static final String 	IS_GAME_HOST 		= "%%GAME_HOST%%";

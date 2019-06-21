@@ -22,7 +22,13 @@ public class GameClient {
 	private User user;
 	
 	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("","");
+	private long updates = 0;
 	
+	public boolean isUpdated() {
+		long saved = updates;
+		updates = 0;
+		return saved > 0;
+	}
 	
 	public Socket getSocket() {
 		return socket;
@@ -56,6 +62,7 @@ public class GameClient {
 						while(true){
 							 response = reader.readLine();
 							 Constants.ff.cprint("CLIENT <- SERVER : "+response);
+							 updates++;
 							
 							 String[] tokens = response.split("\\|");
 							 
@@ -72,10 +79,12 @@ public class GameClient {
 										 RoomInfo.modifyItem(Constants.ff.cutFrontStringArray(msg, 2));
 								 }else if(msg[0].equals(NetworkTag.UPDATE_ALL)) {
 									 RoomInfo.fromMsg(Constants.ff.cutFrontStringArray(msg, 1));
+								 }else if(msg[0].equals(NetworkTag.PASSWORD_NOT_CORRECT)) {
+									 JOptionPane.showMessageDialog(null, "패스워드가 틀렸습니다.");
+								     System.exit(0);
+								 }else if(msg[0].equals(NetworkTag.MOVE_TEAM_SIGNAL)) {
+									 RoomInfo.moveTeam(msg[1]);
 								 }
-							 }else if(tag.equals(NetworkTag.PASSWORD_NOT_CORRECT)) {
-								 JOptionPane.showMessageDialog(null, "패스워드가 틀렸습니다.");
-							     System.exit(0);
 							 }
 						}
 					} catch (IOException e) {

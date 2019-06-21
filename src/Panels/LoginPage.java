@@ -237,7 +237,7 @@ public class LoginPage extends JPanel{
 			e.printStackTrace();
 		}
         
-        ff.setDeciBel(mainAudioClip, 0.13D);
+        ff.setDeciBel(mainAudioClip, Constants.DEFAULT_VOLUME);
 		this.mainAudioClip.start();
         
 		

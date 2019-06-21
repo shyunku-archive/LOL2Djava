@@ -48,6 +48,16 @@ public class WaitingRoomInfo extends MessageControl{
 		else this.userList2 = userList;
 	}
 	
+	public int getTeamOfUser(String username) {
+		for(int i=0;i<userList1.size();i++)
+			if(userList1.get(i).getUserName().equals(username))
+				return 1;
+		for(int i=0;i<userList2.size();i++)
+			if(userList2.get(i).getUserName().equals(username))
+				return 2;
+		return 0;
+	}
+	
 	public void addUser(User user) {
 		if(userList1.size()==5)
 			if(userList2.size()==5)return;
@@ -89,7 +99,7 @@ public class WaitingRoomInfo extends MessageControl{
 		msg += NetworkTag.USER_LIST_TAG2+TOKEN;
 		for(int i=0;i<userList2.size();i++) {
 			msg += userList2.get(i).toString() + TOKEN;
-			if(i<chats.size()-1)
+			if(i<userList2.size()-1)
 				msg += TOKEN;
 		}
 		return msg;
@@ -136,6 +146,23 @@ public class WaitingRoomInfo extends MessageControl{
 			seg = Constants.ff.cutFrontStringArray(seg, 1);
 			this.addChat(new Chat(seg));
 		}
+	}
+	
+	public void moveTeam(String username) {
+		int index = 0;
+		for(int i=0;i<userList1.size();i++) {
+			if(userList1.get(i).getUserName().equals(username)) {
+				userList2.add(userList1.get(i));
+				userList1.remove(i);
+				return;
+			}
+		}
+		for(int i=0;i<userList2.size();i++)
+			if(userList2.get(i).getUserName().equals(username)) {
+				userList1.add(userList2.get(i));
+				userList2.remove(i);
+				return;
+			}
 	}
 
 	@Override

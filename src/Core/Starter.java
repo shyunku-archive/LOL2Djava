@@ -23,12 +23,12 @@ import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
 import Engines.PanelManageEngine;
+import Engines.TriggeredButton;
 import Global.Constants;
 import Global.Functions;
 import Global.Variables;
 import Utility.Coordinate;
 import Utility.EnginesControl;
-import Utility.TriggeredButton;
 import Utility.onButtonListener;
 
 public class Starter {
@@ -92,6 +92,7 @@ public class Starter {
 		
 		Constants.ActivatedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\ActivatedRealGameStartButtonSound.wav";
 		Constants.PressedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\PressedRealGameStartButtonSound.wav";
+		Constants.TeamMoveSoundPath = "Resources\\Audios\\ClientPage\\TeamMoveSound.wav";
 		
 		//Images
 		try {
@@ -142,6 +143,12 @@ public class Starter {
 					0, 0);
 			Constants.RealGameStartButtonImage = ect.ice.CallImage(
 					ImageIO.read(new File("Resources\\Images\\ClientPage\\RealGameStartButton.png")),
+					0, 0);
+			Constants.UnFocusedMoveTeamButtonImage = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\MoveTeamButton_unfocused.png")),
+					0, 0);
+			Constants.FocusedMoveTeamButtonImage = ect.ice.CallImage(
+					ImageIO.read(new File("Resources\\Images\\ClientPage\\MoveTeamButton_focused.png")),
 					0, 0);
 			
 			Constants.SRicon = ect.ice.CallImage(
