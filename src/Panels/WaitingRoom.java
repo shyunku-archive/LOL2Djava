@@ -45,9 +45,6 @@ import Core.Starter;
 import Engines.CustomTextPane;
 import Engines.EpicEngine;
 import Engines.PageControl;
-import Engines.TriggeredButton;
-import Engines.TriggeredTextArea;
-import Engines.TriggeredTextArea.EnterListener;
 import Global.Constants;
 import Global.Functions;
 import Global.ImageManager;
@@ -60,9 +57,12 @@ import Network.NetworkCore.GameServer;
 import Network.NetworkCore.NetworkTag;
 import Network.Objects.Chat;
 import Network.Objects.User;
-import Utility.Coordinate;
+import Objects.Coordinate;
 import Utility.EnginesControl;
+import Utility.TriggeredButton;
+import Utility.TriggeredTextArea;
 import Utility.onButtonListener;
+import Utility.TriggeredTextArea.EnterListener;
 
 public class WaitingRoom extends JPanel implements PageControl{
 		//Necessary
@@ -244,6 +244,11 @@ public class WaitingRoom extends JPanel implements PageControl{
 			}
 			
 			Variables.ping = gameClient.ping;
+			
+			if(gameClient.isNextPhaseSignalActiavted()) {
+				Starter.pme.exitWaitingPage();
+				Starter.pme.GoChampionSelectPage(gameMode, isGameHost, gameServer, gameClient);
+			}
 		}
 		
 		public void setThis() {
@@ -414,6 +419,7 @@ public class WaitingRoom extends JPanel implements PageControl{
 				public void onClick() {
 					// TODO Auto-generated method stub
 					ff.playSoundClip(SoundManager.PressedRealGameStartButtonSoundPath, SoundManager.DEFAULT_VOLUME);
+					gameClient.sendMessageToServer(NetworkTag.SELECT_START);
 				}
 
 				@Override

@@ -13,12 +13,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 
 import Core.Starter;
-import Engines.TriggeredButton;
 import Utility.EnginesControl;
 import Utility.Layout;
+import Utility.TriggeredButton;
 
 public class Constants {	
-	public static final String ProgramVersion = "V0.7.2.2 - Beta";
+	public static final String ProgramVersion = "V0.8.0 - Beta";
 	public static final long FrameCountPeriod = 850;
 	public static final int FPSLimit = 144;
 	

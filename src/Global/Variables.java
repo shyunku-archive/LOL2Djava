@@ -3,7 +3,7 @@ package Global;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
-import Utility.Coordinate;
+import Objects.Coordinate;
 
 public class Variables {
 	public static GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()[0];

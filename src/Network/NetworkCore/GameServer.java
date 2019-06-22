@@ -21,6 +21,7 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 import Global.Constants;
+import Network.InnerData.ChampionSelectingRoomInfo;
 import Network.InnerData.WaitingRoomInfo;
 import Network.Objects.Chat;
 import Network.Objects.User;
@@ -32,6 +33,7 @@ public class GameServer {
 	
 	//나중에 게임 데이터 클래스로 한데 모아야함
 	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("", "");
+	private ChampionSelectingRoomInfo  selectChampRoomInfo;
 	private String GameStatus = NetworkTag.WAITING_ROOM;
 	
 	
@@ -100,6 +102,11 @@ public class GameServer {
 											 broadcast(GameStatus, NetworkTag.MOVE_TEAM_SIGNAL, msg[0]);
 										 }else if(tag.equals(NetworkTag.PING_TEST)) {
 											 broadcastToSpecific(curUsername, NetworkTag.PING_TEST);
+										 }else if(tag.equals(NetworkTag.SELECT_START)) {
+											 GameStatus = NetworkTag.CHAMP_SELECT_ROOM;
+											 broadcast(GameStatus, NetworkTag.SELECT_START);
+											 convertWaitingRoomDataToChampionSelectRoomData();
+											 broadcast(GameStatus, NetworkTag.UPDATE_ALL, selectChampRoomInfo.toMsg());
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block
@@ -215,6 +222,11 @@ public class GameServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void convertWaitingRoomDataToChampionSelectRoomData() {
+		this.selectChampRoomInfo = new ChampionSelectingRoomInfo(RoomInfo.getUserList(1), RoomInfo.getUserList(2), RoomInfo.getChats());
 	}
 	
 	

@@ -1,4 +1,4 @@
-package Utility;
+package Objects;
 
 public class Pair<pr1, pr2> {
 	private pr1 first;

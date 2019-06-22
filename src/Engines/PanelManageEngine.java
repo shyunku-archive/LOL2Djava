@@ -84,12 +84,13 @@ public class PanelManageEngine {
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
 	}
 	
-	public void GoChampionSelectPage(boolean isGameMaster, GameServer gameServer, GameClient gameClient) {
-		championSelectPage = new ChampionSelectPage(isGameMaster, gameServer, gameClient);
+	public void GoChampionSelectPage(GameMode mode, boolean isGameMaster, GameServer gameServer, GameClient gameClient) {
+		championSelectPage = new ChampionSelectPage(mode, isGameMaster, gameServer, gameClient);
 		ff.setCursor(Cursor.DEFAULT_CURSOR);
 		
 		championSelectPage.setThis();
 		
+		championSelectPage.isActivated = true;
 		Starter.frame.add(championSelectPage);
 		Starter.frame.setSize(championSelectPage.PanelSize);
 		

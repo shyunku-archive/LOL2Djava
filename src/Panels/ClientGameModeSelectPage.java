@@ -19,17 +19,17 @@ import javax.swing.SwingUtilities;
 
 import Core.Starter;
 import Engines.PageControl;
-import Engines.TriggeredButton;
-import Engines.TriggeredTextArea;
 import Network.NetworkCore.GameServer;
+import Objects.Coordinate;
 import Global.Constants;
 import Global.Functions;
 import Global.ImageManager;
 import Global.SoundManager;
 import Global.Variables;
 import Global.Constants.GameMode;
-import Utility.Coordinate;
 import Utility.EnginesControl;
+import Utility.TriggeredButton;
+import Utility.TriggeredTextArea;
 import Utility.onButtonListener;
 
 public class ClientGameModeSelectPage extends JPanel implements PageControl{

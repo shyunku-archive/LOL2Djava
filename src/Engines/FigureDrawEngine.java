@@ -12,7 +12,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import Global.Functions;
-import Utility.Coordinate;
+import Objects.Coordinate;
 
 public class FigureDrawEngine {
 	Functions ff = new Functions();

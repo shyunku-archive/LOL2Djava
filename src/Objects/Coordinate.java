@@ -1,4 +1,4 @@
-package Utility;
+package Objects;
 
 public class Coordinate {
 	private int x, y;

@@ -1,4 +1,4 @@
-package Engines;
+package Utility;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -22,7 +22,6 @@ import Core.Starter;
 import Global.Constants;
 import Global.SoundManager;
 import Global.Variables;
-import Utility.EnginesControl;
 
 public class TriggeredTextArea extends JTextArea{
 	private Rectangle focusRect;

@@ -5,9 +5,13 @@ public class NetworkTag {
 	public static final int 	DEFAULT_SERVER_PORT = 10200;
 	public static final String 	LOCAL_HOST_ADDRESS 	= "127.0.0.1";
 	
+	
+	//Status
 	public static final String	WAITING_ROOM		= "%%STATUS_WAITING_ROOM%%";
+	public static final String	CHAMP_SELECT_ROOM	= "%%CHAMPION_SELECT_ROOM%%";
 	
 	
+	//Global
 	public static final String	PASSWORD_NOT_CORRECT= "%%WRONG_PASSWORD%%";
 	
 	public static final String	ITEM_ADDITION		= "%%ADD_ITEM%%";
@@ -37,4 +41,11 @@ public class NetworkTag {
 	public static final String 	CHAT 				= "%%CHAT%%";
 	public static final String 	SYSTEMIC 			= "%%SYSTEMIC%%";
 	public static final String 	NON_SYSTEMIC 		= "%%NONSYSTEMIC%%";
+	
+	public static final String	SELECT_START		= "%%CHAMPION_SELECT_MOVE%%";
+	
+	
+	//ChampionSelectingPage
+	public static final long	CHAMPION_SELECT_TIME	= 23000;
+	public static final long	FINAL_WAITING_TIME		= 50000;
 }

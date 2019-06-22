@@ -1,4 +1,4 @@
-package Engines;
+package Utility;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -14,9 +14,7 @@ import javax.swing.JButton;
 import Core.Starter;
 import Global.Constants;
 import Global.Variables;
-import Utility.Coordinate;
-import Utility.EnginesControl;
-import Utility.onButtonListener;
+import Objects.Coordinate;
 
 public class TriggeredButton extends JButton{
 	private BufferedImage FocusedImage = null;

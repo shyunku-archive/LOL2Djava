@@ -16,7 +16,7 @@ import Core.Starter;
 import Global.Constants;
 import Global.Functions;
 import Global.Variables;
-import Utility.Coordinate;
+import Objects.Coordinate;
 import Utility.EnginesControl;
 
 public class LogPanel extends JPanel{

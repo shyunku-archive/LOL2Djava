@@ -26,14 +26,14 @@ import javax.swing.SwingUtilities;
 import Core.Starter;
 import Engines.PageControl;
 import Engines.TriggeredAnimationEngine;
-import Engines.TriggeredButton;
 import Global.Constants;
 import Global.Functions;
 import Global.ImageManager;
 import Global.SoundManager;
 import Global.Variables;
-import Utility.Coordinate;
+import Objects.Coordinate;
 import Utility.EnginesControl;
+import Utility.TriggeredButton;
 import Utility.onButtonListener;
 
 @SuppressWarnings("serial")

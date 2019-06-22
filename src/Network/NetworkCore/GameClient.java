@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 
 import Global.Constants;
 import Global.SoundManager;
+import Network.InnerData.ChampionSelectingRoomInfo;
 import Network.InnerData.WaitingRoomInfo;
 import Network.Objects.User;
 
@@ -24,10 +25,22 @@ public class GameClient {
 	private User user;
 	
 	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("","");
+	private ChampionSelectingRoomInfo  selectChampRoomInfo = new ChampionSelectingRoomInfo();
+	
+	
 	private long updates = 0;
 	public long ping = 0;
+	private boolean nextPhaseSignal = false;
 	
 	private ArrayList<Long> sendPingFlags = new ArrayList<>();
+	
+	public boolean isNextPhaseSignalActiavted() {
+		if(nextPhaseSignal) {
+			nextPhaseSignal = false;
+			return true;
+		}
+		return false;
+	}
 	
 	public boolean isUpdated() {
 		long saved = updates;
@@ -41,6 +54,10 @@ public class GameClient {
 	
 	public WaitingRoomInfo getRoomInfo() {
 		return this.RoomInfo;
+	}
+	
+	public ChampionSelectingRoomInfo getSelectRoomInfo() {
+		return this.selectChampRoomInfo;
 	}
 	
 	public void connect(User user, String IP, String password) {
@@ -98,6 +115,12 @@ public class GameClient {
 								     System.exit(0);
 								 }else if(msg[0].equals(NetworkTag.MOVE_TEAM_SIGNAL)) {
 									 RoomInfo.moveTeam(msg[1]);
+								 }
+							 }else if(tag.equals(NetworkTag.CHAMP_SELECT_ROOM)) {
+								 if(msg[0].equals(NetworkTag.SELECT_START)) {
+									 nextPhaseSignal = true;
+								 }else if(msg[0].equals(NetworkTag.UPDATE_ALL)) {
+									 selectChampRoomInfo.fromMsg(Constants.ff.cutFrontStringArray(msg, 1));
 								 }
 							 }
 						}
