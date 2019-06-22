@@ -20,6 +20,7 @@ import javax.swing.KeyStroke;
 
 import Core.Starter;
 import Global.Constants;
+import Global.SoundManager;
 import Global.Variables;
 import Utility.EnginesControl;
 
@@ -79,7 +80,7 @@ public class TriggeredTextArea extends JTextArea{
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 				setFocusable(true);
-				Constants.ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
+				Constants.ff.playSoundClip(SoundManager.lightClickSoundFilePath, SoundManager.LIGHT_CLICK_SOUND_VOLUME);
 			}
 
 			@Override

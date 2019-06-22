@@ -9,8 +9,11 @@ import javax.swing.JPanel;
 
 import Core.Starter;
 import Global.Constants;
-import Global.Constants.GameMode;
 import Global.Functions;
+import Global.Constants.GameMode;
+import Network.NetworkCore.GameClient;
+import Network.NetworkCore.GameServer;
+import Panels.ChampionSelectPage;
 import Panels.ClientGameModeSelectPage;
 import Panels.ClientPage;
 import Panels.WaitingRoom;
@@ -24,6 +27,7 @@ public class PanelManageEngine {
 	public static ClientPage clientPage;
 	public static ClientGameModeSelectPage clientGameModeSelectPage;
 	public static WaitingRoom waitingPage;
+	public static ChampionSelectPage championSelectPage;
 	
 	/*===============================CREATE PANELS===============================*/
 	
@@ -67,8 +71,8 @@ public class PanelManageEngine {
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
 	}
 	
-	public void GoWaitingPage(boolean isCreate, GameMode mode, String Roomname, String password, boolean isGameHost) {
-		waitingPage = new WaitingRoom(isCreate, mode, Roomname, password, isGameHost);
+	public void GoWaitingPage(GameMode mode, String Roomname, String password, boolean isGameHost) {
+		waitingPage = new WaitingRoom(mode, Roomname, password, isGameHost);
 		ff.setCursor(Cursor.DEFAULT_CURSOR);
 		
 		waitingPage.setThis();
@@ -76,6 +80,18 @@ public class PanelManageEngine {
 		waitingPage.isActivated = true;
 		Starter.frame.add(waitingPage);
 		Starter.frame.setSize(waitingPage.PanelSize);
+		
+		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
+	}
+	
+	public void GoChampionSelectPage(boolean isGameMaster, GameServer gameServer, GameClient gameClient) {
+		championSelectPage = new ChampionSelectPage(isGameMaster, gameServer, gameClient);
+		ff.setCursor(Cursor.DEFAULT_CURSOR);
+		
+		championSelectPage.setThis();
+		
+		Starter.frame.add(championSelectPage);
+		Starter.frame.setSize(championSelectPage.PanelSize);
 		
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
 	}
@@ -102,6 +118,11 @@ public class PanelManageEngine {
 		Starter.frame.remove(waitingPage);
 	}
 	
+	public void exitChampionSelectPage() {
+		deactivateAll();
+		Starter.frame.remove(championSelectPage);
+	}
+	
 	/*===============================INTERNAL METHODS===============================*/
 	
 	public void setAll() {
@@ -109,14 +130,15 @@ public class PanelManageEngine {
 		loginPage = new LoginPage();
 		clientPage = new ClientPage();
 		clientGameModeSelectPage = new ClientGameModeSelectPage();
+		//유동적 페이지는 적지 않음
 	}
-	
 	
 	public static void updateActivated() {
 		if(loginPage.isActivated)loginPage.update();
 		if(clientPage.isActivated)clientPage.update();
 		if(clientGameModeSelectPage.isActivated)clientGameModeSelectPage.update();
 		if(waitingPage.isActivated)waitingPage.update();
+		if(championSelectPage.isActivated)championSelectPage.update();
 	}
 	
 	public static void deactivateAll() {
@@ -124,6 +146,7 @@ public class PanelManageEngine {
 		clientPage.isActivated = false;
 		clientGameModeSelectPage.isActivated = false;
 		waitingPage.isActivated = false;
+		championSelectPage.isActivated = false;
 	}
 	
 	private static Functions ff = new Functions();

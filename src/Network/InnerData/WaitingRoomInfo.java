@@ -1,10 +1,9 @@
-package Network.InnerData.WaitingRoom;
+package Network.InnerData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import Global.Constants;
-import Network.InnerData.MessageControl;
 import Network.NetworkCore.NetworkTag;
 import Network.Objects.Chat;
 import Network.Objects.User;

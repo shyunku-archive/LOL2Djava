@@ -39,6 +39,8 @@ import Core.Starter;
 import Engines.TriggeredAnimationEngine;
 import Global.Constants;
 import Global.Functions;
+import Global.ImageManager;
+import Global.SoundManager;
 import Global.Variables;
 import Utility.EnginesControl;
 
@@ -76,23 +78,23 @@ public class LoginPage extends JPanel{
 		g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
 		if(LoginDelayAnimation.isRunning(true)) {
-			g.drawImage(Constants.AuthentificationImage, null, 0, 0);
+			g.drawImage(ImageManager.AuthentificationImage, null, 0, 0);
 			if(!LoginDelayAnimation.isRunning(false)) {
 				this.mainAudioClip.stop();
 				Starter.pme.exitLoginPage();
 				Starter.pme.goClientPage();
 			}
 		}else{
-			g.drawImage(Constants.LoginPageFrameImage, null, 0, 0);
+			g.drawImage(ImageManager.LoginPageFrameImage, null, 0, 0);
 			if(this.isInCloseBtn)
-				g.drawImage(Constants.FocusedTerminateButtonImage, null, 1252, 8);
+				g.drawImage(ImageManager.FocusedTerminateButtonImage, null, 1252, 8);
 			if(this.isInLocaleBtn)
-				g.drawImage(Constants.FocusedLocaleImage, null, 1070, 256);
+				g.drawImage(ImageManager.FocusedLocaleImage, null, 1070, 256);
 			if(inputNicknameArea.getText().length()!=0)
 				if(isInLoginBtn)
-					g.drawImage(Constants.FocusedLoginButtonImage, null, 1063, 531);
+					g.drawImage(ImageManager.FocusedLoginButtonImage, null, 1063, 531);
 				else
-					g.drawImage(Constants.ActivatedLoginButtonImage, null, 1072, 538);
+					g.drawImage(ImageManager.ActivatedLoginButtonImage, null, 1072, 538);
 			
 			g.setColor(new Color(255, 210, 170));
 			g.setFont(ff.getClassicFont(13F, true));
@@ -168,7 +170,7 @@ public class LoginPage extends JPanel{
 			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 				inputNicknameArea.setFocusable(true);
-				ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
+				ff.playSoundClip(SoundManager.lightClickSoundFilePath, SoundManager.LIGHT_CLICK_SOUND_VOLUME);
 			}
 
 			@Override
@@ -206,7 +208,7 @@ public class LoginPage extends JPanel{
 						Variables.Username = inputNicknameArea.getText();
 						inputNicknameArea.setVisible(false);
 						inputNicknameArea.setText("");
-						ff.playSoundClip(Constants.LoginButtonPressedSoundPath, 50D);
+						ff.playSoundClip(SoundManager.LoginButtonPressedSoundPath, 50D);
 					}
 				}
 			}
@@ -237,7 +239,7 @@ public class LoginPage extends JPanel{
 			e.printStackTrace();
 		}
         
-        ff.setDeciBel(mainAudioClip, Constants.DEFAULT_VOLUME);
+        ff.setDeciBel(mainAudioClip, SoundManager.DEFAULT_VOLUME);
 		this.mainAudioClip.start();
         
 		
@@ -277,7 +279,7 @@ public class LoginPage extends JPanel{
 						Variables.Username = inputNicknameArea.getText();
 						inputNicknameArea.setVisible(false);
 						inputNicknameArea.setText("");
-						ff.playSoundClip(Constants.LoginButtonPressedSoundPath, 50D);
+						ff.playSoundClip(SoundManager.LoginButtonPressedSoundPath, 50D);
 					}
 			}
 

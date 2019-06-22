@@ -44,14 +44,17 @@ import javax.swing.table.DefaultTableModel;
 import Core.Starter;
 import Engines.CustomTextPane;
 import Engines.EpicEngine;
+import Engines.PageControl;
 import Engines.TriggeredButton;
 import Engines.TriggeredTextArea;
 import Engines.TriggeredTextArea.EnterListener;
 import Global.Constants;
-import Global.Constants.GameMode;
 import Global.Functions;
+import Global.ImageManager;
+import Global.SoundManager;
 import Global.Variables;
-import Network.InnerData.WaitingRoom.WaitingRoomInfo;
+import Global.Constants.GameMode;
+import Network.InnerData.WaitingRoomInfo;
 import Network.NetworkCore.GameClient;
 import Network.NetworkCore.GameServer;
 import Network.NetworkCore.NetworkTag;
@@ -61,7 +64,7 @@ import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.onButtonListener;
 
-public class WaitingRoom extends JPanel{
+public class WaitingRoom extends JPanel implements PageControl{
 		//Necessary
 		public static Dimension PanelSize;
 		public static boolean isActivated;
@@ -70,7 +73,6 @@ public class WaitingRoom extends JPanel{
 		private static Functions ff = new Functions();
 		private static EnginesControl ect = new EnginesControl();
 		
-		private boolean isCreateMode = true;
 		private GameMode gameMode = GameMode.SummonersRift;
 		
 		private static TriggeredButton HomeBtn, CloseBtn, CancelBtn, RealGameStartBtn;
@@ -98,13 +100,13 @@ public class WaitingRoom extends JPanel{
 			
 			g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			
-			g.drawImage(Constants.ClientTemplateImage, null, 0, 0);
+			g.drawImage(ImageManager.ClientTemplateImage, null, 0, 0);
 			
 			g.setColor(Color.WHITE);
 			g.setFont(ff.getClassicFont(16F, true));
 			g.drawString(Variables.Username, 1127, 40);
 			
-			g.drawImage(Constants.WaitingRoomImage,null,0,0);
+			g.drawImage(ImageManager.WaitingRoomImage,null,0,0);
 			
 			g.setColor(new Color(65,60,70,255));
 			g.setFont(ff.getFancyFont(13F, true));
@@ -118,15 +120,15 @@ public class WaitingRoom extends JPanel{
 			g.setFont(ff.getClassicFont(13F, true));
 			switch(gameMode) {
 			case SummonersRift:
-				g.drawImage(Constants.SRicon, null, 40,100);
+				g.drawImage(ImageManager.SRicon, null, 40,100);
 				g.drawString("소환사의 협곡", 90, 143);
 				break;
 			case KnifeWind:
-				g.drawImage(Constants.KWicon, null, 40,100);
+				g.drawImage(ImageManager.KWicon, null, 40,100);
 				g.drawString("칼바람 나락", 90, 143);
 				break;
 			case URF:
-				g.drawImage(Constants.URFicon, null, 40,100);
+				g.drawImage(ImageManager.URFicon, null, 40,100);
 				g.drawString("U.R.F", 90, 143);
 				break;
 			}
@@ -165,7 +167,7 @@ public class WaitingRoom extends JPanel{
 					String name = userList1.get(i).getUserName();
 					g.drawString(name, 60, 245+50*i);
 					if(userList1.get(i).isGameHost())
-						g.drawImage(Constants.GameHostSymbol, null, 60+metrics.stringWidth(name)+15, 245+50*i-15);
+						g.drawImage(ImageManager.GameHostSymbol, null, 60+metrics.stringWidth(name)+15, 245+50*i-15);
 				}else {
 					g.setColor(new Color(80, 80, 80));
 					g.drawString("비어있음", 60, 245+50*i);
@@ -177,7 +179,7 @@ public class WaitingRoom extends JPanel{
 					String name =userList2.get(i).getUserName();
 					g.drawString(name, 60+495, 245+50*i);
 					if(userList2.get(i).isGameHost())
-						g.drawImage(Constants.GameHostSymbol, null, 60+495+metrics.stringWidth(name)+15, 245+50*i-15);
+						g.drawImage(ImageManager.GameHostSymbol, null, 60+495+metrics.stringWidth(name)+15, 245+50*i-15);
 				}else {
 					g.setColor(new Color(80, 80, 80));
 					g.drawString("비어있음", 60+495, 245+50*i);
@@ -268,8 +270,7 @@ public class WaitingRoom extends JPanel{
 		
 		
 		
-		public WaitingRoom(boolean isC, GameMode mode, String Roomname, String password, boolean isGameHost) {
-			this.isCreateMode = isC;
+		public WaitingRoom(GameMode mode, String Roomname, String password, boolean isGameHost) {
 			this.gameMode = mode;
 			this.Roomname = Roomname;
 			this.password = password;
@@ -349,8 +350,8 @@ public class WaitingRoom extends JPanel{
 			for(int i=0;i<2;i++)
 				for(int j=0;j<5;j++) {
 					MoveTeamBtn[i][j] = new TriggeredButton(
-							Constants.UnFocusedMoveTeamButtonImage,
-							Constants.FocusedMoveTeamButtonImage,
+							ImageManager.UnFocusedMoveTeamButtonImage,
+							ImageManager.FocusedMoveTeamButtonImage,
 							null,
 							new Coordinate(365+495*i, 220+50*j),
 							new Coordinate(365+495*i, 220+50*j),
@@ -388,7 +389,7 @@ public class WaitingRoom extends JPanel{
 						public void onRelease() {
 							// TODO Auto-generated method stub
 							tb.setEnabled(false);
-							ff.playSoundClip(Constants.TeamMoveSoundPath, Constants.DEFAULT_VOLUME);
+							ff.playSoundClip(SoundManager.TeamMoveSoundPath, SoundManager.DEFAULT_VOLUME);
 							gameClient.sendMessageToServer(NetworkTag.MOVE_TEAM_SIGNAL+"|"+Variables.Username);
 						}
 					});
@@ -398,7 +399,7 @@ public class WaitingRoom extends JPanel{
 				}
 			RealGameStartBtn = new TriggeredButton(
 					null,
-					Constants.RealGameStartButtonImage,
+					ImageManager.RealGameStartButtonImage,
 					null,
 					null,
 					new Coordinate(453,665),
@@ -412,13 +413,13 @@ public class WaitingRoom extends JPanel{
 				@Override
 				public void onClick() {
 					// TODO Auto-generated method stub
-					ff.playSoundClip(Constants.PressedRealGameStartButtonSoundPath, Constants.DEFAULT_VOLUME);
+					ff.playSoundClip(SoundManager.PressedRealGameStartButtonSoundPath, SoundManager.DEFAULT_VOLUME);
 				}
 
 				@Override
 				public void onEnter() {
 					// TODO Auto-generated method stub
-					ff.playSoundClip(Constants.ActivatedRealGameStartButtonSoundPath, Constants.DEFAULT_VOLUME);
+					ff.playSoundClip(SoundManager.ActivatedRealGameStartButtonSoundPath, SoundManager.DEFAULT_VOLUME);
 				}
 
 				@Override
@@ -444,7 +445,7 @@ public class WaitingRoom extends JPanel{
 				this.add(RealGameStartBtn);
 			CancelBtn = new TriggeredButton(
 					null,
-					Constants.FocusedGameSelectionCancelButtonImage,
+					ImageManager.FocusedGameSelectionCancelButtonImage,
 					null,
 					null,
 					new Coordinate(430,669),
@@ -461,7 +462,7 @@ public class WaitingRoom extends JPanel{
 						gameServer.endServer();
 					Starter.pme.exitWaitingPage();
 					Starter.pme.goClientPage();
-					ff.playSoundClip(Constants.GameSelectionCancelSoundPath, Constants.GAME_SELECT_CANCEL_SOUND_VOLUME);
+					ff.playSoundClip(SoundManager.GameSelectionCancelSoundPath, SoundManager.GAME_SELECT_CANCEL_SOUND_VOLUME);
 				}
 
 				@Override
@@ -491,7 +492,7 @@ public class WaitingRoom extends JPanel{
 			this.add(CancelBtn);
 			CloseBtn = new TriggeredButton(
 					null,
-					Constants.FocusedTerminateButtonImage,
+					ImageManager.FocusedTerminateButtonImage,
 					null,
 					null,
 					new Coordinate(1252,8),
@@ -505,7 +506,7 @@ public class WaitingRoom extends JPanel{
 				public void onClick() {
 					if(isGameHost)
 						gameServer.endServer();
-					ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
+					ff.playSoundClip(SoundManager.lightClickSoundFilePath, SoundManager.LIGHT_CLICK_SOUND_VOLUME);
 					try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
@@ -542,7 +543,7 @@ public class WaitingRoom extends JPanel{
 			this.add(CloseBtn);
 			HomeBtn = new TriggeredButton(
 					null,
-					Constants.FocusedHomeButtonImage,
+					ImageManager.FocusedHomeButtonImage,
 					null,
 					null,
 					new Coordinate(249,0),
@@ -556,7 +557,7 @@ public class WaitingRoom extends JPanel{
 						public void onClick() {
 							if(isGameHost)
 								gameServer.endServer();
-							ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
+							ff.playSoundClip(SoundManager.lightClickSoundFilePath, SoundManager.LIGHT_CLICK_SOUND_VOLUME);
 							Starter.pme.exitWaitingPage();
 							Starter.pme.goClientPage();
 						}

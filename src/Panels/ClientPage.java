@@ -24,17 +24,20 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import Core.Starter;
+import Engines.PageControl;
 import Engines.TriggeredAnimationEngine;
 import Engines.TriggeredButton;
 import Global.Constants;
 import Global.Functions;
+import Global.ImageManager;
+import Global.SoundManager;
 import Global.Variables;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.onButtonListener;
 
 @SuppressWarnings("serial")
-public class ClientPage extends JPanel{
+public class ClientPage extends JPanel implements PageControl{
 	//Necessary
 	public static Dimension PanelSize;
 	public static boolean isActivated;
@@ -52,7 +55,7 @@ public class ClientPage extends JPanel{
 		
 		g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
-		g.drawImage(Constants.ClientTemplateImage, null, 0, 0);
+		g.drawImage(ImageManager.ClientTemplateImage, null, 0, 0);
 		
 		g.setColor(Color.WHITE);
 		g.setFont(ff.getClassicFont(16F, true));
@@ -97,7 +100,7 @@ public class ClientPage extends JPanel{
 		
 		CloseBtn = new TriggeredButton(
 				null,
-				Constants.FocusedTerminateButtonImage,
+				ImageManager.FocusedTerminateButtonImage,
 				null,
 				null,
 				new Coordinate(1252,8),
@@ -109,7 +112,7 @@ public class ClientPage extends JPanel{
 		CloseBtn.addOnButtonListener(new onButtonListener() {
 			@Override
 			public void onClick() {
-				ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
+				ff.playSoundClip(SoundManager.lightClickSoundFilePath, SoundManager.LIGHT_CLICK_SOUND_VOLUME);
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {
@@ -146,7 +149,7 @@ public class ClientPage extends JPanel{
 		this.add(CloseBtn);
 		GameStartBtn = new TriggeredButton(
 				null,
-				Constants.FocusedGameStartButtonImage,
+				ImageManager.FocusedGameStartButtonImage,
 				null,
 				null,
 				new Coordinate(28,21),
@@ -163,7 +166,7 @@ public class ClientPage extends JPanel{
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.ActivatedGameStartButtonSoundFilePath, Constants.GAME_START_BUTTON_SOUND_VOLUME);
+				ff.playSoundClip(SoundManager.ActivatedGameStartButtonSoundFilePath,SoundManager.GAME_START_BUTTON_SOUND_VOLUME);
 			}
 
 			@Override
@@ -181,7 +184,7 @@ public class ClientPage extends JPanel{
 			@Override
 			public void onRelease() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.GameStartButtonSoundFilePath, Constants.GAME_START_BUTTON_SOUND_VOLUME);
+				ff.playSoundClip(SoundManager.GameStartButtonSoundFilePath, SoundManager.GAME_START_BUTTON_SOUND_VOLUME);
 				Starter.pme.exitClientPage();
 				Starter.pme.GoClientGameModeSelectPage();
 			}
@@ -250,5 +253,11 @@ public class ClientPage extends JPanel{
 	public void setPanelSize(Dimension ps) {
 		this.setSize(ps);
 		this.PanelSize = ps;
+	}
+
+	@Override
+	public void setThis() {
+		// TODO Auto-generated method stub
+		
 	}
 }

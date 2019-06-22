@@ -18,18 +18,21 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import Core.Starter;
+import Engines.PageControl;
 import Engines.TriggeredButton;
 import Engines.TriggeredTextArea;
-import Global.Constants;
-import Global.Constants.GameMode;
 import Network.NetworkCore.GameServer;
+import Global.Constants;
 import Global.Functions;
+import Global.ImageManager;
+import Global.SoundManager;
 import Global.Variables;
+import Global.Constants.GameMode;
 import Utility.Coordinate;
 import Utility.EnginesControl;
 import Utility.onButtonListener;
 
-public class ClientGameModeSelectPage extends JPanel {
+public class ClientGameModeSelectPage extends JPanel implements PageControl{
 
 	//Necessary
 	public static Dimension PanelSize;
@@ -54,14 +57,14 @@ public class ClientGameModeSelectPage extends JPanel {
 		
 		g.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
-		g.drawImage(Constants.ClientTemplateImage, null, 0, 0);
+		g.drawImage(ImageManager.ClientTemplateImage, null, 0, 0);
 		
 		g.setColor(Color.WHITE);
 		g.setFont(ff.getClassicFont(16F, true));
 		g.drawString(Variables.Username, 1127, 40);
 		
-		g.drawImage(Constants.GameModeSelectImage,null,0,0);
-		g.drawImage(Constants.GameModeSelectAdditionImage, null, 205, 470);
+		g.drawImage(ImageManager.GameModeSelectImage,null,0,0);
+		g.drawImage(ImageManager.GameModeSelectAdditionImage, null, 205, 470);
 		
 		
 		g.setColor(new Color(65,60,70,255));
@@ -103,9 +106,9 @@ public class ClientGameModeSelectPage extends JPanel {
 		this.add(RoomName);
 		this.add(Password);
 		SRsel = new TriggeredButton(
-				Constants.SummonersRiftunSelected,
+				ImageManager.SummonersRiftunSelected,
 				null,
-				Constants.SummonersRiftSelected,
+				ImageManager.SummonersRiftSelected,
 				new Coordinate(131,144),
 				null,
 				new Coordinate(113,135),
@@ -125,7 +128,7 @@ public class ClientGameModeSelectPage extends JPanel {
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.GameModeFocusSoundPath, Constants.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.GameModeFocusSoundPath, SoundManager.DEFAULT_VOLUME);
 			}
 
 			@Override
@@ -144,7 +147,7 @@ public class ClientGameModeSelectPage extends JPanel {
 			public void onRelease() {
 				// TODO Auto-generated method stub
 				if(!SRsel.isSelected())
-					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
+					ff.playSoundClip(SoundManager.GameModeSelectSoundPath, SoundManager.DEFAULT_VOLUME);
 				SRsel.selectThis();
 				KWsel.unselectThis();
 				URFsel.unselectThis();
@@ -155,9 +158,9 @@ public class ClientGameModeSelectPage extends JPanel {
 		this.add(SRsel);
 		
 		KWsel = new TriggeredButton(
-				Constants.KnifeWindunSelected,
+				ImageManager.KnifeWindunSelected,
 				null,
-				Constants.KnifeWindSelected,
+				ImageManager.KnifeWindSelected,
 				new Coordinate(438,144),
 				null,
 				new Coordinate(400,156),
@@ -176,7 +179,7 @@ public class ClientGameModeSelectPage extends JPanel {
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.GameModeFocusSoundPath, Constants.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.GameModeFocusSoundPath,SoundManager.DEFAULT_VOLUME);
 			}
 
 			@Override
@@ -195,7 +198,7 @@ public class ClientGameModeSelectPage extends JPanel {
 			public void onRelease() {
 				// TODO Auto-generated method stub
 				if(!KWsel.isSelected())
-					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
+					ff.playSoundClip(SoundManager.GameModeSelectSoundPath, SoundManager.DEFAULT_VOLUME);
 				SRsel.unselectThis();
 				KWsel.selectThis();
 				URFsel.unselectThis();
@@ -206,9 +209,9 @@ public class ClientGameModeSelectPage extends JPanel {
 		this.add(KWsel);
 		
 		URFsel = new TriggeredButton(
-				Constants.URFunSelected,
+				ImageManager.URFunSelected,
 				null,
-				Constants.URFSelected,
+				ImageManager.URFSelected,
 				new Coordinate(758,161),
 				null,
 				new Coordinate(747,153),
@@ -228,7 +231,7 @@ public class ClientGameModeSelectPage extends JPanel {
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.GameModeFocusSoundPath, Constants.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.GameModeFocusSoundPath, SoundManager.DEFAULT_VOLUME);
 			}
 
 			@Override
@@ -247,7 +250,7 @@ public class ClientGameModeSelectPage extends JPanel {
 			public void onRelease() {
 				// TODO Auto-generated method stub
 				if(!URFsel.isSelected())
-					ff.playSoundClip(Constants.GameModeSelectSoundPath, Constants.DEFAULT_VOLUME);
+					ff.playSoundClip(SoundManager.GameModeSelectSoundPath, SoundManager.DEFAULT_VOLUME);
 				SRsel.unselectThis();
 				KWsel.unselectThis();
 				URFsel.selectThis();
@@ -258,7 +261,7 @@ public class ClientGameModeSelectPage extends JPanel {
 		
 		ParticipateBtn = new TriggeredButton(
 				null,
-				Constants.FocusedGameParticipateButtonImage,
+				ImageManager.FocusedGameParticipateButtonImage,
 				null,
 				null,
 				new Coordinate(540,665),
@@ -272,16 +275,16 @@ public class ClientGameModeSelectPage extends JPanel {
 			@Override
 			public void onClick() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.SelectedCPSoundPath, SoundManager.DEFAULT_VOLUME);
 				if(RoomName.getText().length()==0)return;
 				Starter.pme.exitClientGameModeSelectPage();
-				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), false);
+				Starter.pme.GoWaitingPage(gamemode, RoomName.getText(), Password.getText(), false);
 			}
 
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.ActivatedCPSoundPath, Constants.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.ActivatedCPSoundPath, SoundManager.DEFAULT_VOLUME);
 			}
 
 			@Override
@@ -306,7 +309,7 @@ public class ClientGameModeSelectPage extends JPanel {
 		this.add(ParticipateBtn);
 		CreateBtn = new TriggeredButton(
 				null,
-				Constants.FocusedGameCreateButtonImage,
+				ImageManager.FocusedGameCreateButtonImage,
 				null,
 				null,
 				new Coordinate(449,665),
@@ -320,16 +323,16 @@ public class ClientGameModeSelectPage extends JPanel {
 			@Override
 			public void onClick() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.SelectedCPSoundPath, Constants.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.SelectedCPSoundPath, SoundManager.DEFAULT_VOLUME);
 				if(RoomName.getText().length()==0)return;
 				Starter.pme.exitClientGameModeSelectPage();
-				Starter.pme.GoWaitingPage(true, gamemode, RoomName.getText(), Password.getText(), true);
+				Starter.pme.GoWaitingPage(gamemode, RoomName.getText(), Password.getText(), true);
 			}
 
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(Constants.ActivatedCPSoundPath, Constants.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.ActivatedCPSoundPath, SoundManager.DEFAULT_VOLUME);
 			}
 
 			@Override
@@ -354,7 +357,7 @@ public class ClientGameModeSelectPage extends JPanel {
 		this.add(CreateBtn);
 		CancelBtn = new TriggeredButton(
 				null,
-				Constants.FocusedGameSelectionCancelButtonImage,
+				ImageManager.FocusedGameSelectionCancelButtonImage,
 				null,
 				null,
 				new Coordinate(430,669),
@@ -369,7 +372,7 @@ public class ClientGameModeSelectPage extends JPanel {
 				// TODO Auto-generated method stub
 				Starter.pme.exitClientGameModeSelectPage();
 				Starter.pme.goClientPage();
-				ff.playSoundClip(Constants.GameSelectionCancelSoundPath, Constants.GAME_SELECT_CANCEL_SOUND_VOLUME);
+				ff.playSoundClip(SoundManager.GameSelectionCancelSoundPath, SoundManager.GAME_SELECT_CANCEL_SOUND_VOLUME);
 			}
 
 			@Override
@@ -399,7 +402,7 @@ public class ClientGameModeSelectPage extends JPanel {
 		this.add(CancelBtn);
 		CloseBtn = new TriggeredButton(
 				null,
-				Constants.FocusedTerminateButtonImage,
+				ImageManager.FocusedTerminateButtonImage,
 				null,
 				null,
 				new Coordinate(1252,8),
@@ -411,7 +414,7 @@ public class ClientGameModeSelectPage extends JPanel {
 		CloseBtn.addOnButtonListener(new onButtonListener() {
 			@Override
 			public void onClick() {
-				ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
+				ff.playSoundClip(SoundManager.lightClickSoundFilePath, SoundManager.LIGHT_CLICK_SOUND_VOLUME);
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {
@@ -448,7 +451,7 @@ public class ClientGameModeSelectPage extends JPanel {
 		this.add(CloseBtn);
 		HomeBtn = new TriggeredButton(
 				null,
-				Constants.FocusedHomeButtonImage,
+				ImageManager.FocusedHomeButtonImage,
 				null,
 				null,
 				new Coordinate(249,0),
@@ -460,7 +463,7 @@ public class ClientGameModeSelectPage extends JPanel {
 		HomeBtn.addOnButtonListener(new onButtonListener() {
 					@Override
 					public void onClick() {
-						ff.playSoundClip(Constants.lightClickSoundFilePath, Constants.LIGHT_CLICK_SOUND_VOLUME);
+						ff.playSoundClip(SoundManager.lightClickSoundFilePath, SoundManager.LIGHT_CLICK_SOUND_VOLUME);
 						Starter.pme.exitClientGameModeSelectPage();
 						Starter.pme.goClientPage();
 					}

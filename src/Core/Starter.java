@@ -26,6 +26,8 @@ import Engines.PanelManageEngine;
 import Engines.TriggeredButton;
 import Global.Constants;
 import Global.Functions;
+import Global.ImageManager;
+import Global.SoundManager;
 import Global.Variables;
 import Utility.Coordinate;
 import Utility.EnginesControl;
@@ -78,115 +80,70 @@ public class Starter {
 		}
 		
 		//Sounds
-		Constants.GameStartButtonSoundFilePath = "Resources\\Audios\\ClientPage\\GameStartButtonSound.wav";
-		Constants.lightClickSoundFilePath = "Resources\\Audios\\Global\\LightClickSound.wav";
-		Constants.LoginButtonPressedSoundPath = "Resources\\Audios\\LoginPage\\LoginButtonPressedSound.wav";
-		Constants.ActivatedGameStartButtonSoundFilePath= "Resources\\Audios\\ClientPage\\ActivatedGameStartButtonSound.wav";
-		Constants.GameSelectionCancelSoundPath= "Resources\\Audios\\ClientPage\\GameSelectionCancelSound.wav";
-		Constants.GameModeSelectSoundPath= "Resources\\Audios\\ClientPage\\GameModeSelectSound.wav";
-		Constants.GameModeFocusSoundPath= "Resources\\Audios\\ClientPage\\GameModeFocusSound.wav";
-		
-		Constants.ActivatedCPSoundPath = "Resources\\Audios\\ClientPage\\ActivatedCPSound.wav";
-		Constants.SelectedCPSoundPath = "Resources\\Audios\\ClientPage\\CPselectSound.wav";
-		Constants.ParticipateSoundPath = "Resources\\Audios\\ClientPage\\ParticipateRoomSound.wav";
-		
-		Constants.ActivatedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\ActivatedRealGameStartButtonSound.wav";
-		Constants.PressedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\PressedRealGameStartButtonSound.wav";
-		Constants.TeamMoveSoundPath = "Resources\\Audios\\ClientPage\\TeamMoveSound.wav";
+	    SoundManager.GameStartButtonSoundFilePath = "Resources\\Audios\\ClientPage\\GameStartButtonSound.wav";
+	    SoundManager.lightClickSoundFilePath = "Resources\\Audios\\Global\\LightClickSound.wav";
+	    SoundManager.LoginButtonPressedSoundPath = "Resources\\Audios\\LoginPage\\LoginButtonPressedSound.wav";
+	    SoundManager.ActivatedGameStartButtonSoundFilePath= "Resources\\Audios\\ClientPage\\ActivatedGameStartButtonSound.wav";
+	    SoundManager.GameSelectionCancelSoundPath= "Resources\\Audios\\ClientPage\\GameSelectionCancelSound.wav";
+	    SoundManager.GameModeSelectSoundPath= "Resources\\Audios\\ClientPage\\GameModeSelectSound.wav";
+	    SoundManager.GameModeFocusSoundPath= "Resources\\Audios\\ClientPage\\GameModeFocusSound.wav";
+	    
+	    SoundManager.ActivatedCPSoundPath = "Resources\\Audios\\ClientPage\\ActivatedCPSound.wav";
+	    SoundManager.SelectedCPSoundPath = "Resources\\Audios\\ClientPage\\CPselectSound.wav";
+	    SoundManager.ParticipateSoundPath = "Resources\\Audios\\ClientPage\\ParticipateRoomSound.wav";
+	    
+	    SoundManager.ActivatedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\ActivatedRealGameStartButtonSound.wav";
+	    SoundManager.PressedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\PressedRealGameStartButtonSound.wav";
+	    SoundManager.TeamMoveSoundPath = "Resources\\Audios\\ClientPage\\TeamMoveSound.wav";
 		
 		//Images
 		try {
-			Constants.LoginPageFrameImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\LoginPage\\LoginPageFrameImage.png")),
-					0, 0);
-			Constants.FocusedTerminateButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\LoginPage\\FocusedTerminateButton.png")),
-					0, 0);
-			Constants.FocusedLocaleImage= ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\LoginPage\\FocusedLocale.png")),
-					0, 0);
-			Constants.ActivatedLoginButtonImage= ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\LoginPage\\ActivatedLoginButton.png")),
-					0, 0);
-			Constants.FocusedLoginButtonImage= ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\LoginPage\\FocusedLoginButton.png")),
-					0, 0);
-			Constants.AuthentificationImage= ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\LoginPage\\Authentification.png")),
-					0, 0);
-			Constants.ClientTemplateImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\ClientTemplate.png")),
-					0, 0);
-			Constants.FocusedGameStartButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedGameStartButton.png")),
-					0, 0);
-			Constants.GameModeSelectImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\GameModeSelection.png")),
-					0, 0);
-			Constants.FocusedGameSelectionCancelButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedCancelButton.png")),
-					0, 0);
-			Constants.FocusedHomeButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedHomeButton.png")),
-					0, 0);
-			Constants.FocusedGameCreateButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedGameCreateButton.png")),
-					0, 0);
-			Constants.FocusedGameParticipateButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedGameParticipateButton.png")),
-					0, 0);
-			Constants.GameModeSelectAdditionImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\GameSelectAdditional.png")),
-					0, 0);
-			Constants.WaitingRoomImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\WaitingRoomTemplate.png")),
-					0, 0);
-			Constants.RealGameStartButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\RealGameStartButton.png")),
-					0, 0);
-			Constants.UnFocusedMoveTeamButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\MoveTeamButton_unfocused.png")),
-					0, 0);
-			Constants.FocusedMoveTeamButtonImage = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\MoveTeamButton_focused.png")),
-					0, 0);
-			
-			Constants.SRicon = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\SRicon.png")),
-					0, 0);
-			Constants.KWicon = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\KWicon.png")),
-					0, 0);
-			Constants.URFicon = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\URFicon.png")),
-					0, 0);
-			
-			Constants.GameHostSymbol = ect.ice.CallImage(
-					ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\GameHostSymbol.png")),
-					0, 0);
-			
-			BufferedImage sru, kwu, urfu, srs, kws, urfs;
-			Color backG = new Color(4,16,26);
-			
-			srs =  ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\SummonersRiftSelected.png"));
-			Constants.SummonersRiftSelected = srs;
-			
-			kws = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\KnifeWindSelected.png"));
-			Constants.KnifeWindSelected = kws;
-			
-			urfs = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\URFSelected.png"));
-			Constants.URFSelected = urfs;
-			
-			sru = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeUnSelected\\SummonersRiftunSelected.png"));
-			Constants.SummonersRiftunSelected= ect.ice.RenderImageAsOpacity(sru,backG, 15);
-			
-			kwu = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeUnSelected\\KnifeWindunSelected.png"));
-			Constants.KnifeWindunSelected = ect.ice.RenderImageAsOpacity(kwu,backG, 15);
-			
-			urfu = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeUnSelected\\URFunSelected.png"));
-			Constants.URFunSelected = ect.ice.RenderImageAsOpacity(urfu, backG, 15);
-			
-		} catch (IOException e) {
+			ImageManager.LoginPageFrameImage = ImageIO.read(new File("Resources\\Images\\LoginPage\\LoginPageFrameImage.png"));
+	        ImageManager.FocusedTerminateButtonImage = ImageIO.read(new File("Resources\\Images\\LoginPage\\FocusedTerminateButton.png"));
+	        ImageManager.FocusedLocaleImage= ImageIO.read(new File("Resources\\Images\\LoginPage\\FocusedLocale.png"));
+	        ImageManager.ActivatedLoginButtonImage= ImageIO.read(new File("Resources\\Images\\LoginPage\\ActivatedLoginButton.png"));
+	        ImageManager.FocusedLoginButtonImage= ImageIO.read(new File("Resources\\Images\\LoginPage\\FocusedLoginButton.png"));
+	        ImageManager.AuthentificationImage= ImageIO.read(new File("Resources\\Images\\LoginPage\\Authentification.png"));
+	        ImageManager.ClientTemplateImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\ClientTemplate.png"));
+	        ImageManager.FocusedGameStartButtonImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedGameStartButton.png"));
+	        ImageManager.GameModeSelectImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\GameModeSelection.png"));
+	        ImageManager.FocusedGameSelectionCancelButtonImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedCancelButton.png"));
+	        ImageManager.FocusedHomeButtonImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedHomeButton.png"));
+	        ImageManager.FocusedGameCreateButtonImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedGameCreateButton.png"));
+	        ImageManager.FocusedGameParticipateButtonImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\FocusedGameParticipateButton.png"));
+	        ImageManager.GameModeSelectAdditionImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\GameSelectAdditional.png"));
+	        ImageManager.WaitingRoomImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\WaitingRoomTemplate.png"));
+	        ImageManager.RealGameStartButtonImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\RealGameStartButton.png"));
+	        ImageManager.UnFocusedMoveTeamButtonImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\MoveTeamButton_unfocused.png"));
+	        ImageManager.FocusedMoveTeamButtonImage = ImageIO.read(new File("Resources\\Images\\ClientPage\\MoveTeamButton_focused.png"));
+	         
+	        ImageManager.SRicon = ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\SRicon.png"));
+	        ImageManager.KWicon = ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\KWicon.png"));
+	        ImageManager.URFicon = ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\URFicon.png"));
+	        
+	        ImageManager.GameHostSymbol = ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\GameHostSymbol.png"));
+	        
+	        BufferedImage sru, kwu, urfu, srs, kws, urfs;
+	        Color backG = new Color(4,16,26);
+	        
+	        srs =  ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\SummonersRiftSelected.png"));
+	        ImageManager.SummonersRiftSelected = srs;
+	        
+	        kws = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\KnifeWindSelected.png"));
+	        ImageManager.KnifeWindSelected = kws;
+	        
+	        urfs = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeSelected\\URFSelected.png"));
+	        ImageManager.URFSelected = urfs;
+	        
+	        sru = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeUnSelected\\SummonersRiftunSelected.png"));
+	        ImageManager.SummonersRiftunSelected= ect.ice.RenderImageAsOpacity(sru,backG, 15);
+	        
+	        kwu = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeUnSelected\\KnifeWindunSelected.png"));
+	        ImageManager.KnifeWindunSelected = ect.ice.RenderImageAsOpacity(kwu,backG, 15);
+	        
+	        urfu = ImageIO.read(new File("Resources\\Images\\ClientPage\\ModeUnSelected\\URFunSelected.png"));
+	        ImageManager.URFunSelected = ect.ice.RenderImageAsOpacity(urfu, backG, 15);
+					} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -21,7 +21,7 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 import Global.Constants;
-import Network.InnerData.WaitingRoom.WaitingRoomInfo;
+import Network.InnerData.WaitingRoomInfo;
 import Network.Objects.Chat;
 import Network.Objects.User;
 

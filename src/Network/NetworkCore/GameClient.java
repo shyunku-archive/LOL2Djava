@@ -14,7 +14,8 @@ import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 import Global.Constants;
-import Network.InnerData.WaitingRoom.WaitingRoomInfo;
+import Global.SoundManager;
+import Network.InnerData.WaitingRoomInfo;
 import Network.Objects.User;
 
 public class GameClient {
@@ -83,7 +84,7 @@ public class GameClient {
 								 if(msg[0].equals(NetworkTag.UPDATE_SIGNAL)) {
 									 if(msg[1].equals(NetworkTag.ITEM_ADDITION)) {
 										 if(msg[2].equals(NetworkTag.USER_LIST_TAG))
-											 Constants.ff.playSoundClip(Constants.ParticipateSoundPath, Constants.DEFAULT_VOLUME);
+											 Constants.ff.playSoundClip(SoundManager.ParticipateSoundPath, SoundManager.DEFAULT_VOLUME);
 										 RoomInfo.addItem(Constants.ff.cutFrontStringArray(msg, 2));
 									 }
 									 else if(msg[1].equals(NetworkTag.ITEM_DELETION))
