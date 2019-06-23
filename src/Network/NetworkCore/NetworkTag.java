@@ -46,6 +46,6 @@ public class NetworkTag {
 	
 	
 	//ChampionSelectingPage
-	public static final long	CHAMPION_SELECT_TIME	= 23000;
+	public static final long	CHAMPION_SELECT_TIME	= 28000;
 	public static final long	FINAL_WAITING_TIME		= 50000;
 }

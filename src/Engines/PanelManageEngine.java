@@ -13,7 +13,7 @@ import Global.Functions;
 import Global.Constants.GameMode;
 import Network.NetworkCore.GameClient;
 import Network.NetworkCore.GameServer;
-import Panels.ChampionSelectPage;
+import Panels.NormalChampionSelectPage;
 import Panels.ClientGameModeSelectPage;
 import Panels.ClientPage;
 import Panels.WaitingRoom;
@@ -27,7 +27,7 @@ public class PanelManageEngine {
 	public static ClientPage clientPage;
 	public static ClientGameModeSelectPage clientGameModeSelectPage;
 	public static WaitingRoom waitingPage;
-	public static ChampionSelectPage championSelectPage;
+	public static NormalChampionSelectPage normalChampionSelectPage;
 	
 	/*===============================CREATE PANELS===============================*/
 	
@@ -85,14 +85,14 @@ public class PanelManageEngine {
 	}
 	
 	public void GoChampionSelectPage(GameMode mode, boolean isGameMaster, GameServer gameServer, GameClient gameClient) {
-		championSelectPage = new ChampionSelectPage(mode, isGameMaster, gameServer, gameClient);
+		normalChampionSelectPage = new NormalChampionSelectPage(mode, isGameMaster, gameServer, gameClient);
 		ff.setCursor(Cursor.DEFAULT_CURSOR);
 		
-		championSelectPage.setThis();
+		normalChampionSelectPage.setThis();
 		
-		championSelectPage.isActivated = true;
-		Starter.frame.add(championSelectPage);
-		Starter.frame.setSize(championSelectPage.PanelSize);
+		normalChampionSelectPage.isActivated = true;
+		Starter.frame.add(normalChampionSelectPage);
+		Starter.frame.setSize(normalChampionSelectPage.PanelSize);
 		
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
 	}
@@ -121,7 +121,7 @@ public class PanelManageEngine {
 	
 	public void exitChampionSelectPage() {
 		deactivateAll();
-		Starter.frame.remove(championSelectPage);
+		Starter.frame.remove(normalChampionSelectPage);
 	}
 	
 	/*===============================INTERNAL METHODS===============================*/
@@ -139,7 +139,7 @@ public class PanelManageEngine {
 		if(clientPage.isActivated)clientPage.update();
 		if(clientGameModeSelectPage.isActivated)clientGameModeSelectPage.update();
 		if(waitingPage.isActivated)waitingPage.update();
-		if(championSelectPage.isActivated)championSelectPage.update();
+		if(normalChampionSelectPage.isActivated)normalChampionSelectPage.update();
 	}
 	
 	public static void deactivateAll() {
@@ -147,7 +147,7 @@ public class PanelManageEngine {
 		clientPage.isActivated = false;
 		clientGameModeSelectPage.isActivated = false;
 		waitingPage.isActivated = false;
-		championSelectPage.isActivated = false;
+		normalChampionSelectPage.isActivated = false;
 	}
 	
 	private static Functions ff = new Functions();

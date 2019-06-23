@@ -7,22 +7,52 @@ import Network.NetworkCore.NetworkTag;
 import Network.Objects.Chat;
 import Network.Objects.User;
 
-public class ChampionSelectingRoomInfo extends MessageControl {
+public class NormalChampionSelectingRoomInfo extends MessageControl {
 	private int WaitingPhaseIndex;
 	private long curRemainWaitTimeFlag;
 	
 	private ArrayList<User> userList1, userList2;
 	private ArrayList<Chat> chats1, chats2;
 	
-	public ChampionSelectingRoomInfo() {}
+	public NormalChampionSelectingRoomInfo() {}
 	
-	public ChampionSelectingRoomInfo(ArrayList<User> u1, ArrayList<User> u2, ArrayList<Chat> chats) {
+	public NormalChampionSelectingRoomInfo(ArrayList<User> u1, ArrayList<User> u2, ArrayList<Chat> chats) {
 		this.userList1 = u1;
 		this.userList2 = u2;
 		this.chats1 = chats;
 		this.chats2 = chats;
 		this.WaitingPhaseIndex = 0;
 		this.curRemainWaitTimeFlag = System.currentTimeMillis();
+	}
+
+	public ArrayList<Chat> getOurTeamChat(String myName){
+		for(int i=0;i<userList1.size();i++)
+			if(myName.equals(userList1.get(i).getUserName()))
+				return chats1;
+		for(int i=0;i<userList2.size();i++)
+			if(myName.equals(userList2.get(i).getUserName()))
+				return chats2;
+		Constants.ff.printFatalError();
+		return null;
+	}
+	
+	public int getOurTeamIndex(String myName){
+		for(int i=0;i<userList1.size();i++)
+			if(myName.equals(userList1.get(i).getUserName()))
+				return 1;
+		for(int i=0;i<userList2.size();i++)
+			if(myName.equals(userList2.get(i).getUserName()))
+				return 2;
+		Constants.ff.printFatalError();
+		return 0;
+	}
+	
+	public void addChat(Chat chat, String Username) {
+		int ind = getOurTeamIndex(Username);
+		if(ind == 1)
+			chats1.add(chat);
+		if(ind == 2)
+			chats2.add(chat);
 	}
 	
 	@Override
@@ -39,10 +69,10 @@ public class ChampionSelectingRoomInfo extends MessageControl {
 			msg += userList2.get(i).toString() + TOKEN;
 		msg += NetworkTag.CHAT_LOG_TAG+TOKEN;
 		for(int i=0;i<chats1.size();i++)
-			msg += chats1.toString() + TOKEN;
+			msg += chats1.get(i).toString() + TOKEN;
 		msg += NetworkTag.CHAT_LOG_TAG+TOKEN;
 		for(int i=0;i<chats2.size();i++) {
-			msg += chats2.toString();
+			msg += chats2.get(i).toString();
 			if(i<chats2.size()-1)
 				msg += TOKEN;
 		}
@@ -96,7 +126,10 @@ public class ChampionSelectingRoomInfo extends MessageControl {
 	@Override
 	public void addItem(String[] seg) {
 		// TODO Auto-generated method stub
-		
+		if(seg[0].equals(NetworkTag.CHAT_LOG_TAG)) {
+			seg = Constants.ff.cutFrontStringArray(seg, 1);
+			this.addChat(new Chat(seg), seg[0]);
+		}
 	}
 	@Override
 	public void deleteItem(String[] seg) {
@@ -118,7 +151,8 @@ public class ChampionSelectingRoomInfo extends MessageControl {
 		WaitingPhaseIndex = waitingPhaseIndex;
 	}
 	public long getCurReaminWaitTime() {
-		return curRemainWaitTimeFlag;
+		long elapsed = System.currentTimeMillis() - this.curRemainWaitTimeFlag;
+		return NetworkTag.CHAMPION_SELECT_TIME - elapsed;
 	}
 	public void setCurReaminWaitTime(long curReaminWaitTime) {
 		this.curRemainWaitTimeFlag = curReaminWaitTime;

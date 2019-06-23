@@ -21,7 +21,7 @@ import java.util.Iterator;
 import javax.swing.JOptionPane;
 
 import Global.Constants;
-import Network.InnerData.ChampionSelectingRoomInfo;
+import Network.InnerData.NormalChampionSelectingRoomInfo;
 import Network.InnerData.WaitingRoomInfo;
 import Network.Objects.Chat;
 import Network.Objects.User;
@@ -33,7 +33,7 @@ public class GameServer {
 	
 	//나중에 게임 데이터 클래스로 한데 모아야함
 	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("", "");
-	private ChampionSelectingRoomInfo  selectChampRoomInfo;
+	private NormalChampionSelectingRoomInfo  selectChampRoomInfo;
 	private String GameStatus = NetworkTag.WAITING_ROOM;
 	
 	
@@ -94,14 +94,18 @@ public class GameServer {
 											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.CHAT_LOG_TAG, newChat.toString());
 											 
 										 }else if(tag.equals(NetworkTag.CHAT)) {
-											 Chat newChat = new Chat(msg[0], msg[1], msg[2]);
-											 RoomInfo.addChat(newChat);
+											 Chat newChat = new Chat(msg[1], msg[2], msg[3]);
+											 if(msg[0].equals(NetworkTag.WAITING_ROOM)) {
+												 RoomInfo.addChat(newChat);
+											 }else if(msg[0].equals(NetworkTag.CHAMP_SELECT_ROOM)) {
+												 selectChampRoomInfo.addChat(newChat, msg[1]);
+											 }
 											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.CHAT_LOG_TAG, newChat.toString());
 										 }else if(tag.equals(NetworkTag.MOVE_TEAM_SIGNAL)) {
 											 RoomInfo.moveTeam(msg[0]);
 											 broadcast(GameStatus, NetworkTag.MOVE_TEAM_SIGNAL, msg[0]);
 										 }else if(tag.equals(NetworkTag.PING_TEST)) {
-											 broadcastToSpecific(curUsername, NetworkTag.PING_TEST);
+											 broadcastToSpecific(curUsername, NetworkTag.PING_TEST + "|" + msg[0]);
 										 }else if(tag.equals(NetworkTag.SELECT_START)) {
 											 GameStatus = NetworkTag.CHAMP_SELECT_ROOM;
 											 broadcast(GameStatus, NetworkTag.SELECT_START);
@@ -226,7 +230,7 @@ public class GameServer {
 	
 	
 	public void convertWaitingRoomDataToChampionSelectRoomData() {
-		this.selectChampRoomInfo = new ChampionSelectingRoomInfo(RoomInfo.getUserList(1), RoomInfo.getUserList(2), RoomInfo.getChats());
+		this.selectChampRoomInfo = new NormalChampionSelectingRoomInfo(RoomInfo.getUserList(1), RoomInfo.getUserList(2), RoomInfo.getChats());
 	}
 	
 	

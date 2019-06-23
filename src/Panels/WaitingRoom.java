@@ -199,7 +199,7 @@ public class WaitingRoom extends JPanel implements PageControl{
 		
 		public void update() {
 			EpicEngine ee = new EpicEngine();
-			//게임 호스트일 경우 게임서버에서 데이터 가져와서 업데이트
+			
 			WaitingRoomInfo renew = gameClient.getRoomInfo();
 			this.wri = renew;
 			userList1 = renew.getUserList(1);
@@ -287,7 +287,7 @@ public class WaitingRoom extends JPanel implements PageControl{
 				public void onEnterKey() {
 					// TODO Auto-generated method stub
 					if(Chatr.getText().length()==0)return;
-					gameClient.sendMessageToServer(NetworkTag.CHAT+"|"+Variables.Username+"|"+Chatr.getText()+"|"+NetworkTag.NON_SYSTEMIC);
+					gameClient.sendMessageToServer(NetworkTag.CHAT+"|"+NetworkTag.WAITING_ROOM+"|"+Variables.Username+"|"+Chatr.getText()+"|"+NetworkTag.NON_SYSTEMIC);
 					Chatr.setText("");
 				}
 				
@@ -340,10 +340,8 @@ public class WaitingRoom extends JPanel implements PageControl{
 			});
 			scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scrollPane.setVisible(true);
-			//this.add(chatArea);
 			
 			this.add(scrollPane);
-			//Chatr.setBackground(new Color(100,100,100,100));
 			
 			
 			setPanelSize(Constants.ClientPanelDimension);

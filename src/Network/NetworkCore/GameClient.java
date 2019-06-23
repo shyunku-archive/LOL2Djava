@@ -10,12 +10,14 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
 import Global.Constants;
 import Global.SoundManager;
-import Network.InnerData.ChampionSelectingRoomInfo;
+import Network.InnerData.NormalChampionSelectingRoomInfo;
 import Network.InnerData.WaitingRoomInfo;
 import Network.Objects.User;
 
@@ -25,12 +27,14 @@ public class GameClient {
 	private User user;
 	
 	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("","");
-	private ChampionSelectingRoomInfo  selectChampRoomInfo = new ChampionSelectingRoomInfo();
+	private NormalChampionSelectingRoomInfo  selectChampRoomInfo = new NormalChampionSelectingRoomInfo();
 	
 	
 	private long updates = 0;
 	public long ping = 0;
 	private boolean nextPhaseSignal = false;
+	private HashMap<Long, Long> pingDiff = new HashMap<Long, Long>();
+	private long pingIndex = 0;
 	
 	private ArrayList<Long> sendPingFlags = new ArrayList<>();
 	
@@ -56,7 +60,7 @@ public class GameClient {
 		return this.RoomInfo;
 	}
 	
-	public ChampionSelectingRoomInfo getSelectRoomInfo() {
+	public NormalChampionSelectingRoomInfo getSelectRoomInfo() {
 		return this.selectChampRoomInfo;
 	}
 	
@@ -91,9 +95,15 @@ public class GameClient {
 							 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
 							 
 							 if(tag.equals(NetworkTag.PING_TEST)) {
-								 if(sendPingFlags.size()>0) {
-									 ping = System.nanoTime() - sendPingFlags.get(0);
-									 sendPingFlags.remove(0);
+								 synchronized(pingDiff) {
+									 HashMap<Long, Long> temp = pingDiff;
+									 long index = Long.parseLong(msg[0]);
+									 Set<Long> keys = temp.keySet();
+									 for(Long key : keys)
+										 if(key == index) {
+											 ping = System.nanoTime() - temp.get(key);
+											 break;
+										 }
 								 }
 							 }else Constants.ff.cprint("CLIENT <- SERVER : "+response);
 							 
@@ -121,6 +131,14 @@ public class GameClient {
 									 nextPhaseSignal = true;
 								 }else if(msg[0].equals(NetworkTag.UPDATE_ALL)) {
 									 selectChampRoomInfo.fromMsg(Constants.ff.cutFrontStringArray(msg, 1));
+								 }else if(msg[0].equals(NetworkTag.UPDATE_SIGNAL)) {
+									 if(msg[1].equals(NetworkTag.ITEM_ADDITION)) {
+										 selectChampRoomInfo.addItem(Constants.ff.cutFrontStringArray(msg, 2));
+									 }
+									 else if(msg[1].equals(NetworkTag.ITEM_DELETION))
+										 selectChampRoomInfo.deleteItem(Constants.ff.cutFrontStringArray(msg, 2));
+									 else if(msg[1].equals(NetworkTag.ITEM_MODIFICATION))
+										 selectChampRoomInfo.modifyItem(Constants.ff.cutFrontStringArray(msg, 2));
 								 }
 							 }
 						}
@@ -150,8 +168,11 @@ public class GameClient {
 					while(true) {
 						try {
 							Thread.sleep(1000);
-							sendMessageToServer(NetworkTag.PING_TEST);
-							sendPingFlags.add(System.nanoTime());
+							synchronized(pingDiff) {
+								sendMessageToServer(NetworkTag.PING_TEST+"|"+pingIndex);
+								pingDiff.put(pingIndex, System.nanoTime());
+								pingIndex++;
+							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -171,9 +192,9 @@ public class GameClient {
 	
 	public void sendMessageToServer(String msg){
 		//클라이언트 -> 서버
-		String content = msg;
+		String[] tokens = msg.split("\\|");
 		msg = user.getUserName()+"|" +msg;
-		if(!content.equals(NetworkTag.PING_TEST))
+		if(!tokens[0].equals(NetworkTag.PING_TEST))
 			Constants.ff.cprint("CLIENT -> SERVER : "+msg);
 		writer.println(msg);
 		writer.flush();
