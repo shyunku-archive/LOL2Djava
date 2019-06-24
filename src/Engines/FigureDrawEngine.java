@@ -43,6 +43,11 @@ public class FigureDrawEngine {
 		g.setColor(original);
 	}
 	
+	public void drawRightAlignedString(Graphics2D g, String str, Coordinate p) {
+		FontMetrics metrics = g.getFontMetrics(g.getFont());
+		g.drawString(str, (int)(p.getX()) - metrics.stringWidth(str), (int)(p.getY()));
+	}
+	
 	public void advancedDrawRightAlignedString(Graphics2D g, String str, Coordinate p, Dimension wind, Color top, Color bot, int floats) {
 		Color original = g.getColor();
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
@@ -120,8 +125,8 @@ public class FigureDrawEngine {
 	}
 	
 	public void drawSemiTranslucentImage(Graphics2D g, BufferedImage bi, int x, int y, float opacity) {
-		if(opacity<0)opacity = 0f;
-		if(opacity>1)opacity = 1f;
+		if(opacity<=0)opacity = 0f;
+		if(opacity>=1)opacity = 1f;
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 		g.drawImage(bi, null, x, y);
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));

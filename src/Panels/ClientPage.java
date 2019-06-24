@@ -166,7 +166,7 @@ public class ClientPage extends JPanel implements PageControl{
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(SoundManager.ActivatedGameStartButtonSoundFilePath,SoundManager.GAME_START_BUTTON_SOUND_VOLUME);
+				ff.playSoundClip(SoundManager.ActivatedGameStartButtonSoundFilePath,SoundManager.HIGHER_VOLUME);
 			}
 
 			@Override
@@ -184,7 +184,7 @@ public class ClientPage extends JPanel implements PageControl{
 			@Override
 			public void onRelease() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(SoundManager.GameStartButtonSoundFilePath, SoundManager.GAME_START_BUTTON_SOUND_VOLUME);
+				ff.playSoundClip(SoundManager.GameStartButtonSoundFilePath, SoundManager.HIGHER_VOLUME);
 				Starter.pme.exitClientPage();
 				Starter.pme.GoClientGameModeSelectPage();
 			}

@@ -33,7 +33,7 @@ public class GameServer {
 	
 	//나중에 게임 데이터 클래스로 한데 모아야함
 	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("", "");
-	private NormalChampionSelectingRoomInfo  selectChampRoomInfo;
+	private NormalChampionSelectingRoomInfo  selectNormalChampRoomInfo;
 	private String GameStatus = NetworkTag.WAITING_ROOM;
 	
 	
@@ -66,6 +66,8 @@ public class GameServer {
 										 String tag = tokens[0];
 										 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
 										 
+										 //메시지 = Sender 이름 + 태그 + Content
+										 
 										 if(!tag.equals(NetworkTag.PING_TEST))
 											 Constants.ff.cprint("SERVER <- CLIENT : "+request);
 										 
@@ -81,7 +83,7 @@ public class GameServer {
 													 socket.close();
 													 break;
 												 }
-											 User newUser = new User(msg);
+											 User newUser = new User(Constants.ff.subArray(msg, 0, 2));
 											 Chat newChat = new Chat(NetworkTag.EMPTY_STRING, newUser.getUserName()+"님이 로비에 참가하셨습니다.", true);
 											 addWriter(socket, newUser.getUserName());
 											 
@@ -97,8 +99,8 @@ public class GameServer {
 											 Chat newChat = new Chat(msg[1], msg[2], msg[3]);
 											 if(msg[0].equals(NetworkTag.WAITING_ROOM)) {
 												 RoomInfo.addChat(newChat);
-											 }else if(msg[0].equals(NetworkTag.CHAMP_SELECT_ROOM)) {
-												 selectChampRoomInfo.addChat(newChat, msg[1]);
+											 }else if(msg[0].equals(NetworkTag.NORMAL_CHAMP_SELECT_ROOM)) {
+												 selectNormalChampRoomInfo.addChat(newChat, msg[1]);
 											 }
 											 broadcast(GameStatus, NetworkTag.UPDATE_SIGNAL, NetworkTag.ITEM_ADDITION, NetworkTag.CHAT_LOG_TAG, newChat.toString());
 										 }else if(tag.equals(NetworkTag.MOVE_TEAM_SIGNAL)) {
@@ -107,10 +109,28 @@ public class GameServer {
 										 }else if(tag.equals(NetworkTag.PING_TEST)) {
 											 broadcastToSpecific(curUsername, NetworkTag.PING_TEST + "|" + msg[0]);
 										 }else if(tag.equals(NetworkTag.SELECT_START)) {
-											 GameStatus = NetworkTag.CHAMP_SELECT_ROOM;
+											 GameStatus = NetworkTag.NORMAL_CHAMP_SELECT_ROOM;
 											 broadcast(GameStatus, NetworkTag.SELECT_START);
 											 convertWaitingRoomDataToChampionSelectRoomData();
-											 broadcast(GameStatus, NetworkTag.UPDATE_ALL, selectChampRoomInfo.toMsg());
+											 broadcast(GameStatus, NetworkTag.UPDATE_ALL, selectNormalChampRoomInfo.toMsg());
+											 selectNormalChampRoomInfo.executeNormalPhase();
+										 }else if(tag.equals(NetworkTag.NEXT_PHASE)) {
+											 Constants.ff.cprint(GameStatus + " ff "+selectNormalChampRoomInfo.isAllPicked());
+											 if(GameStatus.equals(NetworkTag.NORMAL_CHAMP_SELECT_ROOM)) {
+												 if(!selectNormalChampRoomInfo.isAllPicked()){
+													 JOptionPane.showMessageDialog(null, "적어도 한 명이 픽을 하지 않았습니다.");
+													 System.exit(0);
+												 }
+											 }
+											 selectNormalChampRoomInfo.nextPhase();
+											 broadcast(GameStatus, NetworkTag.NEXT_PHASE);
+										 }else if(tag.equals(NetworkTag.CHAMP_SELECT_SIGNAL)) {
+											 selectNormalChampRoomInfo.userSelectedChampion(curUsername, Integer.parseInt(msg[0]));
+											 broadcast(GameStatus, NetworkTag.CHAMP_SELECT_SIGNAL, curUsername, msg[0]);
+										 }
+										 else if(tag.equals(NetworkTag.CHAMP_PICK_SIGNAL)) {
+											 selectNormalChampRoomInfo.userPicked(curUsername);
+											 broadcast(GameStatus, NetworkTag.CHAMP_PICK_SIGNAL, curUsername);
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block
@@ -230,7 +250,7 @@ public class GameServer {
 	
 	
 	public void convertWaitingRoomDataToChampionSelectRoomData() {
-		this.selectChampRoomInfo = new NormalChampionSelectingRoomInfo(RoomInfo.getUserList(1), RoomInfo.getUserList(2), RoomInfo.getChats());
+		this.selectNormalChampRoomInfo = new NormalChampionSelectingRoomInfo(RoomInfo.getUserList(1), RoomInfo.getUserList(2), RoomInfo.getChats());
 	}
 	
 	

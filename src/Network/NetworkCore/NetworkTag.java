@@ -8,7 +8,7 @@ public class NetworkTag {
 	
 	//Status
 	public static final String	WAITING_ROOM		= "%%STATUS_WAITING_ROOM%%";
-	public static final String	CHAMP_SELECT_ROOM	= "%%CHAMPION_SELECT_ROOM%%";
+	public static final String	NORMAL_CHAMP_SELECT_ROOM	= "%%CHAMPION_SELECT_ROOM%%";
 	
 	
 	//Global
@@ -46,6 +46,16 @@ public class NetworkTag {
 	
 	
 	//ChampionSelectingPage
-	public static final long	CHAMPION_SELECT_TIME	= 28000;
-	public static final long	FINAL_WAITING_TIME		= 50000;
+	public static final long	NORMAL_CHAMPION_SELECT_TIME	= 30000;
+	public static final long	FINAL_WAITING_TIME		= 20000;
+	
+	public static final String	NEXT_PHASE			= "%%NEXT_SELECT_PHASE%%";
+	public static final String 	SELECTING_CHAMP		= "%%SELECTING_CHAMPION%%";
+	public static final String 	NOT_SELECTING_CHAMP	= "%%NOT_SELECTING_CHAMPION%%";
+	public static final String 	CHAMPION_PICKED		= "%%PICKED_CHAMPION%%";
+	public static final String 	NOT_CHAMPION_PICKED	= "%%NOT_PICKED_CHAMPION%%";
+	
+	public static final String	CHAMP_SELECT_SIGNAL	= "%%SELECT_CHAMPION_SIGNAL%%";
+	public static final String	CHAMP_PICK_SIGNAL	= "%%PICK_CHAMPION_SIGNAL%%";
+	
 }

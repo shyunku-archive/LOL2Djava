@@ -276,6 +276,7 @@ public class ClientGameModeSelectPage extends JPanel implements PageControl{
 			public void onClick() {
 				// TODO Auto-generated method stub
 				ff.playSoundClip(SoundManager.SelectedCPSoundPath, SoundManager.DEFAULT_VOLUME);
+					
 				if(RoomName.getText().length()==0)return;
 				Starter.pme.exitClientGameModeSelectPage();
 				Starter.pme.GoWaitingPage(gamemode, RoomName.getText(), Password.getText(), false);
@@ -284,7 +285,7 @@ public class ClientGameModeSelectPage extends JPanel implements PageControl{
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(SoundManager.ActivatedCPSoundPath, SoundManager.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.ActivatedCPSoundPath, SoundManager.HIGHER_VOLUME);
 			}
 
 			@Override
@@ -323,7 +324,11 @@ public class ClientGameModeSelectPage extends JPanel implements PageControl{
 			@Override
 			public void onClick() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(SoundManager.SelectedCPSoundPath, SoundManager.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.SelectedCPSoundPath, SoundManager.HIGHER_VOLUME);
+				if(gamemode != GameMode.KnifeWind) {
+					JOptionPane.showMessageDialog(null, "칼바람 나락 외의 맵은 아직 개발되지 않았습니다.");
+					return;
+				}
 				if(RoomName.getText().length()==0)return;
 				Starter.pme.exitClientGameModeSelectPage();
 				Starter.pme.GoWaitingPage(gamemode, RoomName.getText(), Password.getText(), true);
@@ -332,7 +337,7 @@ public class ClientGameModeSelectPage extends JPanel implements PageControl{
 			@Override
 			public void onEnter() {
 				// TODO Auto-generated method stub
-				ff.playSoundClip(SoundManager.ActivatedCPSoundPath, SoundManager.DEFAULT_VOLUME);
+				ff.playSoundClip(SoundManager.ActivatedCPSoundPath, SoundManager.HIGHER_VOLUME);
 			}
 
 			@Override

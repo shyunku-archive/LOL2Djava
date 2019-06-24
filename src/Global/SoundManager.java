@@ -20,11 +20,16 @@ public class SoundManager {
 	
 	public static String ParticipateSoundPath;
 	
+	//«»√¢
+	public static String KnifeWindChampionSelectBGMPath;
+	
 	//Volume
 	public static final double LIGHT_CLICK_SOUND_VOLUME = 2D;
 	public static final double GAME_START_BUTTON_SOUND_VOLUME = 0.7D;
 	public static final double GAME_SELECT_CANCEL_SOUND_VOLUME = 1.5D;
 	
+	public static final double TINY_VOLUME = 0.25D;
+	public static final double LOWER_VOLUME = 0.6D;
 	public static final double DEFAULT_VOLUME = 1D;
 	public static final double HIGHER_VOLUME = 1.5D;
 	

@@ -15,6 +15,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.font.TextAttribute;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +48,7 @@ import Network.NetworkCore.GameClient;
 import Network.NetworkCore.GameServer;
 import Network.NetworkCore.NetworkTag;
 import Network.Objects.Chat;
+import Network.Objects.User;
 import Objects.Coordinate;
 import Utility.ChampionSelectionImageScroller;
 import Utility.EnginesControl;
@@ -63,7 +66,7 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 	private static Functions ff = new Functions();
 	private static EnginesControl ect = new EnginesControl();
 	
-	private static TriggeredButton CloseBtn, TerminateBtn;
+	private static TriggeredButton CloseBtn, TerminateBtn, PickBtn;
 	
 	//Server
 	private GameServer gameServer;
@@ -73,13 +76,16 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 	ChampionManager championPack;
 	
 	GameMode mode;
-	NormalChampionSelectingRoomInfo RoomInfo;
+	NormalChampionSelectingRoomInfo RoomInfo =  new NormalChampionSelectingRoomInfo();
 	ChampionSelectionImageScroller imageScroller;
 	
 	private static TriggeredTextArea Chatr = new TriggeredTextArea(new Rectangle(21, 669, 300, 30));
 	private static JScrollPane scrollPane;
 	private static CustomTextPane chatArea = new CustomTextPane(true);
 	private int chatSize = 0;
+	private int myTeamIndex = 0;
+	
+	private boolean nextPhaseSwitch = true;
 	
 	public void paintComponent(Graphics graphics) {
 		Graphics2D g = (Graphics2D) graphics;
@@ -88,25 +94,90 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 		
 		g.drawImage(ImageManager.ChampionSelectTemplate, null, 0, 0);
 		//293·Î Á¤·Ä
-		if(RoomInfo != null) {
-			int team1num = RoomInfo.getUserList1().size();
-			int team2num = RoomInfo.getUserList2().size();
-			for(int i=0;i<team1num;i++) {
-				g.drawImage(ImageManager.DeactivatedUserSlot_Team1, null, 5, 293 - (93*team1num/2) + 93*i);
+		if(RoomInfo != null) {			
+			final int SAH = 50;
+			final int SLW = 95;
+			final int SRW = 1180;
+			
+			long Remained = RoomInfo.getCurReaminWaitTime();
+			if(Remained <0)
+				Remained = 0;
+			g.setColor(Color.WHITE);
+			int code;
+			
+			ArrayList<User> OurTeam, EnemyTeam;
+			if(myTeamIndex == 1) {
+				OurTeam = RoomInfo.getUserList1();
+				EnemyTeam = RoomInfo.getUserList2();
+			}else {
+				OurTeam = RoomInfo.getUserList2();
+				EnemyTeam = RoomInfo.getUserList1();
 			}
-			for(int i=0;i<team2num;i++)
-				g.drawImage(ImageManager.DeactivatedUserSlot_Team2, null, 998, 293 - (93*team1num/2) + 93*i);
+			
+			for(int i=0;i<OurTeam.size();i++) {
+				int adjust = 81;
+				Coordinate coord = new Coordinate(18, 293 - (adjust*OurTeam.size()/2) + adjust*i);
+				g.setFont(ff.getClassicFont(15, true));
+				if(RoomInfo.getUserList1().get(i).isSelecting()) {
+					if(OurTeam.get(i).getUserName().equals(Variables.Username)) {
+						g.drawImage(ImageManager.MyPickingUserFrame, null, coord.getX()-13, coord.getY());
+						g.drawString(OurTeam.get(i).getUserName(), SLW+36, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 10);
+						
+						g.setFont(ff.getClassicFont(28, true));
+						g.drawString(""+Remained/1000, SLW+165, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 8);
+					}else {
+						
+						g.drawImage(ImageManager.OurTeamPickingUserFrame, null, coord.getX(), coord.getY());
+						g.drawString(OurTeam.get(i).getUserName(), SLW+36, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 10);
+					}
+				}
+				else {
+					if(OurTeam.get(i).getUserName().equals(Variables.Username)) {
+						g.drawImage(ImageManager.MyPickedUserFrame, null, coord.getX()-13, coord.getY());
+						g.drawString(OurTeam.get(i).getUserName(), SLW+36, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH);
+					}else {
+						g.drawImage(ImageManager.OurTeamPickingUserFrame, null, coord.getX(), coord.getY());
+						g.drawString(OurTeam.get(i).getUserName(), SLW+36, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 10);
+					}
+				}
+				
+				if((code = OurTeam.get(i).getSelectedChampionCode())!=0) {
+					GeneralPath path = new GeneralPath();
+					path.append(new Ellipse2D.Double(13+ (OurTeam.get(i).isSelecting()?50:0), coord.getY()+17, 56, 56), false);
+					g.clip(path);
+					BufferedImage bi = championPack.getChampionByCode(code).getChampionIcon();
+					g.drawImage(bi, null, 41 - bi.getWidth()/2+ (OurTeam.get(i).isSelecting()?50:0), coord.getY()+43 - bi.getHeight()/2);
+					g.setClip(0, 0, (int)Constants.ClientPanelDimension.getWidth(), (int)Constants.ClientPanelDimension.getHeight());
+				}
+				
+			}
+			for(int i=0;i<EnemyTeam.size();i++) {
+				Coordinate coord = new Coordinate(1280 - ImageManager.EnemyTeamPickingUserFrame.getWidth() - 10, 293 - (93*EnemyTeam.size()/2) + 93*i);
+				if(EnemyTeam.get(i).isSelecting())
+					g.drawImage(ImageManager.EnemyTeamPickingUserFrame, null, coord.getX(), coord.getY());
+				else
+					g.drawImage(ImageManager.EnemyTeamPickedUserFrame, null, coord.getX(), coord.getY());
+				if((code = EnemyTeam.get(i).getSelectedChampionCode())!=0) {
+					GeneralPath path = new GeneralPath();
+					path.append(new Ellipse2D.Double(coord.getX() + 150, coord.getY()+16, 58, 58), false);
+					g.clip(path);
+					BufferedImage bi = championPack.getChampionByCode(code).getChampionIcon();
+					g.drawImage(bi, null, 41 - bi.getWidth()/2, 292 - bi.getHeight()/2);
+					g.setClip(0, 0, (int)Constants.ClientPanelDimension.getWidth(), (int)Constants.ClientPanelDimension.getHeight());
+				}
+				ect.fde.drawRightAlignedString(g, EnemyTeam.get(i).getUserName(), new Coordinate(SRW, 293 - (93*EnemyTeam.size()/2) + 93*i + SAH));
+			}
+			
+			g.setColor(Color.WHITE);
+			g.setFont(ff.getClassicFont(35, true));
+			ect.fde.drawCenteredString(g, ""+Remained/1000, new Rectangle(610, 33, 60, 79));
 		}
-		
-		long Remained = RoomInfo.getCurReaminWaitTime();
-		
-		g.setColor(Color.WHITE);
-		g.setFont(ff.getClassicFont(35, true));
-		ect.fde.drawCenteredString(g, ""+Remained/1000, new Rectangle(610, 33, 60, 79));
+		PickBtn.draw(g);
 	}
 	
 	public void update() {
 		EpicEngine ee = new EpicEngine();
+		if(gameClient.getSelectRoomInfo().getOurTeamChat(Variables.Username)== null)return;
 		ArrayList<Chat> myTeamChat = gameClient.getSelectRoomInfo().getOurTeamChat(Variables.Username);
 		for(int i=chatSize;i< myTeamChat.size();i++){
 			Chat c = myTeamChat.get(i);
@@ -136,6 +207,12 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 		Variables.ping = gameClient.ping;
 		imageScroller.revalidate();
 		imageScroller.repaint();
+		
+		if(nextPhaseSwitch && RoomInfo.getCurReaminWaitTime() < 0 && this.isGameMaster) {
+			gameClient.sendMessageToServer(NetworkTag.NEXT_PHASE);
+			this.nextPhaseSwitch = false;
+		}
+		myTeamIndex = RoomInfo.getOurTeamIndex(Variables.Username);
 	}
 	
 	public void setThis() {
@@ -144,6 +221,48 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 		chatArea.setFont(Font.getFont(attributes));
 		championPack = new ChampionManager();
 		imageScroller = new ChampionSelectionImageScroller(new Rectangle(350, 120, 577, 461), new Dimension(65,65), 6, championPack.pack, 1, 29, 10);
+		for(int i=0;i<championPack.pack.size();i++) {
+			final int index = i;
+			imageScroller.championClick[i].addOnButtonListener(new onButtonListener() {
+	
+				@Override
+				public void onClick() {
+					// TODO Auto-generated method stub
+					if(imageScroller.prevSelected != -1) {
+						PickBtn.setVisible(true);
+						imageScroller.championClick[imageScroller.prevSelected].unselectThis();
+					}
+					imageScroller.prevSelected = index;
+					if(RoomInfo.getMe(Variables.Username).isSelecting())
+						gameClient.sendMessageToServer(NetworkTag.CHAMP_SELECT_SIGNAL+"|"+championPack.pack.get(index).getChampionCode());
+				}
+	
+				@Override
+				public void onEnter() {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void onExit() {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void onPress() {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void onRelease() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
+		}
 		this.add(imageScroller);
 	}
 	
@@ -162,7 +281,7 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 			public void onEnterKey() {
 				// TODO Auto-generated method stub
 				if(Chatr.getText().length()==0)return;
-				gameClient.sendMessageToServer(NetworkTag.CHAT+"|"+NetworkTag.CHAMP_SELECT_ROOM+"|"+Variables.Username+"|"+Chatr.getText()+"|"+NetworkTag.NON_SYSTEMIC);
+				gameClient.sendMessageToServer(NetworkTag.CHAT+"|"+NetworkTag.NORMAL_CHAMP_SELECT_ROOM+"|"+Variables.Username+"|"+Chatr.getText()+"|"+NetworkTag.NON_SYSTEMIC);
 				Chatr.setText("");
 			}
 			
@@ -217,6 +336,51 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 		
 		this.add(scrollPane);
 		
+		
+		PickBtn = new TriggeredButton(
+				ImageManager.ActivatedPickButtonImage,
+				ImageManager.FocusedPickButtonImage,
+				null,
+				new Coordinate(553, 587),
+				new Coordinate(553,587),
+				null,
+				new Rectangle(553,587,181,41),
+				0,
+				0
+				);
+		PickBtn.addOnButtonListener(new onButtonListener() {
+			@Override
+			public void onClick() {
+				gameClient.sendMessageToServer(NetworkTag.CHAMP_PICK_SIGNAL);
+				imageScroller.setVisible(false);
+			}
+
+			@Override
+			public void onEnter() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onExit() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPress() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onRelease() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		PickBtn.setVisible(false);
+		this.add(PickBtn);
 		
 		CloseBtn = new TriggeredButton(
 				null,

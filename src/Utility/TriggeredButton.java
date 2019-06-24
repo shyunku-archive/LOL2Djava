@@ -43,7 +43,7 @@ public class TriggeredButton extends JButton{
 		if(unFocusedImage!=null)
 			g.drawImage(unFocusedImage, null, this.UnFocusImagePoint.getX(), this.UnFocusImagePoint.getY());
 		opacity = (float) this.getProcessRate();
-		if(FocusedImage!=null)
+		if(!isSelected&&FocusedImage!=null)
 			ect.fde.drawSemiTranslucentImage(g, FocusedImage, this.FocusImagePoint.getX(), this.FocusImagePoint.getY(), opacity);
 		if(isSelected && (SelectedImage != null)) {
 			g.drawImage(SelectedImage, null, this.SelectedImagePoint.getX(), this.SelectedImagePoint.getY());
@@ -71,6 +71,8 @@ public class TriggeredButton extends JButton{
 	}
 	
 	public void unselectThis() {
+		this.LastEnteredFlag = 0;
+		this.LastEnteredFlag = 0;
 		this.isSelected = false;
 	}
 	
@@ -78,7 +80,91 @@ public class TriggeredButton extends JButton{
 		return this.isSelected;
 	}
 	
+	//Not Recommended
+	public TriggeredButton() {}
+	
 	public TriggeredButton(BufferedImage unFocused, BufferedImage Focused, BufferedImage Selected,
+			Coordinate unFocusedPoint, Coordinate FocusedPoint, Coordinate SelectedPoint,
+			 Rectangle FocusFrame, long fadeIn, long fadeOut) {
+		
+		this.unFocusedImage = unFocused;
+		this.UnFocusImagePoint = unFocusedPoint;
+		
+		this.FocusedImage = Focused;
+		this.FocusImagePoint = FocusedPoint;
+		
+		this.SelectedImage = Selected;
+		this.SelectedImagePoint = SelectedPoint;
+		
+		this.FadeInTime = fadeIn;
+		this.FadeOutTime = fadeOut;
+		
+		this.setBounds(FocusFrame);
+		this.setContentAreaFilled(false);
+		this.setFocusPainted(false);
+		this.setBorderPainted(false);
+		this.setVisible(true);
+		this.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				isOnButton = false;
+				LastEnteredFlag = System.currentTimeMillis();
+				if(listener!=null)listener.onClick();
+				selectThis();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				isOnButton = true;
+				LastExitedFlag = System.currentTimeMillis();
+				Starter.frame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if(listener!=null)listener.onEnter();
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				isOnButton = false;
+				LastEnteredFlag = System.currentTimeMillis();
+				Starter.frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				if(listener!=null)listener.onExit();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				if(listener!=null)listener.onPress();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				if(listener!=null)listener.onRelease();
+			}
+			
+		});
+		
+		this.addMouseMotionListener(new MouseMotionListener() {
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Variables.mousePos.setPos(e.getX()+getBounds().x, e.getY()+getBounds().y);
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				// TODO Auto-generated method stub
+				Variables.mousePos.setPos(e.getX()+getBounds().x, e.getY()+getBounds().y);
+			}
+			
+		});
+	}
+	
+	public void setThis(BufferedImage unFocused, BufferedImage Focused, BufferedImage Selected,
 			Coordinate unFocusedPoint, Coordinate FocusedPoint, Coordinate SelectedPoint,
 			 Rectangle FocusFrame, long fadeIn, long fadeOut) {
 		

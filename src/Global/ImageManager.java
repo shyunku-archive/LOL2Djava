@@ -30,11 +30,21 @@ public class ImageManager {
 	
 	//chamion Select
 	public static BufferedImage ChampionSelectTemplate = null;
-	public static BufferedImage SelectingUserSlot_Team1 = null;
-	public static BufferedImage SelectingUserSlot_Team2 = null;
-	public static BufferedImage DeactivatedUserSlot_Team1 = null;
-	public static BufferedImage DeactivatedUserSlot_Team2 = null;
 	
+	public static BufferedImage OurTeamWaitingUserFrame = null;
+	public static BufferedImage OurTeamPickingUserFrame = null;
+	public static BufferedImage OurTeamPickedUserFrame = null;
+	
+	public static BufferedImage MyWaitingUserFrame = null;
+	public static BufferedImage MyPickingUserFrame = null;
+	public static BufferedImage MyPickedUserFrame = null;
+	
+	public static BufferedImage EnemyTeamWaitingUserFrame = null;
+	public static BufferedImage EnemyTeamPickingUserFrame = null;
+	public static BufferedImage EnemyTeamPickedUserFrame = null;
+	
+	public static BufferedImage ActivatedPickButtonImage = null;
+	public static BufferedImage FocusedPickButtonImage = null;
 	
 	//select-unselect
 	public static BufferedImage SummonersRiftSelected = null;
@@ -59,6 +69,9 @@ public class ImageManager {
 	public static BufferedImage JinxIconImage = null;
 	public static BufferedImage TrindamereIconImage = null;
 	public static BufferedImage YasuoIconImage = null;
+	public static BufferedImage SorakaIconImage = null;
 	
-	
+	public static BufferedImage	ChampionIconFrame = null;
+	public static BufferedImage SelectedChampionIconFrame = null;
+	public static BufferedImage FocusedChampionIconFrame = null;
 }

@@ -392,7 +392,7 @@ public class WaitingRoom extends JPanel implements PageControl{
 						public void onRelease() {
 							// TODO Auto-generated method stub
 							tb.setEnabled(false);
-							ff.playSoundClip(SoundManager.TeamMoveSoundPath, SoundManager.DEFAULT_VOLUME);
+							ff.playSoundClip(SoundManager.TeamMoveSoundPath, SoundManager.HIGHER_VOLUME);
 							gameClient.sendMessageToServer(NetworkTag.MOVE_TEAM_SIGNAL+"|"+Variables.Username);
 						}
 					});
@@ -416,14 +416,14 @@ public class WaitingRoom extends JPanel implements PageControl{
 				@Override
 				public void onClick() {
 					// TODO Auto-generated method stub
-					ff.playSoundClip(SoundManager.PressedRealGameStartButtonSoundPath, SoundManager.DEFAULT_VOLUME);
+					ff.playSoundClip(SoundManager.PressedRealGameStartButtonSoundPath, SoundManager.HIGHER_VOLUME);
 					gameClient.sendMessageToServer(NetworkTag.SELECT_START);
 				}
 
 				@Override
 				public void onEnter() {
 					// TODO Auto-generated method stub
-					ff.playSoundClip(SoundManager.ActivatedRealGameStartButtonSoundPath, SoundManager.DEFAULT_VOLUME);
+					ff.playSoundClip(SoundManager.ActivatedRealGameStartButtonSoundPath, SoundManager.HIGHER_VOLUME);
 				}
 
 				@Override
@@ -466,7 +466,7 @@ public class WaitingRoom extends JPanel implements PageControl{
 						gameServer.endServer();
 					Starter.pme.exitWaitingPage();
 					Starter.pme.goClientPage();
-					ff.playSoundClip(SoundManager.GameSelectionCancelSoundPath, SoundManager.GAME_SELECT_CANCEL_SOUND_VOLUME);
+					ff.playSoundClip(SoundManager.GameSelectionCancelSoundPath, SoundManager.HIGHER_VOLUME);
 				}
 
 				@Override

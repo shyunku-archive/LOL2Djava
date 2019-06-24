@@ -81,6 +81,10 @@ public class Functions<Temp> {
 		return Arrays.copyOfRange(seg, start, seg.length);
 	}
 	
+	public String[] subArray(String[] seg, int start, int end) {
+		return Arrays.copyOfRange(seg, start, end+1);
+	}
+	
 	
 	
 	public Font getFancyFont(float size, boolean bold) {
@@ -102,6 +106,7 @@ public class Functions<Temp> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		setDeciBel(c, volume);
 		c.start();
 	}
 	

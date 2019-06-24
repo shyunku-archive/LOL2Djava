@@ -164,6 +164,9 @@ public class Starter {
 	    SoundManager.ActivatedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\ActivatedRealGameStartButtonSound.wav";
 	    SoundManager.PressedRealGameStartButtonSoundPath = "Resources\\Audios\\ClientPage\\PressedRealGameStartButtonSound.wav";
 	    SoundManager.TeamMoveSoundPath = "Resources\\Audios\\ClientPage\\TeamMoveSound.wav";
+	    
+	    //픽창
+	    SoundManager.KnifeWindChampionSelectBGMPath = "Resources\\Audios\\ChampionSelectPage\\KnifeWindChampionPickRoom.wav";
 		
 		//Images
 		try {
@@ -188,10 +191,16 @@ public class Starter {
 	        
 	        //픽창
 	        ImageManager.ChampionSelectTemplate = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\ChampionSelectTemplate.png"));
-	        ImageManager.SelectingUserSlot_Team1 = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\SelectingUserSlot_team1.png"));
-	        ImageManager.SelectingUserSlot_Team2 = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\SelectingUserSlot_team2.png"));
-	        ImageManager.DeactivatedUserSlot_Team1 = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\WaitingUserSlot_team1.png"));
-	        ImageManager.DeactivatedUserSlot_Team2 = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\WaitingUserSlot_team2.png"));
+	        ImageManager.OurTeamPickedUserFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\OurTeam\\OurTeamPickedUserFrame.png"));
+	        ImageManager.OurTeamPickingUserFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\OurTeam\\OurTeamPickingUserFrame.png"));
+	        ImageManager.MyPickedUserFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\OurTeam\\MyPickedUserFrame.png"));
+	        ImageManager.MyPickingUserFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\OurTeam\\MyPickingUserFrame.png"));
+	        ImageManager.EnemyTeamPickedUserFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\EnemyTeam\\EnemyTeamPickedUserFrame.png"));
+	        ImageManager.EnemyTeamPickingUserFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\EnemyTeam\\EnemyTeamPickingUserFrame.png"));
+	        
+	        ImageManager.ActivatedPickButtonImage = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\ActivatedPickButton.png"));
+	        ImageManager.FocusedPickButtonImage = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\FocusedPickButton.png"));
+
 	        
 	        //아이콘	         
 	        ImageManager.SRicon = ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\SRicon.png"));
@@ -208,6 +217,11 @@ public class Starter {
 	        ImageManager.JinxIconImage = ImageIO.read(new File("Resources\\Images\\Champions\\Icons\\JinxIcon.png"));
 	        ImageManager.TrindamereIconImage = ImageIO.read(new File("Resources\\Images\\Champions\\Icons\\TrindamereIcon.png"));
 	        ImageManager.YasuoIconImage = ImageIO.read(new File("Resources\\Images\\Champions\\Icons\\YasuoIcon.png"));
+	        ImageManager.SorakaIconImage = ImageIO.read(new File("Resources\\Images\\Champions\\Icons\\SorakaIcon.png"));
+	        
+	        ImageManager.ChampionIconFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\ChampionIconFrame.png"));
+	        ImageManager.SelectedChampionIconFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\SelectedChampionIconFrame.png"));
+	        ImageManager.FocusedChampionIconFrame = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\FocusedChampionIconFrame.png"));
 	        
 	        //게임모드 선택
 	        BufferedImage sru, kwu, urfu, srs, kws, urfs;

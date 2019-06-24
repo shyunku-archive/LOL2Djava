@@ -208,7 +208,7 @@ public class LoginPage extends JPanel{
 						Variables.Username = inputNicknameArea.getText();
 						inputNicknameArea.setVisible(false);
 						inputNicknameArea.setText("");
-						ff.playSoundClip(SoundManager.LoginButtonPressedSoundPath, 50D);
+						ff.playSoundClip(SoundManager.LoginButtonPressedSoundPath, SoundManager.HIGHER_VOLUME);
 					}
 				}
 			}

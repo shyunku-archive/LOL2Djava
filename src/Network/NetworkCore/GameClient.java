@@ -111,7 +111,7 @@ public class GameClient {
 								 if(msg[0].equals(NetworkTag.UPDATE_SIGNAL)) {
 									 if(msg[1].equals(NetworkTag.ITEM_ADDITION)) {
 										 if(msg[2].equals(NetworkTag.USER_LIST_TAG))
-											 Constants.ff.playSoundClip(SoundManager.ParticipateSoundPath, SoundManager.DEFAULT_VOLUME);
+											 Constants.ff.playSoundClip(SoundManager.ParticipateSoundPath, SoundManager.HIGHER_VOLUME);
 										 RoomInfo.addItem(Constants.ff.cutFrontStringArray(msg, 2));
 									 }
 									 else if(msg[1].equals(NetworkTag.ITEM_DELETION))
@@ -126,11 +126,13 @@ public class GameClient {
 								 }else if(msg[0].equals(NetworkTag.MOVE_TEAM_SIGNAL)) {
 									 RoomInfo.moveTeam(msg[1]);
 								 }
-							 }else if(tag.equals(NetworkTag.CHAMP_SELECT_ROOM)) {
+							 }else if(tag.equals(NetworkTag.NORMAL_CHAMP_SELECT_ROOM)) {
 								 if(msg[0].equals(NetworkTag.SELECT_START)) {
 									 nextPhaseSignal = true;
+									 Constants.ff.playSoundClip(SoundManager.KnifeWindChampionSelectBGMPath, 0.1D);
 								 }else if(msg[0].equals(NetworkTag.UPDATE_ALL)) {
 									 selectChampRoomInfo.fromMsg(Constants.ff.cutFrontStringArray(msg, 1));
+									 selectChampRoomInfo.executeNormalPhase();
 								 }else if(msg[0].equals(NetworkTag.UPDATE_SIGNAL)) {
 									 if(msg[1].equals(NetworkTag.ITEM_ADDITION)) {
 										 selectChampRoomInfo.addItem(Constants.ff.cutFrontStringArray(msg, 2));
@@ -139,6 +141,10 @@ public class GameClient {
 										 selectChampRoomInfo.deleteItem(Constants.ff.cutFrontStringArray(msg, 2));
 									 else if(msg[1].equals(NetworkTag.ITEM_MODIFICATION))
 										 selectChampRoomInfo.modifyItem(Constants.ff.cutFrontStringArray(msg, 2));
+								 }else if(msg[0].equals(NetworkTag.CHAMP_SELECT_SIGNAL)) {
+									 selectChampRoomInfo.userSelectedChampion(msg[1], Integer.parseInt(msg[2]));
+								 }else if(msg[0].equals(NetworkTag.CHAMP_PICK_SIGNAL)) {
+									 selectChampRoomInfo.userPicked(msg[1]);
 								 }
 							 }
 						}
