@@ -201,6 +201,7 @@ public class Starter {
 	        ImageManager.ActivatedPickButtonImage = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\ActivatedPickButton.png"));
 	        ImageManager.FocusedPickButtonImage = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\FocusedPickButton.png"));
 
+	        ImageManager.FinalPhaseMainTextImage = ImageIO.read(new File("Resources\\Images\\ChampionSelectPage\\FinalPhaseMainText.png"));
 	        
 	        //æ∆¿Ãƒ‹	         
 	        ImageManager.SRicon = ImageIO.read(new File("Resources\\Images\\ClientPage\\Icons\\SRicon.png"));

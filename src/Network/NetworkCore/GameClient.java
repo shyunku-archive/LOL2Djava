@@ -129,7 +129,6 @@ public class GameClient {
 							 }else if(tag.equals(NetworkTag.NORMAL_CHAMP_SELECT_ROOM)) {
 								 if(msg[0].equals(NetworkTag.SELECT_START)) {
 									 nextPhaseSignal = true;
-									 Constants.ff.playSoundClip(SoundManager.KnifeWindChampionSelectBGMPath, 0.1D);
 								 }else if(msg[0].equals(NetworkTag.UPDATE_ALL)) {
 									 selectChampRoomInfo.fromMsg(Constants.ff.cutFrontStringArray(msg, 1));
 									 selectChampRoomInfo.executeNormalPhase();
@@ -145,6 +144,12 @@ public class GameClient {
 									 selectChampRoomInfo.userSelectedChampion(msg[1], Integer.parseInt(msg[2]));
 								 }else if(msg[0].equals(NetworkTag.CHAMP_PICK_SIGNAL)) {
 									 selectChampRoomInfo.userPicked(msg[1]);
+								 }else if(msg[0].equals(NetworkTag.NEXT_PHASE)) {
+									 selectChampRoomInfo.nextPhase();
+								 }
+							 }else if(tag.equals(NetworkTag.GAMING)) {
+								 if(msg[0].equals(NetworkTag.REAL_GAME_START_SIGNAL)) {
+									 nextPhaseSignal = true;
 								 }
 							 }
 						}

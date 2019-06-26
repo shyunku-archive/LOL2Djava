@@ -83,14 +83,14 @@ public class NormalChampionSelectingRoomInfo extends MessageControl {
 		for(int i=0;i<userList2.size();i++)
 			if(userName.equals(userList2.get(i).getUserName())) {
 				userList2.get(i).setPicked(true);
-				userList1.get(i).setSelecting(false);
+				userList2.get(i).setSelecting(false);
 				return;
 			}
 	}
 	
 	public void nextPhase() {
 		this.WaitingPhaseIndex++;
-		if(WaitingPhaseIndex == FinalPhaseIndex)
+		if(WaitingPhaseIndex >= FinalPhaseIndex)
 			this.curRemainWaitTimeFlag = System.currentTimeMillis();
 	}
 	

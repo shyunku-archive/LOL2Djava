@@ -18,10 +18,16 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -85,7 +91,9 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 	private int chatSize = 0;
 	private int myTeamIndex = 0;
 	
-	private boolean nextPhaseSwitch = true;
+	private int customPhase = 0;
+	
+	private Clip c = null;
 	
 	public void paintComponent(Graphics graphics) {
 		Graphics2D g = (Graphics2D) graphics;
@@ -97,7 +105,7 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 		if(RoomInfo != null) {			
 			final int SAH = 50;
 			final int SLW = 95;
-			final int SRW = 1180;
+			final int SRW = 1193;
 			
 			long Remained = RoomInfo.getCurReaminWaitTime();
 			if(Remained <0)
@@ -113,25 +121,34 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 				OurTeam = RoomInfo.getUserList2();
 				EnemyTeam = RoomInfo.getUserList1();
 			}
-			
+			int adjust = 81;
 			for(int i=0;i<OurTeam.size();i++) {
-				int adjust = 81;
 				Coordinate coord = new Coordinate(18, 293 - (adjust*OurTeam.size()/2) + adjust*i);
 				g.setFont(ff.getClassicFont(15, true));
-				if(RoomInfo.getUserList1().get(i).isSelecting()) {
+				if(OurTeam.get(i).isSelecting()) {
 					if(OurTeam.get(i).getUserName().equals(Variables.Username)) {
 						g.drawImage(ImageManager.MyPickingUserFrame, null, coord.getX()-13, coord.getY());
 						g.drawString(OurTeam.get(i).getUserName(), SLW+36, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 10);
 						
-						g.setFont(ff.getClassicFont(28, true));
-						g.drawString(""+Remained/1000, SLW+165, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 8);
+						g.setFont(ff.getClassicFont(30, true));
+						g.drawString(""+Remained/1000, SLW+165, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 7);
 					}else {
-						
 						g.drawImage(ImageManager.OurTeamPickingUserFrame, null, coord.getX(), coord.getY());
 						g.drawString(OurTeam.get(i).getUserName(), SLW+36, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 10);
 					}
-				}
-				else {
+				}else if(OurTeam.get(i).isPicked()) {
+					if(OurTeam.get(i).getUserName().equals(Variables.Username)) {
+						g.drawImage(ImageManager.MyPickedUserFrame, null, coord.getX()-13, coord.getY());
+						g.drawString(OurTeam.get(i).getUserName(), SLW - 10, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 10);
+						g.drawString(championPack.getChampionByCode(OurTeam.get(i).getSelectedChampionCode()).getChampionName(), 
+								SLW - 10, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH - 5);
+					}else {
+						g.drawImage(ImageManager.OurTeamPickingUserFrame, null, coord.getX(), coord.getY());
+						g.drawString(OurTeam.get(i).getUserName(), SLW - 10, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH + 10);
+						g.drawString(championPack.getChampionByCode(OurTeam.get(i).getSelectedChampionCode()).getChampionName(), 
+								SLW - 10, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH - 5);
+					}
+				} else {
 					if(OurTeam.get(i).getUserName().equals(Variables.Username)) {
 						g.drawImage(ImageManager.MyPickedUserFrame, null, coord.getX()-13, coord.getY());
 						g.drawString(OurTeam.get(i).getUserName(), SLW+36, 293 - (adjust*OurTeam.size()/2) + adjust*i + SAH);
@@ -143,20 +160,26 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 				
 				if((code = OurTeam.get(i).getSelectedChampionCode())!=0) {
 					GeneralPath path = new GeneralPath();
-					path.append(new Ellipse2D.Double(13+ (OurTeam.get(i).isSelecting()?50:0), coord.getY()+17, 56, 56), false);
+					if(OurTeam.get(i).isSelecting()) path.append(new Ellipse2D.Double(63, coord.getY()+17, 56, 56), false);
+					else path.append(new Ellipse2D.Double(15, coord.getY()+18, 54, 54), false);
 					g.clip(path);
 					BufferedImage bi = championPack.getChampionByCode(code).getChampionIcon();
-					g.drawImage(bi, null, 41 - bi.getWidth()/2+ (OurTeam.get(i).isSelecting()?50:0), coord.getY()+43 - bi.getHeight()/2);
+					g.drawImage(bi, null, 43 - bi.getWidth()/2+ (OurTeam.get(i).isSelecting()?48:0), coord.getY()+43 - bi.getHeight()/2);
 					g.setClip(0, 0, (int)Constants.ClientPanelDimension.getWidth(), (int)Constants.ClientPanelDimension.getHeight());
 				}
 				
 			}
 			for(int i=0;i<EnemyTeam.size();i++) {
-				Coordinate coord = new Coordinate(1280 - ImageManager.EnemyTeamPickingUserFrame.getWidth() - 10, 293 - (93*EnemyTeam.size()/2) + 93*i);
-				if(EnemyTeam.get(i).isSelecting())
+				g.setFont(ff.getClassicFont(15, true));
+				Coordinate coord = new Coordinate(1280 - ImageManager.EnemyTeamPickingUserFrame.getWidth() - 10, 293 - (adjust*EnemyTeam.size()/2) + adjust*i);
+				if(EnemyTeam.get(i).isSelecting()) {
 					g.drawImage(ImageManager.EnemyTeamPickingUserFrame, null, coord.getX(), coord.getY());
-				else
+					ect.fde.drawRightAlignedString(g, EnemyTeam.get(i).getUserName(), new Coordinate(SRW, 293 - (93*EnemyTeam.size()/2) + 93*i + SAH+15));
+				}
+				else {
 					g.drawImage(ImageManager.EnemyTeamPickedUserFrame, null, coord.getX(), coord.getY());
+					ect.fde.drawRightAlignedString(g, EnemyTeam.get(i).getUserName(), new Coordinate(SRW, 293 - (93*EnemyTeam.size()/2) + 93*i + SAH+15));
+				}
 				if((code = EnemyTeam.get(i).getSelectedChampionCode())!=0) {
 					GeneralPath path = new GeneralPath();
 					path.append(new Ellipse2D.Double(coord.getX() + 150, coord.getY()+16, 58, 58), false);
@@ -165,14 +188,19 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 					g.drawImage(bi, null, 41 - bi.getWidth()/2, 292 - bi.getHeight()/2);
 					g.setClip(0, 0, (int)Constants.ClientPanelDimension.getWidth(), (int)Constants.ClientPanelDimension.getHeight());
 				}
-				ect.fde.drawRightAlignedString(g, EnemyTeam.get(i).getUserName(), new Coordinate(SRW, 293 - (93*EnemyTeam.size()/2) + 93*i + SAH));
+				
 			}
 			
 			g.setColor(Color.WHITE);
-			g.setFont(ff.getClassicFont(35, true));
-			ect.fde.drawCenteredString(g, ""+Remained/1000, new Rectangle(610, 33, 60, 79));
+			g.setFont(ff.getClassicFont(40, true));
+			ect.fde.drawCenteredString(g, ""+Remained/1000, new Rectangle(610, 31, 60, 79));
 		}
 		PickBtn.draw(g);
+		if(customPhase>0) {
+			g.setColor(new Color(0, 7, 14));
+			g.fillRect(342, 90, 596, 570);
+			g.drawImage(ImageManager.FinalPhaseMainTextImage, null, 475, 13);
+		}
 	}
 	
 	public void update() {
@@ -208,11 +236,19 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 		imageScroller.revalidate();
 		imageScroller.repaint();
 		
-		if(nextPhaseSwitch && RoomInfo.getCurReaminWaitTime() < 0 && this.isGameMaster) {
-			gameClient.sendMessageToServer(NetworkTag.NEXT_PHASE);
-			this.nextPhaseSwitch = false;
+		if(RoomInfo.getCurReaminWaitTime() < 0 && this.isGameMaster) {
+			if(RoomInfo.getWaitingPhaseIndex()>=1)
+				gameClient.sendMessageToServer(NetworkTag.REAL_GAME_START_SIGNAL);
+			else
+				gameClient.sendMessageToServer(NetworkTag.NEXT_PHASE);
 		}
 		myTeamIndex = RoomInfo.getOurTeamIndex(Variables.Username);
+		
+		if(gameClient.isNextPhaseSignalActiavted()) {
+			c.close();
+			Starter.pme.exitChampionSelectPage();
+			Starter.pme.GoGamePage(mode, isGameMaster, gameServer, gameClient);
+		}
 	}
 	
 	public void setThis() {
@@ -275,6 +311,17 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 		this.gameServer = server;
 		this.gameClient = client;
 		this.mode = mode;
+		
+		
+		try {
+			c = AudioSystem.getClip();
+			c.open(AudioSystem.getAudioInputStream(new File(SoundManager.KnifeWindChampionSelectBGMPath).getAbsoluteFile()));
+		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ff.setDeciBel(c, SoundManager.VERY_TINY_VOLUME);
+		c.start();
 		
 		Chatr.addEnterListener(new EnterListener() {
 			@Override
@@ -353,6 +400,8 @@ public class NormalChampionSelectPage extends JPanel implements PageControl{
 			public void onClick() {
 				gameClient.sendMessageToServer(NetworkTag.CHAMP_PICK_SIGNAL);
 				imageScroller.setVisible(false);
+				PickBtn.setVisible(false);
+				customPhase++;
 			}
 
 			@Override

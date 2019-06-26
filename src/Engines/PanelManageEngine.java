@@ -8,6 +8,7 @@ import java.awt.Toolkit;
 import javax.swing.JPanel;
 
 import Core.Starter;
+import Game.GamePanel;
 import Global.Constants;
 import Global.Functions;
 import Global.Constants.GameMode;
@@ -28,6 +29,8 @@ public class PanelManageEngine {
 	public static ClientGameModeSelectPage clientGameModeSelectPage;
 	public static WaitingRoom waitingPage;
 	public static NormalChampionSelectPage normalChampionSelectPage;
+	
+	public static GamePanel	gamePage;
 	
 	/*===============================CREATE PANELS===============================*/
 	
@@ -97,6 +100,19 @@ public class PanelManageEngine {
 		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
 	}
 	
+	public void GoGamePage(GameMode mode, boolean isGameMaster, GameServer gameServer, GameClient gameClient) {
+		gamePage = new GamePanel(mode, isGameMaster, gameServer, gameClient);
+		ff.setCursor(Cursor.DEFAULT_CURSOR);
+		
+		gamePage.setThis();
+		
+		gamePage.isActivated = true;
+		Starter.frame.add(gamePage);
+		Starter.frame.setSize(gamePage.PanelSize);
+		
+		logPage.setPanelSize(new Dimension(Starter.frame.getWidth(), Starter.frame.getHeight()));
+	}
+	
 	/*===============================DELETE PANELS===============================*/
 	
 	public void exitLoginPage() {
@@ -124,6 +140,11 @@ public class PanelManageEngine {
 		Starter.frame.remove(normalChampionSelectPage);
 	}
 	
+	public void exitGamePage() {
+		deactivateAll();
+		Starter.frame.remove(gamePage);
+	}
+	
 	/*===============================INTERNAL METHODS===============================*/
 	
 	public void setAll() {
@@ -140,6 +161,7 @@ public class PanelManageEngine {
 		if(clientGameModeSelectPage.isActivated)clientGameModeSelectPage.update();
 		if(waitingPage.isActivated)waitingPage.update();
 		if(normalChampionSelectPage.isActivated)normalChampionSelectPage.update();
+		if(gamePage.isActivated)gamePage.update();
 	}
 	
 	public static void deactivateAll() {
@@ -148,6 +170,7 @@ public class PanelManageEngine {
 		clientGameModeSelectPage.isActivated = false;
 		waitingPage.isActivated = false;
 		normalChampionSelectPage.isActivated = false;
+		gamePage.isActivated = false;
 	}
 	
 	private static Functions ff = new Functions();

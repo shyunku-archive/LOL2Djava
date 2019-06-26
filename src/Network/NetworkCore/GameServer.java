@@ -115,7 +115,6 @@ public class GameServer {
 											 broadcast(GameStatus, NetworkTag.UPDATE_ALL, selectNormalChampRoomInfo.toMsg());
 											 selectNormalChampRoomInfo.executeNormalPhase();
 										 }else if(tag.equals(NetworkTag.NEXT_PHASE)) {
-											 Constants.ff.cprint(GameStatus + " ff "+selectNormalChampRoomInfo.isAllPicked());
 											 if(GameStatus.equals(NetworkTag.NORMAL_CHAMP_SELECT_ROOM)) {
 												 if(!selectNormalChampRoomInfo.isAllPicked()){
 													 JOptionPane.showMessageDialog(null, "적어도 한 명이 픽을 하지 않았습니다.");
@@ -131,6 +130,13 @@ public class GameServer {
 										 else if(tag.equals(NetworkTag.CHAMP_PICK_SIGNAL)) {
 											 selectNormalChampRoomInfo.userPicked(curUsername);
 											 broadcast(GameStatus, NetworkTag.CHAMP_PICK_SIGNAL, curUsername);
+											 if(selectNormalChampRoomInfo.isAllPicked()){
+												 selectNormalChampRoomInfo.nextPhase();
+												 broadcast(GameStatus, NetworkTag.NEXT_PHASE);
+											 }
+										 }else if(tag.equals(NetworkTag.REAL_GAME_START_SIGNAL)) {
+											 GameStatus = NetworkTag.GAMING;
+											 broadcast(GameStatus, NetworkTag.REAL_GAME_START_SIGNAL);
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block

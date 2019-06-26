@@ -46,6 +46,8 @@ public class ImageManager {
 	public static BufferedImage ActivatedPickButtonImage = null;
 	public static BufferedImage FocusedPickButtonImage = null;
 	
+	public static BufferedImage FinalPhaseMainTextImage = null;
+	
 	//select-unselect
 	public static BufferedImage SummonersRiftSelected = null;
 	public static BufferedImage KnifeWindSelected = null;
