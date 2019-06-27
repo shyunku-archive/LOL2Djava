@@ -20,7 +20,7 @@ import Utility.Layout;
 import Utility.TriggeredButton;
 
 public class Constants {	
-	public static final String ProgramVersion = "V0.9.0 - Beta";
+	public static final String ProgramVersion = "V0.9.1.2 - Beta";
 	public static final long FrameCountPeriod = 850;
 	public static final int FPSLimit = 144;
 	
