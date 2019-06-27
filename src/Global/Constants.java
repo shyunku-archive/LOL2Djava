@@ -2,6 +2,8 @@ package Global;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +34,11 @@ public class Constants {
 	//Server
 	public static String publicIP = ""; 
 	
+	public static GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+	
 	//Layout
 	public static Dimension ClientPanelDimension = new Dimension(1280, 720);
+	public static Dimension FullScreenDimension;
 
+	
 }

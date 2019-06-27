@@ -75,6 +75,7 @@ public class Starter {
             Constants.publicIP = "Cannot Execute Properly"; 
             e.printStackTrace();
         } 
+		Constants.FullScreenDimension = new Dimension(Constants.gd.getDisplayMode().getWidth(), Constants.gd.getDisplayMode().getHeight());
 	}
 	
 	public static void update() {

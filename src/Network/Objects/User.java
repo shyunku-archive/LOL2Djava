@@ -1,8 +1,6 @@
 package Network.Objects;
 
-import Global.Constants;
 import Network.NetworkCore.NetworkTag;
-import Objects.Champion;
 
 public class User extends ObjectManage{
 	private String userName;
