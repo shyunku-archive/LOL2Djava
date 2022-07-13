@@ -50,7 +50,7 @@ public class TriggeredTextArea extends JTextArea{
 		setForeground(new Color(220,220,220,255));
 		disableKeys(getInputMap(), new String[]{"ENTER"});
 		try {
-			setFont(Font.createFont(Font.TRUETYPE_FONT, new File("Resources\\Fonts\\Global\\SMB.ttf")));
+			setFont(Font.createFont(Font.TRUETYPE_FONT, new File("Resources/Fonts/Global/SMB.ttf")));
 		} catch (FontFormatException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();

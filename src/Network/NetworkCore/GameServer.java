@@ -31,7 +31,7 @@ public class GameServer {
 	private ServerSocket serverSocket = null;
 	private HashMap<String, PrintWriter> writermap;
 	
-	//³ªÁß¿¡ °ÔÀÓ µ¥ÀÌÅÍ Å¬·¡½º·Î ÇÑµ¥ ¸ð¾Æ¾ßÇÔ
+	//ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñµï¿½ ï¿½ï¿½Æ¾ï¿½ï¿½ï¿½
 	private WaitingRoomInfo RoomInfo = new WaitingRoomInfo("", "");
 	private NormalChampionSelectingRoomInfo  selectNormalChampRoomInfo;
 	private String GameStatus = NetworkTag.WAITING_ROOM;
@@ -59,14 +59,14 @@ public class GameServer {
 										PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 										request = bufferedReader.readLine();
 										 
-										 //¼­¹ö <- Å¬¶óÀÌ¾ðÆ®
+										 //ï¿½ï¿½ï¿½ï¿½ <- Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®
 										 String[] tokens = request.split("\\|");
 										 curUsername = tokens[0];
 										 tokens = Constants.ff.cutFrontStringArray(tokens, 1);
 										 String tag = tokens[0];
 										 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
 										 
-										 //¸Þ½ÃÁö = Sender ÀÌ¸§ + ÅÂ±× + Content
+										 //ï¿½Þ½ï¿½ï¿½ï¿½ = Sender ï¿½Ì¸ï¿½ + ï¿½Â±ï¿½ + Content
 										 
 										 if(!tag.equals(NetworkTag.PING_TEST))
 											 Constants.ff.cprint("SERVER <- CLIENT : "+request);
@@ -84,7 +84,7 @@ public class GameServer {
 													 break;
 												 }
 											 User newUser = new User(Constants.ff.subArray(msg, 0, 2));
-											 Chat newChat = new Chat(NetworkTag.EMPTY_STRING, newUser.getUserName()+"´ÔÀÌ ·Îºñ¿¡ Âü°¡ÇÏ¼Ì½À´Ï´Ù.", true);
+											 Chat newChat = new Chat(NetworkTag.EMPTY_STRING, newUser.getUserName()+"ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼Ì½ï¿½ï¿½Ï´ï¿½.", true);
 											 addWriter(socket, newUser.getUserName());
 											 
 											 broadcastToSpecific(newUser.getUserName(), GameStatus, NetworkTag.UPDATE_ALL, RoomInfo.toMsg());
@@ -117,7 +117,7 @@ public class GameServer {
 										 }else if(tag.equals(NetworkTag.NEXT_PHASE)) {
 											 if(GameStatus.equals(NetworkTag.NORMAL_CHAMP_SELECT_ROOM)) {
 												 if(!selectNormalChampRoomInfo.isAllPicked()){
-													 JOptionPane.showMessageDialog(null, "Àû¾îµµ ÇÑ ¸íÀÌ ÇÈÀ» ÇÏÁö ¾Ê¾Ò½À´Ï´Ù.");
+													 JOptionPane.showMessageDialog(null, "ï¿½ï¿½ï¿½îµµ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½.");
 													 System.exit(0);
 												 }
 											 }
@@ -140,7 +140,7 @@ public class GameServer {
 										 }
 									} catch (SocketException e) {
 										// TODO Auto-generated catch block
-										Chat newChat = new Chat(NetworkTag.EMPTY_STRING, curUsername+"´ÔÀÌ ·Îºñ¸¦ ¶°³µ½À´Ï´Ù.", true);
+										Chat newChat = new Chat(NetworkTag.EMPTY_STRING, curUsername+"ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.", true);
 										RoomInfo.addChat(newChat);
 										RoomInfo.removeUser(curUsername);
 										removeWriter(curUsername);
@@ -157,7 +157,7 @@ public class GameServer {
 						}).start();
 					}
 				}catch(BindException e) {
-					JOptionPane.showMessageDialog(null, "¼­¹ö°¡ ÀÌ¹Ì ½ÇÇàµÇ°í ÀÖ½À´Ï´Ù.");
+					JOptionPane.showMessageDialog(null, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.");
 					System.exit(0);
 				}catch (IOException e) {
 					// TODO Auto-generated catch block

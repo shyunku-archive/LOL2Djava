@@ -89,7 +89,7 @@ public class GameClient {
 							 response = reader.readLine();
 							 updates++;
 							
-							 String[] tokens = response.split("\\|");
+							 String[] tokens = response.split("/|");
 							 
 							 String tag = tokens[0];
 							 String[] msg = Arrays.copyOfRange(tokens, 1, tokens.length);
@@ -121,7 +121,7 @@ public class GameClient {
 								 }else if(msg[0].equals(NetworkTag.UPDATE_ALL)) {
 									 RoomInfo.fromMsg(Constants.ff.cutFrontStringArray(msg, 1));
 								 }else if(msg[0].equals(NetworkTag.PASSWORD_NOT_CORRECT)) {
-									 JOptionPane.showMessageDialog(null, "ÆÐ½º¿öµå°¡ Æ²·È½À´Ï´Ù.");
+									 JOptionPane.showMessageDialog(null, "ï¿½Ð½ï¿½ï¿½ï¿½ï¿½å°¡ Æ²ï¿½È½ï¿½ï¿½Ï´ï¿½.");
 								     System.exit(0);
 								 }else if(msg[0].equals(NetworkTag.MOVE_TEAM_SIGNAL)) {
 									 RoomInfo.moveTeam(msg[1]);
@@ -170,7 +170,7 @@ public class GameClient {
 				
 			}).start();
 			
-			//ÁÖ±âÀûÀ¸·Î CLIENT¿¡ µ¥ÀÌÅÍ Àü¼Û : ÇÎ Å×½ºÆ®
+			//ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CLIENTï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ ï¿½×½ï¿½Æ®
 			new Thread(new Runnable() {
 
 				@Override
@@ -194,7 +194,7 @@ public class GameClient {
 			}).start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "ÇØ´ç ip¿¡ Á¢¼ÓÇÒ ¼ö ¾ø½À´Ï´Ù.");
+			JOptionPane.showMessageDialog(null, "ï¿½Ø´ï¿½ ipï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
 			e.printStackTrace();
 			return;
 			
@@ -202,7 +202,7 @@ public class GameClient {
 	}
 	
 	public void sendMessageToServer(String msg){
-		//Å¬¶óÀÌ¾ðÆ® -> ¼­¹ö
+		//Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® -> ï¿½ï¿½ï¿½ï¿½
 		String[] tokens = msg.split("\\|");
 		msg = user.getUserName()+"|" +msg;
 		if(!tokens[0].equals(NetworkTag.PING_TEST))

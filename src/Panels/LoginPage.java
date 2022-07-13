@@ -56,7 +56,7 @@ public class LoginPage extends JPanel{
 	private static EnginesControl ect = new EnginesControl();
 	
 	
-    private static String videoFilePath = "Resources\\Videos\\LoginPage\\MainVideo.mp4";
+    private static String videoFilePath = "Resources/Videos/LoginPage/MainVideo.mp4";
     
     private static Rectangle CloseButtonRect = new Rectangle(1252, 7, 14, 14);
     private static Rectangle LocaleButtonRect = new Rectangle(1070, 256, 84, 18);
@@ -98,7 +98,7 @@ public class LoginPage extends JPanel{
 			
 			g.setColor(new Color(255, 210, 170));
 			g.setFont(ff.getClassicFont(13F, true));
-			g.drawString("´Ð³×ÀÓ", 1073, 170);
+			g.drawString("ï¿½Ð³ï¿½ï¿½ï¿½", 1073, 170);
 			
 			g.setColor(new Color(65,60,70,255));
 			g.setFont(ff.getFancyFont(13F, true));
@@ -141,7 +141,7 @@ public class LoginPage extends JPanel{
 		this.disableKeys(inputNicknameArea.getInputMap(), new String[]{"ENTER"});
 		inputNicknameArea.setForeground(new Color(220,220,220,255));
 		try {
-			inputNicknameArea.setFont(Font.createFont(Font.TRUETYPE_FONT, new File("Resources\\Fonts\\Global\\SMB.ttf")));
+			inputNicknameArea.setFont(Font.createFont(Font.TRUETYPE_FONT, new File("Resources/Fonts/Global/SMB.ttf")));
 		} catch (FontFormatException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -233,7 +233,7 @@ public class LoginPage extends JPanel{
         this.setLayout(null);
         try {
 			this.mainAudioClip = AudioSystem.getClip();
-			this.mainAudioClip.open(AudioSystem.getAudioInputStream(new File("Resources\\Audios\\LoginPage\\MainAudio.wav").getAbsoluteFile()));
+			this.mainAudioClip.open(AudioSystem.getAudioInputStream(new File("Resources/Audios/LoginPage/MainAudio.wav").getAbsoluteFile()));
 		} catch (LineUnavailableException | IOException | UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
